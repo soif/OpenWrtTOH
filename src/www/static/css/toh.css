@@ -1,0 +1,69 @@
+#table-head{
+    margin-bottom: 20px;
+}
+
+#head-loading{
+	float:right;
+	font-size: 1.5em;
+}
+#table-head{
+	clear: both;
+}
+#head-views A{
+	border: 1px solid #ddd;
+	display: inline-block;
+	padding: 1px 3px;
+	margin: 0 3px;
+	text-decoration: none;
+}
+#head-views A:hover{
+	background-color: #ddf;
+}
+#head-views A.selected{
+	background-color: #ddd;
+}
+#head-view-custom{
+	border: 1px solid #ccc;
+	padding: 5px;
+}
+#head-view-custom UL{
+	list-style-type: none;
+	padding-left: 15px;
+}
+.multi-column-text {
+  column-count: 4;
+  column-gap: 2em;
+}
+.group-title{
+	font-size: 0.9em;
+	font-weight: bold;
+}
+.group-title A{
+	text-decoration: none;
+}
+#table-main .tabulator-cell .fa-question.dash{
+	opacity: 0.5;
+}
+#table-main .tabulator-cell .fa-question.empty{
+	opacity: 0.2;
+}
+#table-main .tabulator-cell .fa-question.unknown{
+	opacity: 0.5;
+	color: red;
+}
+#table-main .tabulator-cell .cell-image I.generic{
+	opacity: 0.5;
+}
+#toh-image-preview {
+	position: absolute;
+    display: none;
+    z-index: 1000;
+    border: 1px solid #ccc;
+	background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+#toh-image-preview img {
+    max-width: 300px;
+    max-height: 300px;
+    display: block;
+}
