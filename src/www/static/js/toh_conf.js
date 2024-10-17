@@ -1,17 +1,27 @@
 
 // Config ########################################################################
 let owrtUrls={
-	www: 		"https://openwrt.org/",
-	toh_json:	"https://openwrt.org/",
-	media:		"https://openwrt.org/_media/",
+	www: 			"https://openwrt.org/",
+	toh_json:		"https://openwrt.org/",
+	media:			"https://openwrt.org/_media/",
+	github_commit:	"https://github.com/openwrt/openwrt/commit/",
 }
 
 function FormatterLink(cell, formatterParams, onRendered) {
 	var value = cell.getValue();
 	if (value && value.length > 0) {
-	return "<a href='" + value + "' target='_blank'>" + formatterParams.label + "</a>";
+		return "<a href='" + value + "' target='_blank'>" + formatterParams.label + "</a>";
 	} 
-	return "";
+	return value;
+}
+function FormatterLinkCommit(cell, formatterParams, onRendered) {
+	var value = cell.getValue();
+	if (value && value.length > 0) {
+		var commit=value.replace(/.*?;h=/g,'');
+		var gh_link=owrtUrls.github_commit + commit;
+		return "<a href='" + value + "' target='_blank' title='Origin'>Orig.</a> | <a href='" + gh_link + "' target='_blank' title='Github'>GH</a>";
+	} 
+	return '';
 }
 function FormatterLinkDevice(cell, formatterParams, onRendered) {
 	var value = cell.getValue();
@@ -19,7 +29,7 @@ function FormatterLinkDevice(cell, formatterParams, onRendered) {
 		value=value.replace(/:/g,'/');
 		return "<a href='" + owrtUrls.www + value + "' target='_blank'>TOH</a>";
 	} 
-	return "";
+	return value;
 }
 function FormatterImages(cell, formatterParams, onRendered) {
 	var arr = cell.getValue();
@@ -63,7 +73,7 @@ function FormatterFlash(cell, formatterParams, onRendered) {
 		arr.forEach((value, index) => {
 			value=value.replace(/NAND/g,' NAND');
 			if(done){
-				out +="+";
+				out +=" + ";
 			}
 			out +=value;
 			done=true;
@@ -116,6 +126,7 @@ let columnStyles={
 	outdoor:							{title:"OutDoor",			formatter: FormatterYesNo, sorter: 'string' },
 	owrt_forum_topic_url:				{title:"Forum",				formatter: FormatterLink, formatterParams:{ label:'Forum'} },
 	picture:							{title:"Image",				formatter: FormatterImages, sorter: 'array' },
+	supportedsincecommit:				{title:"Since Commit",		formatter: FormatterLinkCommit, tooltip:false },
 	wikideviurl:						{title:"Wiki",				formatter: FormatterLink, formatterParams:{ label:'Wiki'} },
 };
 
