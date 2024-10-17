@@ -24,7 +24,8 @@ $(document).ready(function () {
 		let html='';
 		html +='<li><input type="checkbox" value="'+field+'"';
 		if( checked ){html +=' checked="true"';} 
-		html +='> '+title+' <small>('+field+")</small>\n";
+		//html +='> '+title+' <small>('+field+")</small>\n";
+		html +='> '+title+' <small class="dev-hidden">('+field+")</small>\n";
 		return html;
 	}
 	// ------------------------------------------
@@ -59,6 +60,7 @@ $(document).ready(function () {
 			});
 			view +="</ul>\n</div>\n";
 		}
+		view ="<div class='devToggle'>view fields (DEV)</div>"+view;
 		$("#custom-content").html(view);
 		groupsUpdateIcon();
 
@@ -367,7 +369,9 @@ $(document).ready(function () {
 		//groupsUpdateIcon();
 	});
 		
-
+	$('#custom-content').on('click','.devToggle',function(e){
+		$('#custom-content SMALL').toggle();
+	});
 });
 
 	
