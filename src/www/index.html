@@ -4,7 +4,14 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>OpenWrt Table Of Hardware (for the rest of us)</title>
+		<title>OpenWRT Table of Hardware - Comprehensive Device Compatibility List</title>
+
+		<meta name="description" content="Explore our enhanced OpenWRT Table of Hardware. Find detailed compatibility information for routers, access points, and embedded devices supported by OpenWRT firmware.">
+		<meta name="keywords" content="OpenWRT, hardware compatibility, Table of Hardware, TOH, router firmware, open-source networking, device support, wireless routers">
+		<meta property="og:title" content="OpenWRT Table of Hardware - Device Compatibility Guide">
+		<meta property="og:description" content="Comprehensive list of devices compatible with OpenWRT firmware. Find the perfect hardware for your open-source networking project.">
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="https://soif.github.io/OpenWrtTOH/">
 
 		<!-- External Includes  (copied in local) ------------------------------------>
 		<link rel="stylesheet" href="static/css/bootstrap_3.3.7.min.css">
@@ -25,23 +32,32 @@
 	<body>
 		<div class="container-fluid">
 
-			<div id="demo-head">
-				<div id="head-loading"><i class="fa-solid fa-arrows-rotate fa-spin"></i></div>
-				<h1 class="text-center">OpenWrt - Table Of Hardware <small>(for the rest of us)</small></h1>
+			<div id="demo-header" class="row">
+					<div id="head-loading"><i class="fa-solid fa-arrows-rotate fa-spin"></i></div>
+				<div id="demo-header-title" class="container-fluid">
+					<h1>OpenWrt - Table Of Hardware</h1>
+				</div>
 			</div>
 			
 			
 			<div id="demo-intro">
+				What if we could effortlessly browse the entire <a href="https://openwrt.org/toh/start" target="_blank">OpenWRT Table of Hardware</a>? Here is a try:
+
 			</div>
 
 			
 			<div id="demo-toh">
 				
 				<div id="table-head">
-					<div id="head-views"></div>
-					<div id="head-view-custom" class="row">
-						<div class="col-md-12">
-							<div id="custom-content" class="multi-column-text"></div>
+					
+					<div id="head-views">
+						<div id="head-views-menu" class="menu"><span class="menu-title">Views:</span><span id="head-views-menu-links" class="menu-links"></span></div>
+						<div id="head-view-custom" class="row">
+							<div class="container-fluid">
+								<div class="col-md-12">
+									<div id="custom-content" class="multi-column-text"></div>
+								</div>
+							</div>
 						</div>
 					</div>
 	
@@ -52,8 +68,13 @@
 			</div>
 
 
-			<div id="demo-foot">
+			<div id="demo-foot" class="row">
+				<div class="container">
+					This project is available at <a href="https://github.com/soif/OpenWrtTOH/" target="_blank">Github</a>.
+				</div>
 			</div>
+
+
 
 		</div>
 	</body>

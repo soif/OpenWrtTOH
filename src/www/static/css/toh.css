@@ -1,29 +1,21 @@
+/* @override 
+	http://src.dev.lo.lo/OpenWrtTOH/src/www/static/css/toh.css */
+
 #table-head{
     margin-bottom: 20px;
 }
 
 #head-loading{
-	float:right;
-	font-size: 1.5em;
+	font-size: 1.9em;
+	top: 6px;
+	right: 20px;
+	color: #062fed;
+	position: absolute;
 }
-#table-head{
-	clear: both;
-}
-#head-views A{
-	border: 1px solid #ddd;
-	display: inline-block;
-	padding: 1px 3px;
-	margin: 0 3px;
-	text-decoration: none;
-}
-#head-views A:hover{
-	background-color: #ddf;
-}
-#head-views A.selected{
-	background-color: #ddd;
-}
+
+
+
 #head-view-custom{
-	border: 1px solid #ccc;
 	padding: 5px;
 }
 #head-view-custom UL{

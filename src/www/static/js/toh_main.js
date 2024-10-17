@@ -126,7 +126,7 @@ $(document).ready(function () {
 		var name=data;
 		name = name.replace(/_/g,' ');
 		name = name.replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase());
-		return '<a href="#" class="'+myclass+'" data-value="'+data+'">'+name+'</a>'+"\n";
+		return '<a href="#" class="'+myclass+'" data-value="'+data+'">'+name+'</a>'+"";
 	}
 
 	// handles Image Preview on hover --------------------------------------------------
@@ -195,7 +195,7 @@ $(document).ready(function () {
 			columns:[],
 			//renderHorizontal:"virtual",
 			pagination: true,
-			paginationSize: 50,
+			paginationSize: 30,
 			paginationButtonCount: 10,
 			//	autoColumns:true, 			//create columns from data field names
 			movableColumns:true,      //allow column order to be changed
@@ -297,7 +297,7 @@ $(document).ready(function () {
 			table.setColumns(columns);
 			//default view
 			//applyView('normal');
-			$("#head-views A[data-value='"+init_view+"']").trigger('click');
+			$("#head-views-menu-links A[data-value='"+init_view+"']").trigger('click');
 			//groupsUpdateIcon();
 
 			// sort columns						
@@ -322,14 +322,14 @@ $(document).ready(function () {
 		views_html+=makeButton('view',key);
 	}
 	views_html+=makeButton('view','custom');
-	$('#head-views').html(views_html);
+	$('#head-views-menu-links').html(views_html);
 	//groupsUpdateIcon();
 
 	// view presets click ----------------------
-	$('#head-views').on('click','A',function(e){
+	$('#head-views-menu-links').on('click','A',function(e){
 		console.log('apply '+$(this).data('value'));
 		applyView($(this).data('value'));
-		$('#head-views A').removeClass('selected');
+		$('#head-views-menu-links A').removeClass('selected');
 		$(this).addClass('selected');
 		groupsUpdateIcon();
 	});
