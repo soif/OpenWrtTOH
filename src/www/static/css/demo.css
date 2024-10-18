@@ -1,10 +1,10 @@
 /* @override 
 	http://src.dev.lo.lo/OpenWrtTOH/src/www/static/css/demo.css */
 
-body {
+
+#demo-page{
 	background-color: #f9f9f9;
 }
-
 #demo-header{
 	background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.58) 0%, rgba(0, 0, 0, 0.06) 100%) #eee;
 	background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.58) 0%, rgba(0, 0, 0, 0.06) 100%) #eee;
@@ -19,13 +19,13 @@ div#demo-header h1 {
 	font-size: 2em;
 }
 #demo-intro{
+	margin-bottom: 10px;
     font-size: 0.9em;
 	text-align: center;
-	margin-bottom: 10px;
 	opacity: 0.7;
 }
 #demo-toh{
-    margin-bottom: 20px;
+    margin-bottom: 50px;
 	background: #fff;
 	padding-top: 15px;
 	border-radius: 6px;
@@ -72,9 +72,13 @@ div#demo-header h1 {
 }
 
 #demo-foot{
-	background-color: #eee;
 	border-top: 1px solid #ddd;
     font-size: 0.85em;
 	padding: 10px 0;
 	text-align: center;
+}
+
+body,
+#demo-foot {
+	background-color: #eee;
 }
