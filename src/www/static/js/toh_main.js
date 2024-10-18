@@ -262,7 +262,7 @@ $(document).ready(function () {
 
 	//Fetch content and build ------------------------------------------------------------
 
-	$.getJSON( "https://openwrt.org/toh.json", function( data ){ 
+	$.getJSON( owrtUrls.toh_json, function( data ){ 
 		//Makes columns
 		var columns = data.columns.map((value, index) => ({
 			field: value,
