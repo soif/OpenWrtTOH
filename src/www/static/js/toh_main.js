@@ -321,7 +321,7 @@ $(document).ready(function () {
 
 
 	// one view click (or change) ----------------------
-	$('#custom-content').on('click change','INPUT',function(e){
+	$('#custom-content').on('click viewchanged','INPUT',function(e){
 		var field=$(this).val();
 		if($(this).is(":checked")){
 			table.showColumn(field);
@@ -334,14 +334,16 @@ $(document).ready(function () {
 
 	//  view group click ----------------------
 	$('#custom-content').on('click','.group-title A',function(e){
+		e.preventDefault();
+		//e.stopPropagation();
 		$('#head-loading').show();
 		var checked	=$(this).parents('.view-group').find('LI INPUT:checked').length;
 		var inputs	=$(this).parents('.view-group').find('LI INPUT');
 		if(checked==0){
-			inputs.prop('checked', true).trigger('change');
+			inputs.prop('checked', true).trigger('viewchanged');
 		}
 		else{
-			inputs.prop('checked', false).trigger('change');
+			inputs.prop('checked', false).trigger('viewchanged');
 		}
 		groupsUpdateIcon();
 	});
@@ -352,6 +354,8 @@ $(document).ready(function () {
 	// });
 		
 	$('#custom-content').on('click','.devToggle',function(e){
+		e.preventDefault();
+		e.stopPropagation();
 		$('#custom-content SMALL').toggle();
 	});
 });
