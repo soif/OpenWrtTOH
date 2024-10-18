@@ -10,14 +10,12 @@ $(document).ready(function () {
 		var results = regex.exec(location.search);
 		return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 	}
+
 	// ------------------------------------------
 	function getParameterOrDefault(name, defaultValue) {
 		var value = getUrlParameter(name);
 		return value !== '' ? value : defaultValue;
 	}
-
-
-
 
 	// ------------------------------------------
 	function htmlViewLine(field,title,checked){
@@ -28,6 +26,7 @@ $(document).ready(function () {
 		html +='> '+title+' <small class="dev-hidden">('+field+")</small>\n";
 		return html;
 	}
+
 	// ------------------------------------------
 	function htmlViewGroup(title,group){
 		let html='';
@@ -84,7 +83,6 @@ $(document).ready(function () {
 			$(this).find('.group-title I').removeClass().addClass(icon);
 		});
 	}
-
 
 	// ------------------------------------------
 	function applyView(key) {
@@ -156,7 +154,7 @@ $(document).ready(function () {
 		//e.preventDefault();
 	//});
 
-	// Function to position the preview
+	// Function to position the preview --------------------------------------------
 	function positionPreview($link, $container) {
 		var linkOffset = $link.offset();
 		var linkWidth = $link.outerWidth();
@@ -257,7 +255,8 @@ $(document).ready(function () {
 		});
 	});
 
-	//Fetch content and build -----------------------
+
+	//Fetch content and build ------------------------------------------------------------
 
 	$.getJSON( "https://openwrt.org/toh.json", function( data ){ 
 		//Makes columns
@@ -296,8 +295,6 @@ $(document).ready(function () {
 		});   
 	});
 
-// formatters ########################################################################
-
 
 // handles presets, filter and views ########################################################################
 
@@ -311,6 +308,7 @@ $(document).ready(function () {
 	views_html+=makeButton('view','custom');
 	$('#head-views-menu-links').html(views_html);
 	//groupsUpdateIcon();
+
 
 	// view presets click ----------------------
 	$('#head-views-menu-links').on('click','A',function(e){
@@ -331,7 +329,6 @@ $(document).ready(function () {
 		else{
 			table.hideColumn(field);
 		}
-		//$(this).trigger('changed');
 		groupsUpdateIcon();
 	});
 
@@ -350,9 +347,9 @@ $(document).ready(function () {
 	});
 
 
-	$('#custom-content').on('changed','INPUT',function(e){
-		//groupsUpdateIcon();
-	});
+	// $('#custom-content').on('changed','INPUT',function(e){
+	// 	//groupsUpdateIcon();
+	// });
 		
 	$('#custom-content').on('click','.devToggle',function(e){
 		$('#custom-content SMALL').toggle();
