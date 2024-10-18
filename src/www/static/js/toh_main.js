@@ -248,7 +248,7 @@ $(document).ready(function () {
 	*/
 
 	// Takes GET parameter of defauls
-	let init_view=getParameterOrDefault('view','normal');
+	let init_view=getParameterOrDefault('view',prefs.def_view);
 
 	//make column order
 	$.each(colViewGroups,function(key,obj){
