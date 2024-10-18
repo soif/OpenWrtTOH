@@ -64,8 +64,11 @@ div#demo-header h1 {
 	background-color: #aaa;
 }
 #demo-toh .menu-links A.selected{
-	background-color: #555;
+	background-color: #558;
 	color: #fff;
+}
+#demo-toh .menu-links A.toh-view-custom.selected{
+	background-color: #445;
 }
 
 #demo-foot{

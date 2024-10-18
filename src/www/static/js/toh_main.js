@@ -304,12 +304,12 @@ $(document).ready(function () {
 
 	// make view custom ----------------
 	var views_html='';
-	views_html+=makeButton('view','all');
-	views_html+=makeButton('view','none');
+	views_html+=makeButton('toh-view toh-view-custom','custom');
+	views_html+=makeButton('toh-view','all');
+	views_html+=makeButton('toh-view','none');
 	for (const key in colViews){
-		views_html+=makeButton('view',key);
+		views_html+=makeButton('toh-view',key);
 	}
-	views_html+=makeButton('view','custom');
 	$('#head-views-menu-links').html(views_html);
 	//groupsUpdateIcon();
 
