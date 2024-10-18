@@ -19,13 +19,14 @@
 
 #head-view-custom{
 	padding: 5px;
+	font-size: 13px;
 }
 #head-view-custom UL{
 	list-style-type: none;
 	padding-left: 15px;
 }
 .multi-column-text {
-  column-count: 4;
+  column-count: 6;
   column-gap: 2em;
 }
 .group-title{
@@ -61,3 +62,30 @@
     max-height: 300px;
     display: block;
 }
+#table-main.tabulator {
+	font-size: 12px;
+}
+#table-main .tabulator-tableholder {
+	background-color: #f5f5f5;
+}
+#table-main .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title {	
+	text-overflow: clip ;
+	font-size: 12px;
+}
+#table-main .tabulator-header-filter {
+	padding-left: 15px;
+	margin-top: 5px;
+}
+#table-main .tabulator-header-filter INPUT {
+	font-size: 11px;
+	line-height: 12px;
+	padding: 2px !important;
+}
+#table-main .tabulator-header .tabulator-col-sorter {
+	display: block;
+	position: absolute;
+	top: 30px;
+	left: -2px;
+	z-index: 1000;
+}
+  
