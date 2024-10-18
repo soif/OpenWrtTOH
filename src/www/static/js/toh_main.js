@@ -191,22 +191,7 @@ $(document).ready(function () {
 
 	// ## MAIN #########################################################################
 	// initialize table ################################################################
-	var table = new Tabulator("#table-main", {
-			importFormat:"array",
-			height: "100%",
-			columns:[],
-			//renderHorizontal:"virtual",
-			pagination: true,
-			paginationSize: 30,
-			paginationButtonCount: 10,
-			//	autoColumns:true, 			//create columns from data field names
-			movableColumns:true,      //allow column order to be changed
-			columnDefaults:{
-					headerFilter:true,
-					headerTooltip:true,
-					tooltip:true,         //show tool tips on cells
-			},
-	});
+	var table = new Tabulator("#table-main", tabulatorOptions);
 
 
 	//observe DOM, because i've not found a Tabulator event to do that, ie when changing a large amount of col visibility ---------

@@ -7,6 +7,29 @@ let owrtUrls={
 	github_commit:	"https://github.com/openwrt/openwrt/commit/",
 }
 
+let tabulatorOptions={
+			importFormat:"array",
+			height: "100%",
+			columns:[],
+			//renderHorizontal:"virtual",
+			pagination: true,
+			paginationSize: 30,
+			paginationButtonCount: 10,
+			//	autoColumns:true, 			//create columns from data field names
+			movableColumns:true,      //allow column order to be changed
+			columnDefaults:{
+				headerFilter:true,
+				headerTooltip:true,
+				tooltip:true,         //show tool tips on cells
+			},
+};
+
+let prefs={
+	def_view: 'mini'
+};
+
+// Columns Formatters ###############################################################################################################
+
 function FormatterLink(cell, formatterParams, onRendered) {
 	var value = cell.getValue();
 	if (value && value.length > 0) {
@@ -106,6 +129,8 @@ function FormatterYesNo(cell, formatterParams, onRendered) {
 	return '<i class="'+icon+'"></i>';
 }
 
+// Columns Styles ###############################################################################################################
+
 let columnStyles={
 	brand: {frozen:true},
 	model: {frozen:true},
@@ -140,6 +165,7 @@ let columnStyles={
 let columnOrder=[];
 
 
+// Columns Groups ###############################################################################################################
 
 let colViewGroups={
 	base:{
@@ -303,7 +329,5 @@ let colViews={
 	],
 };
 
-let prefs={
-	def_view: 'mini'
-};
+
 
