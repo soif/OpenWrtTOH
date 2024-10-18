@@ -2,7 +2,7 @@
 	http://src.dev.lo.lo/OpenWrtTOH/src/www/static/css/toh.css */
 
 #table-head{
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 #head-loading{
@@ -13,7 +13,9 @@
 	position: absolute;
 }
 
-
+.toh-hidden{
+	display: none;
+}
 
 #head-view-custom{
 	padding: 5px;

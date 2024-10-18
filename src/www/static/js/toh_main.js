@@ -122,11 +122,15 @@ $(document).ready(function () {
 	}
 
 	// ------------------------------------------
-	function makeButton(myclass, data){
-		var name=data;
+	function makeButton(myclass, value){
+		var icon='';
+		if(value=='custom'){
+			icon='<i class="fa-solid fa-caret-right"></i> ';
+		}
+		var name=value;
 		name = name.replace(/_/g,' ');
 		name = name.replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase());
-		return '<a href="#" class="'+myclass+'" data-value="'+data+'">'+name+'</a>'+"";
+		return '<a href="#" class="'+myclass+'" data-value="'+value+'">'+icon+name+'</a>'+"";
 	}
 
 	// handles Image Preview on hover --------------------------------------------------
@@ -312,11 +316,19 @@ $(document).ready(function () {
 
 	// view presets click ----------------------
 	$('#head-views-menu-links').on('click','A',function(e){
-		console.log('apply '+$(this).data('value'));
-		applyView($(this).data('value'));
-		$('#head-views-menu-links A').removeClass('selected');
-		$(this).addClass('selected');
-		groupsUpdateIcon();
+		let view=$(this).data('value');
+		console.log('apply '+view);
+		if(view=='custom'){
+			$('#custom-content').toggle();
+		    $(this).children('I').toggleClass('fa-caret-right fa-caret-down');
+		}
+		else{
+			applyView(view);
+			$('#head-views-menu-links A').removeClass('selected');
+			$(this).addClass('selected');
+			groupsUpdateIcon();
+		}
+
 	});
 
 
@@ -329,6 +341,9 @@ $(document).ready(function () {
 		else{
 			table.hideColumn(field);
 		}
+		$('#head-views-menu-links A').removeClass('selected');
+		$('#head-views-menu-links A[data-value=custom]').addClass('selected');
+
 		groupsUpdateIcon();
 	});
 
