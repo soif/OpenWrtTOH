@@ -25,7 +25,7 @@ let tabulatorOptions={
 };
 
 let prefs={
-	def_view: 'mini'
+	def_view: 'normal'
 };
 
 // Columns Formatters ###############################################################################################################
@@ -173,6 +173,7 @@ let colViewGroups={
 		fields:[
 			'brand',
 			'model',
+			'version',
 		]
 	},
 	
@@ -231,7 +232,6 @@ let colViewGroups={
 		name: 'OpenWRT',
 		fields:[
 			'deviceid',
-			'version',
 			'target',
 			'subtarget',
 			'gitsearch',
@@ -304,7 +304,7 @@ let colViews={
 		...colViewGroups.hardware_main.fields,
 		...colViewGroups.links.fields
 	],
-	mini:	['brand','model','cpu','rammb','flashmb','devicepage'],
+	mini:	[...colViewGroups.base.fields,'cpu','rammb','flashmb','devicepage'],
 
 	hardware:	[
 		...colViewGroups.base.fields,
