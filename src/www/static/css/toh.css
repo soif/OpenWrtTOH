@@ -1,10 +1,7 @@
 /* @override 
 	http://src.dev.lo.lo/OpenWrtTOH/src/www/static/css/toh.css */
 
-#toh-top{
-    margin-bottom: 10px;
-}
-
+/* ---------------------------------------------------------- */
 #toh-loading{
 	font-size: 1.9em;
 	top: 6px;
@@ -15,6 +12,11 @@
 
 .toh-hidden{
 	display: none;
+}
+
+/* Top section ------------------------------------------------*/
+#toh-top{
+    margin-bottom: 10px;
 }
 
 #toh-view-columns{
@@ -29,6 +31,7 @@
   column-count: 6;
   column-gap: 2em;
 }
+
 .toh-colgroup{
 
 }
@@ -39,6 +42,9 @@
 .toh-colgroup-title A{
 	text-decoration: none;
 }
+
+
+/* Cells Formatters ------------------------------------------- */
 #toh-table .tabulator-cell .fa-question.dash{
 	opacity: 0.5;
 }
@@ -52,6 +58,8 @@
 #toh-table .tabulator-cell .cell-image I.generic{
 	opacity: 0.5;
 }
+
+/* Image Preview ---------------------------------------------- */
 #toh-image-preview {
 	position: absolute;
     display: none;
@@ -65,12 +73,17 @@
     max-height: 300px;
     display: block;
 }
+
+/* Table ------------------------------------------------------ */
 #toh-table.tabulator {
 	font-size: 12px;
 }
 #toh-table .tabulator-tableholder {
 	background-color: #f5f5f5;
 }
+
+
+/* Table column headers --------------------------------------- */
 #toh-table .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title {	
 	text-overflow: clip ;
 	font-size: 12px;
@@ -91,7 +104,16 @@
 	left: -2px;
 	z-index: 1000;
 }
-/* Cell Popup Details ------------- */  
+
+/* Header filters */
+#toh-table .tabulator-header-filter INPUT:focus {
+  left: 0;
+  z-index: 9999;
+  background-color: #eef;
+}
+
+
+/* Cell Popup Details ------------------------------------------- */  
 .tabulator-popup-container{
 	border-color: #ccc ;
 	padding: 0;
@@ -121,12 +143,5 @@
 }
 .toh-popup-details-table .toh-popup-value{
 	word-break: break-all;
-}
-/* Header filters ---------------------------- */
-
-#toh-table .tabulator-header-filter INPUT:focus {
-  left: 0;
-  z-index: 9999;
-  background-color: #eef;
 }
 
