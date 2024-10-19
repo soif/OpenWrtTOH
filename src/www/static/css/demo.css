@@ -1,7 +1,7 @@
 /* @override 
 	http://src.dev.lo.lo/OpenWrtTOH/src/www/static/css/demo.css */
 
-
+/* Layout ------------------------------ */
 #demo-page{
 	background-color: #f9f9f9;
 }
@@ -25,13 +25,36 @@ div#demo-header h1 {
 	opacity: 0.7;
 }
 #demo-toh{
-    margin-bottom: 50px;
-	background: #fff;
+    margin-bottom: 20px;
 	padding-top: 15px;
-	border-radius: 6px;
 	border: 1px solid #eee;
+	border-radius: 6px;
+	background: #fff;
+}
+#demo-info{
+    margin-bottom: 50px;
+}
+.demo-box{
+	margin-bottom: 10px;
+	padding: 0 10px 10px 10px;
+	border: 1px solid #eee;
+	border-radius: 6px;
+	background: #fff;
+	font-size: 14px;
+}
+#demo-foot{
+	border-top: 1px solid #ddd;
+    font-size: 0.85em;
+	padding: 10px 0;
+	text-align: center;
 }
 
+body,
+#demo-foot {
+	background-color: #eee;
+}
+
+/* Menus --------------------------------- */
 #demo-toh .menu {
 	border-width: 1px 0;
 	border-color: #ddd;
@@ -61,16 +84,4 @@ div#demo-header h1 {
 }
 #demo-toh .menu-links A.toh-view-custom.selected{
 	background-color: #445;
-}
-
-#demo-foot{
-	border-top: 1px solid #ddd;
-    font-size: 0.85em;
-	padding: 10px 0;
-	text-align: center;
-}
-
-body,
-#demo-foot {
-	background-color: #eee;
 }
