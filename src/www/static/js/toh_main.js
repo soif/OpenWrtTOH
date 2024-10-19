@@ -1,8 +1,44 @@
 
 
+// Functions for Cell Model Popup Formatter ############################################################################################
+
+function getMyColumnDefinition(field){
+	let cols=columnStyles;
+	let col={};
+	if(typeof(cols[field]) != 'undefined' ){
+		col=cols[field];
+		if(typeof(col.headerTooltip) != 'undefined' && col.headerTooltip !==''){
+			col.f_title=col.headerTooltip;
+		}
+		else if(typeof(col.title) != 'undefined' && col.title !==''){
+			col.f_title=col.title;
+		}
+		else{
+			col.f_title=field;
+		}
+	}
+	else{
+		col.f_title=field;
+	}
+	return col;
+}
+
+function formatLinkToHtml(url, name='link', target_blank=true){
+	let pattern = /^http(s)?:\/\//;
+	let target='';
+	if(target_blank){
+		target='_blank';
+	}
+	if(pattern.test(url)){
+		return '<a href="'+url+'" target="'+target+'" title="'+url+'">'+name+'</a>';
+	}
+	return url;
+}
+
 // ############################################################################################################
 $(document).ready(function () {
 
+	
 	// Get parameters
 	function getUrlParameter(name) {
 		name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -373,6 +409,7 @@ $(document).ready(function () {
 		e.stopPropagation();
 		$('#custom-content SMALL').toggle();
 	});
+
 });
 
 	

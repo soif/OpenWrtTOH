@@ -31,11 +31,39 @@ let tabulatorOptions={
 				{column:"brand", dir:"asc"}, 	//sort by this first
 				{column:"model", dir:"desc"}, //then sort by this second
 			],
-
 };
 
 let prefs={
 	def_view: 'normal'
+};
+
+// Cell Model Popup Formatter ############################################################################################
+var cellModelPopupFormatter = function(e, cell, onRendered){
+	var data 	= cell.getData();
+	var col={};
+	var value='';
+	var done=false;
+	var contents = "<table class='toh-popup-details-table'>";
+
+	$.each(colViewGroups,function(key,obj){
+		$.each(obj.fields,function(f,field){
+			col		= getMyColumnDefinition(field);
+			value	=data[field];
+			if(value == null || value == '-' || value == ''){
+				//value='';
+				return true; // continue
+			}
+			if(!done){
+				contents +='<tr class="toh-popup-group-tr"><td colspan=2>'+obj.name+'</td></tr>';
+				done=true;
+			}
+			contents +='<tr><td class="toh-popup-key">'+col.f_title+'</td><td class="toh-popup-value">'+formatLinkToHtml(value)+'</td></tr>';
+		});
+		done=false;
+	});
+
+	contents += "</table>";
+	return contents;
 };
 
 // Columns Formatters ###############################################################################################################
@@ -153,15 +181,15 @@ function FormatterYesNo(cell, formatterParams, onRendered) {
 // Columns Styles ###############################################################################################################
 
 let columnStyles={
-	brand: {frozen:true, hozAlign:"left"},
-	model: {frozen:true, hozAlign:"left"},
+	brand: 								{title:"Brand",	frozen:true,		clickPopup: cellModelPopupFormatter, hozAlign:"left"},
+	model: 								{title:"Model",	frozen:true,		clickPopup: cellModelPopupFormatter, hozAlign:"left"},
 
 	audioports:							{title:"Audio",				headerTooltip:'Audio Ports',			sorter: 'array', width:80, hozAlign:"left" },
 	availability:						{title:"Availability",		headerTooltip:'Availability',			width:110, hozAlign:"right" },
 	bluetooth:							{title:"BT",				headerTooltip:'Bluetooth version',		width:40, hozAlign:"left" },
 	bootloader:							{title:"Boot",				headerTooltip:'BootLoader',				width:60, hozAlign:"left" },
 	buttoncount:						{title:"Butt.",				headerTooltip:'Button count',			width:40 },
-	cpu:								{																	formatter: FormatterCleanWords, width:120, hozAlign:"left" },
+	cpu:								{title:"CPU",																	formatter: FormatterCleanWords, width:120, hozAlign:"left" },
 	comments:							{title:"Comments",			headerTooltip:'Comments',				width:200, hozAlign:"left" },
 	commentsavports:					{title:"AV Comments",		headerTooltip:'AV ports Comments',		width:60, hozAlign:"left" },
 	commentinstallation:				{title:"Inst.Comments",		headerTooltip:'Installation Comments',	width:60 , hozAlign:"left"},
@@ -213,6 +241,7 @@ let columnStyles={
 	supportedsincecommit:				{title:"S.Commit",			headerTooltip:'Supported Since Commit',	formatter: FormatterLinkCommit, width:70, hozAlign:"left", tooltip:false },
 	supportedsincerel:					{title:"S.Release",			headerTooltip:'Supported Since Release', width:60 },
 	switch:								{title:"Switch",			headerTooltip:'Switch',					width:120, hozAlign:"left" },
+	target:								{title:"Target",			headerTooltip:'Target',					width:60, hozAlign:"left" },
 	unsupported_functions:				{title:"Unsupported",		headerTooltip:'Unsupported Functions', 	width:85, hozAlign:"left" },
 	usbports:							{title:"USB",				headerTooltip:'USB Ports', 				width:60, hozAlign:"left" },
 	version:							{title:"Version",			headerTooltip:'Hardware Version', 		width:55, hozAlign:"left" },
@@ -229,13 +258,7 @@ let columnStyles={
 	wikideviurl:						{title:"Wiki",				headerTooltip:'Wiki Page',				formatter: FormatterLink, formatterParams:{ label:'Wiki'}, width:40 },
 };
 
-// let columnOrder=[
-// 	'brand',
-// 	'model',
-// 	'cpu',
-// 	'rammb',
-// 	'flashmb',
-// ];
+
 let columnOrder=[];
 
 
@@ -330,7 +353,6 @@ let colViewGroups={
 		]
 	},
 
-
 	software:{
 		name: 'Software',
 		fields:[
@@ -402,7 +424,6 @@ let colViews={
 		'availability',
 		'picture'
 		],
-
 	hardware:	[
 		...colViewGroups.base.fields,
 		...colViewGroups.hardware_main.fields,
@@ -427,6 +448,4 @@ let colViews={
 		...colViewGroups.misc.fields,
 	],
 };
-
-
 
