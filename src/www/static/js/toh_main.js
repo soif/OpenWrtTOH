@@ -340,8 +340,7 @@ $(document).ready(function () {
 	});
 
 
-	// handles presets, filters and views ################################################################
-
+	// Top Views ############################################################################################
 
 	// Click: view presets ---------------------------------------------------
 	$('#toh-view-menu-links').on('click','A',function(e){
@@ -391,7 +390,22 @@ $(document).ready(function () {
 	});
 
 
-	// Filters ###########################################################################################@
+	// Top Buttons ###########################################################################################@
+
+	// Click: clear header filters ----------------
+	$(".toh-but-clearheadfilters").on('click', function (e) {
+		e.preventDefault();
+		tabuTable.clearHeaderFilter();
+	});
+
+	// Click: clear header sorts ----------------
+	$(".toh-but-clearheadsorts").on('click', function (e) {
+		e.preventDefault();
+		tabuTable.clearSort();
+	});
+
+
+	// Header Filters ###########################################################################################@
 
 	// Expand header-filter INPUT on focus -----------------------------------
 	$('#toh-table').on('focus','.tabulator-header-filter INPUT', function() {
@@ -406,7 +420,7 @@ $(document).ready(function () {
 		}
 	});
 
-	// Resstore header-filter INPUT on blur ---------------------------------
+	// Restore header-filter INPUT on blur ---------------------------------
 	$('#toh-table').on('blur','.tabulator-header-filter INPUT', function() {
 		var w=$(this).attr('data-orig-width');
 		if (w > 0) {
