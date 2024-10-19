@@ -1,5 +1,7 @@
 
-// Config ########################################################################
+// Configuration #################################################################################################
+
+// Urls --------------------------------------------------------
 let owrtUrls={
 	www: 			"https://openwrt.org/",
 	toh_json:		"https://openwrt.org/toh.json",
@@ -7,37 +9,40 @@ let owrtUrls={
 	github_commit:	"https://github.com/openwrt/openwrt/commit/",
 }
 
-let tabulatorOptions={
-			importFormat:"array",
-			height: "100%",
-
-			pagination: true,
-			paginationCounter:"rows", 			//add pagination row counter
-			paginationButtonCount: 10,
-			paginationSize: 30,
-			paginationSizeSelector:true,
-			paginationSizeSelector:[10, 20, 30, 40, 50, 75, 100, 200, 300], //enable page size select element with these options
-
-			columns:[],
-			movableColumns:true,      		//allow column order to be changed
-			columnDefaults:{
-				headerFilter:true,
-				headerTooltip:true,
-				hozAlign: "right",
-				tooltip:true,         //show tool tips on cells
-			},
-
-			initialSort:[
-				{column:"brand", dir:"asc"}, 	//sort by this first
-				{column:"model", dir:"desc"}, //then sort by this second
-			],
-};
-
+// Preferences --------------------------------------------------
 let prefs={
 	def_view: 'normal'
 };
 
-// Cell Model Popup Formatter ############################################################################################
+// options for tabulator table (tabuTable) ---------------------
+let tabulatorOptions={
+	importFormat:"array",
+	height: "100%",
+
+	pagination: true,
+	paginationCounter:"rows", 			//add pagination row counter
+	paginationButtonCount: 10,
+	paginationSize: 30,
+	paginationSizeSelector:true,
+	paginationSizeSelector:[10, 20, 30, 40, 50, 75, 100, 200, 300], //enable page size select element with these options
+
+	columns:[],
+	movableColumns:true,      		//allow column order to be changed
+	columnDefaults:{
+		headerFilter:true,
+		headerTooltip:true,
+		hozAlign: "right",
+		tooltip:true,         //show tool tips on cells
+	},
+
+	initialSort:[
+		{column:"brand", dir:"asc"}, 	//sort by this first
+		{column:"model", dir:"desc"}, //then sort by this second
+	],
+};
+
+
+// Cell Model Popup Formatter ###########################################################################################
 var cellModelPopupFormatter = function(e, cell, onRendered){
 	var data 	= cell.getData();
 	var col={};
@@ -67,7 +72,7 @@ var cellModelPopupFormatter = function(e, cell, onRendered){
 };
 
 // Columns Formatters ###############################################################################################################
-
+// --------------------------------------------------------
 function FormatterLink(cell, formatterParams, onRendered) {
 	var value = cell.getValue();
 	if (value && value.length > 0) {
@@ -75,6 +80,7 @@ function FormatterLink(cell, formatterParams, onRendered) {
 	} 
 	return value;
 }
+// --------------------------------------------------------
 function FormatterLinkCommit(cell, formatterParams, onRendered) {
 	var value = cell.getValue();
 	if (value && value.length > 0) {
@@ -84,6 +90,7 @@ function FormatterLinkCommit(cell, formatterParams, onRendered) {
 	} 
 	return '';
 }
+// --------------------------------------------------------
 function FormatterLinkDevice(cell, formatterParams, onRendered) {
 	var value = cell.getValue();
 	if (value && value.length > 0) {
@@ -92,6 +99,7 @@ function FormatterLinkDevice(cell, formatterParams, onRendered) {
 	} 
 	return value;
 }
+// --------------------------------------------------------
 function FormatterImages(cell, formatterParams, onRendered) {
 	var arr = cell.getValue();
 	var url='';
@@ -118,6 +126,7 @@ function FormatterImages(cell, formatterParams, onRendered) {
 	} 
 	return arr;
 }
+// --------------------------------------------------------
 function FormatterCleanEmpty(cell, formatterParams, onRendered) {
 	var value = cell.getValue();
 	if (value && value.length > 0) {
@@ -126,6 +135,7 @@ function FormatterCleanEmpty(cell, formatterParams, onRendered) {
 	} 
 	return "";
 }
+// --------------------------------------------------------
 function FormatterCleanWords(cell, formatterParams, onRendered) {
 	var value = cell.getValue();
 	if (value && value.length > 0) {
@@ -135,7 +145,7 @@ function FormatterCleanWords(cell, formatterParams, onRendered) {
 	} 
 	return "";
 }
-
+// --------------------------------------------------------
 function FormatterArray(cell, formatterParams, onRendered) {
 	var arr = cell.getValue();
 	var out='';
@@ -154,6 +164,7 @@ function FormatterArray(cell, formatterParams, onRendered) {
 	}
 	return arr;
 }
+// --------------------------------------------------------
 function FormatterYesNo(cell, formatterParams, onRendered) {
 	var value = cell.getValue();
 	var icon='';
@@ -178,7 +189,7 @@ function FormatterYesNo(cell, formatterParams, onRendered) {
 	return '<i class="'+icon+'"></i>';
 }
 
-// Columns Styles ###############################################################################################################
+// Columns Styles ################################################################################################################
 
 let columnStyles={
 	brand: 								{title:"Brand",	frozen:true,		clickPopup: cellModelPopupFormatter, hozAlign:"left"},
@@ -257,9 +268,6 @@ let columnStyles={
 	wlancomments:						{title:"WLAN Comments",		headerTooltip:'WLAN Comments', 			width:100, hozAlign:"left" },
 	wikideviurl:						{title:"Wiki",				headerTooltip:'Wiki Page',				formatter: FormatterLink, formatterParams:{ label:'Wiki'}, width:40 },
 };
-
-
-let columnOrder=[];
 
 
 // Columns Groups ###############################################################################################################

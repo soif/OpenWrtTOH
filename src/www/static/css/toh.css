@@ -1,11 +1,11 @@
 /* @override 
 	http://src.dev.lo.lo/OpenWrtTOH/src/www/static/css/toh.css */
 
-#table-head{
+#toh-top{
     margin-bottom: 10px;
 }
 
-#head-loading{
+#toh-loading{
 	font-size: 1.9em;
 	top: 6px;
 	right: 20px;
@@ -17,36 +17,39 @@
 	display: none;
 }
 
-#head-view-custom{
+#toh-view-columns{
 	padding: 5px;
 	font-size: 13px;
 }
-#head-view-custom UL{
+#toh-view-columns UL{
 	list-style-type: none;
 	padding-left: 15px;
 }
-.multi-column-text {
+.toh-view-columns-multi {
   column-count: 6;
   column-gap: 2em;
 }
-.group-title{
+.toh-colgroup{
+	
+}
+.toh-colgroup-title{
 	font-size: 0.9em;
 	font-weight: bold;
 }
-.group-title A{
+.toh-colgroup-title A{
 	text-decoration: none;
 }
-#table-main .tabulator-cell .fa-question.dash{
+#toh-table .tabulator-cell .fa-question.dash{
 	opacity: 0.5;
 }
-#table-main .tabulator-cell .fa-question.empty{
+#toh-table .tabulator-cell .fa-question.empty{
 	opacity: 0.2;
 }
-#table-main .tabulator-cell .fa-question.unknown{
+#toh-table .tabulator-cell .fa-question.unknown{
 	opacity: 0.5;
 	color: red;
 }
-#table-main .tabulator-cell .cell-image I.generic{
+#toh-table .tabulator-cell .cell-image I.generic{
 	opacity: 0.5;
 }
 #toh-image-preview {
@@ -62,26 +65,26 @@
     max-height: 300px;
     display: block;
 }
-#table-main.tabulator {
+#toh-table.tabulator {
 	font-size: 12px;
 }
-#table-main .tabulator-tableholder {
+#toh-table .tabulator-tableholder {
 	background-color: #f5f5f5;
 }
-#table-main .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title {	
+#toh-table .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title {	
 	text-overflow: clip ;
 	font-size: 12px;
 }
-#table-main .tabulator-header-filter {
+#toh-table .tabulator-header-filter {
 	padding-left: 15px;
 	margin-top: 5px;
 }
-#table-main .tabulator-header-filter INPUT {
+#toh-table .tabulator-header-filter INPUT {
 	font-size: 11px;
 	line-height: 12px;
 	padding: 2px !important;
 }
-#table-main .tabulator-header .tabulator-col-sorter {
+#toh-table .tabulator-header .tabulator-col-sorter {
 	display: block;
 	position: absolute;
 	top: 30px;
