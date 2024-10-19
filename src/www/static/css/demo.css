@@ -31,14 +31,6 @@ div#demo-header h1 {
 	border-radius: 6px;
 	border: 1px solid #eee;
 }
-#demo-toh .dev-hidden{
-	display: none;
-}
-#demo-toh .devToggle{
-	font-size: 0.85em;
-	color:red
-}
-
 
 #demo-toh .menu {
 	border-width: 1px 0;

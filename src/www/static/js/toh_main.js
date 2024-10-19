@@ -61,8 +61,7 @@ function htmlViewLine(field,title,checked){
 	let html='';
 	html +='<li><input type="checkbox" value="'+field+'"';
 	if( checked ){html +=' checked="true"';} 
-	//html +='> '+title+' <small>('+field+")</small>\n";
-	html +='> '+title+' <small class="dev-hidden">('+field+")</small>\n";
+	html +='> '+title+"\n";
 	return html;
 }
 
@@ -98,7 +97,6 @@ function displayCustomColumns(){
 		});
 		view +="</ul>\n</div>\n";
 	}
-	view ="<div class='devToggle'>view fields (DEV)</div>"+view;
 	$("#toh-view-columns-content").html(view);
 	groupsUpdateIcon();
 }
@@ -390,13 +388,6 @@ $(document).ready(function () {
 			inputs.prop('checked', false).trigger('viewchanged');
 		}
 		groupsUpdateIcon();
-	});
-
-	//  DEV: show fields on click -------------------------------------------		
-	$('#toh-view-columns-content').on('click','.devToggle',function(e){
-		e.preventDefault();
-		e.stopPropagation();
-		$('#toh-view-columns-content SMALL').toggle();
 	});
 
 });
