@@ -390,4 +390,33 @@ $(document).ready(function () {
 		groupsUpdateIcon();
 	});
 
+
+	// Filters ###########################################################################################@
+
+	// Expand header-filter INPUT on focus -----------------------------------
+	$('#toh-table').on('focus','.tabulator-header-filter INPUT', function() {
+		var w=$(this).width();
+		if (w < 50) {
+			$(this).attr('data-orig-width',w);
+			$(this).css('position','absolute');
+			$(this).parents('.tabulator-col').css('overflow','visible');
+			$(this).animate({
+				width: '100px',
+			}, 100);
+		}
+	});
+
+	// Resstore header-filter INPUT on blur ---------------------------------
+	$('#toh-table').on('blur','.tabulator-header-filter INPUT', function() {
+		var w=$(this).attr('data-orig-width');
+		if (w > 0) {
+			$(this).css('position','static');
+			$(this).parents('.tabulator-col').css('overflow','hidden');
+			$(this).animate({
+				width: '100%',
+			}, 100);
+		}
+	});
+
+
 });

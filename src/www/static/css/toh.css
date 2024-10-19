@@ -30,7 +30,7 @@
   column-gap: 2em;
 }
 .toh-colgroup{
-	
+
 }
 .toh-colgroup-title{
 	font-size: 0.9em;
@@ -122,3 +122,11 @@
 .toh-popup-details-table .toh-popup-value{
 	word-break: break-all;
 }
+/* Header filters ---------------------------- */
+
+#toh-table .tabulator-header-filter INPUT:focus {
+  left: 0;
+  z-index: 9999;
+  background-color: #eef;
+}
+
