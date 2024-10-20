@@ -18,21 +18,104 @@
 #toh-top{
     margin-bottom: 10px;
 }
+.toh-top-block{
+	font-size: 13px;
+    margin-bottom: 10px;
+}
+.toh-top-container{
+	padding: 8px 10px 5px 25px;
+	font-size: 13px;
+}
+.toh-top-title{
+	padding-left: 10px;
+	border: 1px solid #ddd;
+	border-width: 1px 0 1px 0;
+	border-style: solid;	
+	background-color: #f5f5f5;
+} 
+.toh-title{
+	padding-right: 5px;
+}
+.toh-title,
+.toh-title A{
+	font-size: 14px;
+	text-decoration: none;
+	color: #000;
+}
+.toh-title A I{
+	margin-right: 5px;
+}
+
+/* Top Filters ---------------------------- */
+#toh-top-filters{
+}
+
+.toh-filters-but-right{
+	float: right;
+}
+
+.toh-filters{
+	margin-bottom: 10px;
+}
+.toh-filters-subtitle{
+	font-size: 12px;
+	font-weight: bold;	
+	color: #888;
+	margin-bottom: 5px;
+}
+
+.toh-filters-list-multi {
+  column-count: 3;
+  column-gap: 2em;
+}
+
+.toh-filter{
+	line-height: 100%;
+	padding-bottom: 4px;
+}
+.toh-filter-feature INPUT{
+	margin-right: 5px;
+}
+.toh-filter-title{
+	width: 240px;
+	display: inline-block;
+	margin-right: 6px;
+}
+#toh-filters-presets A{
+	display: block;
+	padding: 1px 5px;
+	border: 1px solid #aaa;
+	border-radius: 5px;
+	background-color: #ddd;	
+	text-decoration: none;
+	color: #000;
+	font-weight: bold;
+}
+#toh-filters-presets A:hover{
+	background-color: #555;	
+	color: #fff;
+}
+#toh-filters-features A{
+	font-weight: bold;	
+	color: #000;
+	text-decoration: none;
+}
+#toh-filters-features .toh-filter-admin A{
+	color: red;
+}
+
+#toh-filters-presets .toh-filter-title{
+}
+#toh-filters-features .toh-filter-title{
+	width: 120px
+}
+#toh-filters-features .toh-filter-title A{
+	display: inline-block;
+}
 
 
 /* Top Menus ---------------------------- */
-#toh-top .menu {
-	border-width: 1px 0;
-	border-color: #ddd;
-	border-style: solid;	
-	background-color: #f5f5f5;
-}
-#toh-top .menu-title {
-	display: inline-block;
-	padding-left: 10px;
-	padding-right: 10px;
-	border-right: 1px solid #ddd;
-}
+
 #toh-top .menu-links A{
 	display: inline-block;
 	padding: 1px 9px;
@@ -54,41 +137,40 @@
 
 /* Top Views ---------------------------- */
 #toh-views{
+	margin-bottom: 10px;
+}
+#toh-views-title .toh-title{
+	border-right: 1px solid #ddd;
+}
 
-}
-#toh-view-columns{
-	padding: 5px;
-	font-size: 13px;
-}
-#toh-view-columns-content{
-	padding-bottom: 5px;
-	margin-bottom: 5px;
+#toh-views-container{
+	padding-bottom: 10px;
 	border-bottom: 1px solid #ccc;
 }
 
-#toh-view-columns UL{
+#toh-views-list UL{
 	list-style-type: none;
 	padding-left: 15px;
 }
-.toh-view-columns-multi {
+.toh-views-list-multi {
   column-count: 6;
   column-gap: 2em;
 }
-.toh-colgroup{
-
-}
 
 .toh-colgroup-title A{
-	font-size: 0.9em;
-	font-weight: bold;	color: #888;
+	font-size: 12px;
+	font-weight: bold;	
+	color: #888;
 	text-decoration: none;
 }
+
 /* Top Buttons ---------------------------- */
 #toh-top-buttons{
 	text-align: right;
 	padding-right: 10px;
+	min-height: 22px;
 }
-#toh-top-buttons A{
+A.toh-but{
 	display: inline-block;
 	margin-left: 10px;
 	padding: 1px 5px;
@@ -96,10 +178,10 @@
 	border: 1px solid #aaa;
 	border-radius: 5px;
 	font-size: 11px;
-	background-color: #ddd;	
+	background-color: #eee;	
 	color: #000;
 }
-#toh-top-buttons A:hover{
+A.toh-but:hover{
 	background-color: #555;	
 	color: #fff;
 
@@ -166,13 +248,12 @@
 	z-index: 1000;
 }
 
-/* Header filters */
+/* Header filter */
 #toh-table .tabulator-header-filter INPUT:focus {
   left: 0;
   z-index: 9999;
-  background-color: #eef;
+  background-color: #ddf;
 }
-
 
 /* Cell Popup Details ------------------------------------------- */  
 .tabulator-popup-container{
@@ -206,3 +287,22 @@
 	word-break: break-all;
 }
 
+/* Colors ------------------------------------------- */  
+/* filtered cols */
+#toh-table .tabulator-col.toh-col-filtered{
+}
+
+#toh-table .tabulator-col.toh-col-filter,
+#toh-filters-presets A,
+A.toh-but-clearfilters{
+	background-color: #cfc;
+}
+#toh-table .tabulator-col.toh-col-headerfilter,
+#toh-table .tabulator-header-filter INPUT,
+A.toh-but-clearheaderfilters{
+	background-color: #eef;
+}
+#toh-table .tabulator-col.toh-col-allfilter,
+A.toh-but-clearallfilters{
+	background-color: #8fd;	
+}

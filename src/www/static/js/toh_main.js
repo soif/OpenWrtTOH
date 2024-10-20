@@ -97,7 +97,7 @@ function displayCustomColumns(){
 		});
 		view +="</ul>\n</div>\n";
 	}
-	$("#toh-view-columns-content").html(view);
+	$("#toh-views-content").html(view);
 	groupsUpdateIcon();
 }
 
@@ -160,13 +160,70 @@ function showAllColumns(bool) {
 // Make Preset Button ------------------------------------------
 function htmlPresetButton(myclass, value){
 	var icon='';
-	if(value=='custom'){
-		icon='<i class="fa-solid fa-caret-right"></i> ';
-	}
 	var name=value;
 	name = name.replace(/_/g,' ');
 	name = name.replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase()); // UcFirst
-	return '<a href="#" class="'+myclass+'" data-value="'+value+'">'+icon+name+'</a>'+"";
+	return '<a href="#" class="'+myclass+'" data-key="'+value+'">'+icon+name+'</a>'+"";
+}
+// Make Filter Preset ------------------------------------------
+function htmlFilterDiv(filt,key,is_feature=false){
+	var html='';
+	var myclass='preset';
+	if(is_feature){
+		myclass='feature';
+	}
+	if(filt.type=='admin'){
+		myclass +=" toh-filter-admin";
+	}
+	html +='<div class="toh-filter toh-filter-'+myclass+'">';
+	html +='<span class="toh-filter-title">';
+	if(is_feature){
+		html +='<input type="checkbox" data-key="'+key+'">';
+	}
+	html +='<a href="#" class="toh-filter-button" data-key="'+key+'" title="';
+	if(is_feature){
+		html +=makeFeatureDescription(key);
+	}
+	html +='">'+filt.title+'</a></span>';
+	html +='<span class="toh-filter-description">'+filt.description+'</span>';
+	html +="</div>\n";
+	return html;
+}
+
+// -------------------------------------------------------
+function formatFilterDesc(filter){
+	//console.log('fil');
+	var title=filter.field; // make it better by grabbing the col.title
+	return title + " " + filter.type + " '" +filter.value + "'"; 
+}
+
+function makeFeatureDescription(key){
+	var features=colFilterFeatures[key];
+	var desc='';
+	var done_and=false;
+	var done_or=false;
+	$.each(features.filters,function(i,filter){
+		if(Array.isArray(filter)){
+			desc +="(";
+			$.each(filter,function(j,orfilter){
+				if(done_or){
+					desc +=" OR ";
+				}
+				desc +=formatFilterDesc(orfilter);
+				done_or=true;
+			});
+			desc +=") ";
+			done_or=false;
+		}
+		else{
+			if(done_and){
+				desc +=" AND ";
+			}
+			desc +=formatFilterDesc(filter);
+		}
+		done_and=true;
+	});
+	return desc;
 }
 
 // Position the Image Preview div -------------------------------------------
@@ -201,6 +258,16 @@ function positionPreview($link, $container) {
 		top: top
 	});
 }
+//create indexed object  ---------------------------------------
+function createIndexedObject(arrayOfObjects, key) {
+	return arrayOfObjects.reduce((acc, obj) => {
+		if (obj.hasOwnProperty(key)) {
+			acc[obj[key]] = obj;
+		}
+		return acc;
+	}, {});
+}
+
 
 
 // ############################################################################################################
@@ -281,6 +348,15 @@ $(document).ready(function () {
 	// Takes GET parameter of defauls ---------------------------------------
 	let init_view=getUrlParameterOrDefault('view',prefs.def_view);
 
+	// ---------------------------------------------------------------
+	function SetDefaults(){
+			//show presets
+			$(".toh-filters-but-toggle").trigger('click');
+			//default col view
+			$("#toh-view-menu-links A[data-key='"+init_view+"']").trigger('click');
+	}
+
+
 	// make column order from the colViewGroups ------------------------------
 	let columnOrder=[];
 	$.each(colViewGroups,function(key,obj){
@@ -291,15 +367,45 @@ $(document).ready(function () {
 
 
 	// display view menu links ------------------------------------------------
-	var views_html='';
-	views_html+=htmlPresetButton('toh-view toh-view-custom','custom');
-	views_html+=htmlPresetButton('toh-view','all');
-	views_html+=htmlPresetButton('toh-view','none');
+	var tmp_html='';
+	tmp_html+=htmlPresetButton('toh-view toh-view-custom','custom');
+	tmp_html+=htmlPresetButton('toh-view','all');
+	tmp_html+=htmlPresetButton('toh-view','none');
 	for (const key in colViews){
-		views_html+=htmlPresetButton('toh-view',key);
+		tmp_html+=htmlPresetButton('toh-view',key);
 	}
-	$('#toh-view-menu-links').html(views_html);
+	$('#toh-view-menu-links').html(tmp_html);
 	//groupsUpdateIcon();
+
+	// display filter Presets ------------------------------------------------
+	tmp_html='';
+	for (const key in colFilterPresets){
+		tmp_html+=htmlFilterDiv(colFilterPresets[key],key);
+	}
+	$('#toh-filters-presets .toh-filters-list').html(tmp_html);
+
+	// display filter Features ------------------------------------------------
+	tmp_html='';
+	for (const key in colFilterFeatures){
+		tmp_html+=htmlFilterDiv(colFilterFeatures[key],key,true);
+	}
+	$('#toh-filters-features-content').html(tmp_html);
+
+
+
+	// ---------------------------------------------------------------
+	$('.toh-filters-but-toggle').on('click',function(e){
+		e.preventDefault();
+		$('#toh-filters-container').toggle();
+		$(this).children('I').toggleClass('fa-caret-right fa-caret-down');
+	});
+
+	// ---------------------------------------------------------------
+	$('.toh-views-but-toggle').on('click',function(e){
+		e.preventDefault();
+		$('#toh-views-container').toggle();
+		$(this).children('I').toggleClass('fa-caret-right fa-caret-down');
+	});
 
 
 	// Fetch content and build table ------------------------------------------------------------
@@ -327,8 +433,8 @@ $(document).ready(function () {
 			});
 			tabuTable.setColumns(columns);
 
-			//default view
-			$("#toh-view-menu-links A[data-value='"+init_view+"']").trigger('click');
+			//set default views
+			SetDefaults();
 
 			// sort columns						
 			tabuTable.setSort([
@@ -340,15 +446,95 @@ $(document).ready(function () {
 	});
 
 
+
+
+	// Top Filters ##########################################################################################
+	// ---------------------------------------------------------------
+	function getFilterSet(type, key){
+		if(type=='preset'){
+			var set=colFilterPresets[key];
+		}
+		else if(type=='feature'){
+			var set=colFilterFeatures[key];
+		}
+		else{
+			console.log('Unknown ('+key+') type: '+ type);
+			return {};
+		}
+		if(typeof(set) !='object'){
+			console.log('Unknown Set key: '+ key);
+			return {};
+		}
+		//merge filters with features.filters
+		if(type=='preset'){
+			if( typeof(set.features) =='object'){ // cant we write it shorter ?
+				$.each(set.features,function(i,fv){
+					//console.log(i+'->'+fv)
+					$.each(colFilterFeatures[fv].filters,function(j,filt){
+						set.filters.push(filt);
+					});
+				});
+			}
+			else{
+				set.features={};
+			}
+		}
+		return set;
+	}
+
+	// ---------------------------------------------------------------
+	function checkAllFeatures(state=true){
+		$(".toh-filter-feature INPUT").prop('checked',state);
+	}
+
+	// ---------------------------------------------------------------
+	function checkFeature(feat,state=true){
+		$(".toh-filter-feature INPUT[data-key="+feat+"]").prop('checked',state);
+	}
+
+	// ---------------------------------------------------------------
+	$('#toh-top-filters').on('click','.toh-filter-preset .toh-filter-button',function(e){
+		console.log("Click filter preset");
+		e.preventDefault();
+		var key=$(this).attr('data-key');
+		var set=getFilterSet('preset',key);
+		//tabuTable.refreshFilter();
+		tabuTable.setFilter(set.filters ); //,  {matchAll:true}
+		checkAllFeatures(false);
+		$.each(set.features,function(j,feat){
+			checkFeature(feat);
+		});
+		console.log(set);
+		//setColumHeaderColors();
+	});
+
+	// ---------------------------------------------------------------
+	$('#toh-top-filters').on('click','.toh-filter-feature INPUT',function(e){
+		console.log("Click checkbox feature");
+		var key=$(this).attr('data-key');
+		var set=getFilterSet('feature',key);
+		console.log(set);
+		if($(this).is(":checked")){
+			tabuTable.addFilter(set.filters);
+		}
+		else{
+			tabuTable.removeFilter(set.filters);
+		}
+		//setColumHeaderColors();
+	});
+
+
 	// Top Views ############################################################################################
 
 	// Click: view presets ---------------------------------------------------
 	$('#toh-view-menu-links').on('click','A',function(e){
-		let view=$(this).data('value');
+		e.preventDefault();
+		let view=$(this).attr('data-key');
 		//console.log('apply '+view);
 		if(view=='custom'){
-			$('#toh-view-columns-content').toggle();
-		    $(this).children('I').toggleClass('fa-caret-right fa-caret-down');
+			$(".toh-views-but-toggle").trigger('click');
+			//$('#toh-views-content').toggle();
+		    //$(this).children('I').toggleClass('fa-caret-right fa-caret-down');
 		}
 		else{
 			applyView(view);
@@ -359,7 +545,7 @@ $(document).ready(function () {
 	});
 
 	// Click (or viewchanged): one view ------------------------------------
-	$('#toh-view-columns-content').on('click viewchanged','INPUT',function(e){
+	$('#toh-views-content').on('click viewchanged','INPUT',function(e){
 		var field=$(this).val();
 		if($(this).is(":checked")){
 			tabuTable.showColumn(field);
@@ -368,13 +554,13 @@ $(document).ready(function () {
 			tabuTable.hideColumn(field);
 		}
 		$('#toh-view-menu-links A').removeClass('selected');
-		$('#toh-view-menu-links A[data-value=custom]').addClass('selected');
+		$('#toh-view-menu-links A[data-key=custom]').addClass('selected');
 
 		groupsUpdateIcon();
 	});
 
 	//  Click: View group ---------------------------------------------------
-	$('#toh-view-columns-content').on('click','.toh-colgroup-title A',function(e){
+	$('#toh-views-content').on('click','.toh-colgroup-title A',function(e){
 		e.preventDefault();
 		//e.stopPropagation();
 		showLoading();
@@ -392,20 +578,107 @@ $(document).ready(function () {
 
 	// Top Buttons ###########################################################################################@
 
-	// Click: clear header filters ----------------
-	$(".toh-but-clearheadfilters").on('click', function (e) {
-		e.preventDefault();
-		tabuTable.clearHeaderFilter();
-	});
+	// -------------------------------------------
+	function toggleFilterClearButVisibility(){
+		var $but_clear_filt	=$('.toh-but-clearfilters');
+		var $but_clear_head	=$('.toh-but-clearheaderfilters');
+		var $but_clear_all	=$('.toh-but-clearallfilters');
+		//filters
+		var cur_filters		=tabuTable.getFilters();
+		if(cur_filters.length==0){
+			$but_clear_filt.hide();
+		}
+		else{
+			$but_clear_filt.show();
+		}
+
+		var cur_headfilters	=tabuTable.getHeaderFilters();
+		if(cur_headfilters.length==0){
+			$but_clear_head.hide();
+		}
+		else{
+			$but_clear_head.show();
+		}
+
+		if(cur_filters.length>0 && cur_headfilters.length>0 ){
+			$but_clear_all.show();
+		}
+		else{
+			$but_clear_all.hide();
+		}
+
+	}
+
+	// -------------------------------------------
+	function toggleSortClearButVisibility(){
+		var $but_clear_sort	=$('.toh-but-clearheadersorts');
+		//console.log(tabuTable.getSorters());
+		//sort
+		if(tabuTable.getSorters().length>0 ){
+			$but_clear_sort.show();
+		}
+		else{
+			$but_clear_sort.hide();
+		}		
+	}
 
 	// Click: clear header sorts ----------------
-	$(".toh-but-clearheadsorts").on('click', function (e) {
+	$(".toh-but-clearheadersorts").on('click', function (e) {
 		e.preventDefault();
 		tabuTable.clearSort();
 	});
 
+	// Click: clear filters ----------------
+	$(".toh-but-clearfilters").on('click', function (e) {
+		e.preventDefault();
+		tabuTable.clearFilter();
+		checkAllFeatures(false);
+	});
+	// Click: clear header filters ----------------
+	$(".toh-but-clearheaderfilters").on('click', function (e) {
+		e.preventDefault();
+		tabuTable.clearHeaderFilter();
+	});
+
+	// Click: clear all filters ----------------
+	$(".toh-but-clearallfilters").on('click', function (e) {
+		e.preventDefault();
+		tabuTable.clearHeaderFilter();
+		tabuTable.clearFilter();
+		checkAllFeatures(false);
+	});
+
+
+
 
 	// Header Filters ###########################################################################################@
+
+
+	// -------------------------------------------
+	function setColumHeaderColors(){
+		var allfilters	=createIndexedObject(tabuTable.getFilters(true),	'field');
+		var filters		=createIndexedObject(tabuTable.getFilters(),		'field');
+		var headfilters	=createIndexedObject(tabuTable.getHeaderFilters(),	'field');
+		var myclass='';
+		$(".tabulator-col").removeClass('toh-col-allfilter toh-col-filter toh-col-headerfilter');
+		Object.keys(allfilters).forEach( f => {
+			if(typeof(filters[f]) =='object' && typeof(headfilters[f]) =='object' && filters[f].value !='' && headfilters[f].value.length > 1 ){
+				myclass='toh-col-allfilter';
+			}
+			else if(typeof(filters[f]) =='object' && filters[f].value !=''){
+				myclass='toh-col-filter';
+			}
+			else if(typeof(headfilters[f]) =='object' && headfilters[f].value.length > 1){
+				myclass='toh-col-headerfilter';
+			}
+			//console.log(f+' -> '+myclass);
+		 	if(myclass !=''){
+				//console.log('applied');
+				$(".tabulator-col[tabulator-field='"+f+"']").addClass(myclass);
+			}			
+		});
+	}
+	
 
 	// Expand header-filter INPUT on focus -----------------------------------
 	$('#toh-table').on('focus','.tabulator-header-filter INPUT', function() {
@@ -430,7 +703,22 @@ $(document).ready(function () {
 				width: '100%',
 			}, 100);
 		}
+		setColumHeaderColors();
 	});
 
+
+
+	// events ################################################################################################
+
+	// Resfresh column color on header-filter INPUT' blur ---------------------------------
+	tabuTable.on("dataFiltered", function(filters, rows){
+		setColumHeaderColors();
+		toggleFilterClearButVisibility();
+	});
+	// Resfresh column color on header-filter INPUT' blur ---------------------------------
+	tabuTable.on("dataSorted", function(filters, rows){
+		toggleSortClearButVisibility();
+	});
+	
 
 });

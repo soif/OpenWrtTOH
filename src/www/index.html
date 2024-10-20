@@ -51,23 +51,59 @@
 				<div id="demo-toh">
 					
 					<div id="toh-top">
-						
-						<div id="toh-top-views">
-							<div id="toh-view-menu" class="menu">
-								<span class="menu-title">Views:</span>
-								<span id="toh-view-menu-links" class="menu-links"></span>
+
+						<!-- Filters ------------------- -->
+						<div id="toh-top-filters" class="toh-top-block">
+							
+							<div id="toh-filters-title" class="toh-top-title">
+								<span class="toh-title"><a href="#" class="toh-filters-but-toggle"><i class="fa-solid fa-caret-right"></i>Filters</a></span>
+								
+								<span class="toh-filters-but-right"><a href="#" class="toh-but-clearfilters toh-hidden"><i class="fa-solid fa-xmark"></i> Clear Filters</a></span>
 							</div>
-							<div id="toh-view-columns" class="row">
-								<div class="container-fluid">
-									<div class="col-md-12">
-										<div id="toh-view-columns-content" class="toh-view-columns-multi toh-hidden"></div>
+							
+							<div id="toh-filters-container" class="toh-top-container toh-hidden">
+								<div id="toh-filters-presets" class="toh-filters">
+									<div class="toh-filters-subtitle">Presets:</div>
+									<div class="toh-filters-list" ></div>
+								</div>
+								<div id="toh-filters-features"class="toh-filters">
+									<div class="toh-filters-subtitle">Features:</div>
+									<div class="toh-filters-list row" >
+									
+											<div class="col-md-12">
+												<div id="toh-filters-features-content" class="toh-filters-list-multi"></div>
+											</div>
+
+									
 									</div>
 								</div>
 							</div>
+
 						</div>
+					
+						<!-- Views ------------------- -->						
+						<div id="toh-top-views" class="toh-top-block">
+
+							<div id="toh-views-title" class="toh-top-title">
+								<span class="toh-title"><a href="#" class="toh-views-but-toggle"><i class="fa-solid fa-caret-right"></i>Columns</a></span><span id="toh-view-menu-links" class="menu-links"></span>								
+							</div>
+
+							<div id="toh-views-container" class="toh-top-container toh-hidden">
+								<div id="toh-views-list" class="row">
+									<div class="col-md-12">
+										<div id="toh-views-content" class="toh-views-list-multi"></div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+						<!-- Buttons ------------------- -->						
 						<div id="toh-top-buttons">
-							<a href="#" class="toh-but-clearheadsorts"><i class="fa-solid fa-xmark"></i> Clear Header Sorts</a>
-							<a href="#" class="toh-but-clearheadfilters"><i class="fa-solid fa-xmark"></i> Clear Header Filters</a>
+							<a href="#" class="toh-but toh-but-clearheadersorts"><i class="fa-solid fa-xmark"></i> Clear Header Sorts</a>
+							<a href="#" class="toh-but toh-but-clearheaderfilters"><i class="fa-solid fa-xmark"></i> Clear Header Filters</a>
+							<a href="#" class="toh-but toh-but-clearfilters"><i class="fa-solid fa-xmark"></i> Clear Filters</a>
+							<a href="#" class="toh-but toh-but-clearallfilters"><i class="fa-solid fa-xmark"></i> Clear All Filters</a>
 						</div>
 
 					</div>

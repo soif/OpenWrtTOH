@@ -33,6 +33,7 @@ let tabulatorOptions={
 		headerTooltip:true,
 		hozAlign: "right",
 		tooltip:true,         //show tool tips on cells
+		headerSortTristate:true,
 	},
 
 	initialSort:[
@@ -458,3 +459,198 @@ let colViews={
 	],
 };
 
+// Columns Filter Presets ###############################################################################################################
+
+// implements from: https://openwrt.org/toh/views/start
+let colFilterFeatures={
+	// normal features -------
+	antennas:{
+		title:		"Antennas",
+		description:"with detachable antennas",
+		type:		"normal",
+		filters:[
+			{field:	"detachableantennas", 	type:">",	value:''},
+			{field:	"detachableantennas", 	type:"!=",	value:'-'},
+		],
+	},
+
+	available:{
+		title:		"Available",
+		description:"Available or Unknown",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"availability", 	type:"like",	value:'available'},
+				{field:	"availability", 	type:"like",	value:'unknown'},
+			]
+		],
+	},
+
+	ideal_memory:{
+		title:		"Memory Ideal",
+		description:"at least 8MB Flash & 64MB RAM",
+		type:		"normal",
+		filters:[
+			{field:	"rammb", 		type:">=",		value:8	},
+			{field:	"flashmb", 		type:">=",		value:64},
+		],
+	},
+
+	eth_1g:{
+		title:		"Ethernet 1G",
+		description:"at least 1G Ethernet",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"ethernet1gports", 		type:">=",	value:1},
+				{field:	"ethernet2_5gports",	type:">=",	value:1},
+				{field:	"ethernet5gports",		type:">=",	value:1},
+				{field:	"ethernet10gports",		type:">=",	value:1},
+			]
+		],
+	},
+
+	poe:{
+		title:		"PoE",
+		description:"with PoE capability",
+		type:		"normal",
+		filters:[
+			{field:	"powersupply", 	type:"like",	value:'poe'},
+		],
+	},
+
+	sfp:{
+		title:		"SFP ports",
+		description:"with SFP port",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"sfp_ports", 		type:">",	value:'0'},
+				{field:	"sfp_plus_ports", 	type:">",	value:'0'},
+			],
+		],
+	},
+
+	wifi_ac:{
+		title:		"Wifi AC",
+		description:"802.11ac Wifi",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"wlan24ghz", 	type:"like",	value:'ac'},
+				{field:	"wlan50ghz", 	type:"like",	value:'ac'},
+			]
+		],
+	},
+
+	wifi_n:{
+		title:		"Wifi N",
+		description:"802.11n Wifi",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"wlan24ghz", 	type:"like",	value:'n'},
+				{field:	"wlan50ghz", 	type:"like",	value:'n'},
+			]
+		],
+	},
+
+	// admin features -------
+
+	miss_commit:{
+		title:		"Miss Git",
+		description:"missing Git commit",
+		type:		"admin",
+		filters:[
+			{field:	"supportedsincecommit", 	type:"=",	value:null},
+		],
+	},
+
+	miss_devpage:{
+		title:		"Miss Dev Page",
+		description:"missing device page",
+		type:		"admin",
+		filters:[
+			{field:	"devicepage", 	type:"=",	value:null},
+		],
+	},
+
+	miss_pkg:{
+		title:		"Miss Pkg",
+		description:"missing Package Ach.",
+		type:		"admin",
+		filters:[
+			{field:	"packagearchitecture", 	type:"=",	value:null},
+		],
+	},
+	miss:{
+		title:		"Miss Something",
+		description:"miss Git | D.Page | Pkg",
+		type:		"admin",
+		filters:[
+			[
+				{field:	"supportedsincecommit", 	type:"=",	value:null},
+				{field:	"devicepage", 				type:"=",	value:null},
+				{field:	"packagearchitecture", 		type:"=",	value:null},
+			],
+		],
+	},
+
+
+};
+
+//---------------------------------------------------------
+let colFilterPresets={
+	
+	available_864_ac_wifi: {
+		title:"Ideal AC, Avail.",
+		description:"At least 8MB Flash and 64MB RAM + 802.11ac Wifi + (Available or Unknown)",
+		orig_url:"https://openwrt.org/toh/views/toh_available_864_ac-wifi",
+		filters:[
+			{field:	"wlan50ghz", 	type:"like",	value:'ac'},
+		],
+		features:[
+			'available',
+			'wifi_ac',
+		]
+	},
+
+	available_864_ac_wifi_gbit_eth: {
+		title:"Ideal AC, Gbit, Avail.",
+		description:"At least 8MB Flash and 64MB RAM + 802.11ac Wifi + Eth >=1G + (Available or Unknown)",
+		orig_url:"https://openwrt.org/toh/views/toh_available_864_ac-wifi_gbit-eth",
+		filters:[],
+		features:[
+			'available',
+			'wifi_ac',
+			'eth_1g',
+		]
+
+	},
+
+	available_864_ac_wifi_gbit_eth_ant: {
+		title:"Ideal AC, Gbit, Antennas, Avail.",
+		description:"At least 8MB Flash and 64MB RAM + 802.11ac Wifi + Eth >=1G + Antennas (Available or Unknown)",
+		orig_url:"https://openwrt.org/toh/views/toh_available_864_dual-wifi_gbit_extant",
+		filters:[],
+		features:[
+			'available',
+			'wifi_ac',
+			'eth_1g',
+			'antennas',
+		]
+
+	},
+
+	poe: {
+		title:"Poe powered",
+		description:"Devices with PoE capability",
+		filters:[],
+		features:[
+			'poe',
+		],
+
+	},
+
+
+};
