@@ -341,7 +341,7 @@ $(document).ready(function () {
 			//show presets
 			$(".toh-filters-but-toggle").trigger('click');
 			//default col view
-			$("#toh-view-menu-links A[data-key='"+init_view+"']").trigger('click');
+			$("#toh-views-presets A[data-key='"+init_view+"']").trigger('click');
 	}
 
 	// make column order from the colViewGroups ------------------------------
@@ -360,7 +360,7 @@ $(document).ready(function () {
 	for (const key in colViews){
 		tmp_html+=htmlPresetButton('toh-view',key);
 	}
-	$('#toh-view-menu-links').html(tmp_html);
+	$('#toh-views-presets').html(tmp_html);
 
 	// display filter Presets ------------------------------------------------
 	tmp_html='';
@@ -501,7 +501,7 @@ $(document).ready(function () {
 	// Top Views ############################################################################################
 
 	// Click: View Preset ---------------------------------------------------
-	$('#toh-view-menu-links').on('click','A',function(e){
+	$('#toh-views-presets').on('click','A',function(e){
 		e.preventDefault();
 		let view=$(this).attr('data-key');
 		//console.log('apply '+view);
@@ -510,7 +510,7 @@ $(document).ready(function () {
 		}
 		else{
 			applyView(view);
-			$('#toh-view-menu-links A').removeClass('selected');
+			$('#toh-views-presets A').removeClass('selected');
 			$(this).addClass('selected');
 			groupsUpdateIcon();
 		}
@@ -525,8 +525,8 @@ $(document).ready(function () {
 		else{
 			tabuTable.hideColumn(field);
 		}
-		$('#toh-view-menu-links A').removeClass('selected');
-		$('#toh-view-menu-links A[data-key=custom]').addClass('selected');
+		$('#toh-views-presets A').removeClass('selected');
+		$('#toh-views-presets A[data-key=custom]').addClass('selected');
 
 		groupsUpdateIcon();
 	});
