@@ -78,6 +78,8 @@ function populateViewsContent(){
 	let columns = tabuTable.getColumnDefinitions();  
 	let view="";
 	let col={};
+
+	// diplay known fields
 	$.each(colViewGroups,function(key,arr){
 		view +=htmlViewGroup(arr.name,key);
 		$.each(arr.fields,function(k,field){
@@ -89,6 +91,8 @@ function populateViewsContent(){
 		});
 		view +="</ul>\n</div>\n";
 	});
+
+	// handle unsorted (not defined) fields 
 	if(columns.length > 0){
 		view +=htmlViewGroup('Unsorted','unsorted');
 		$.each(columns,function(key,arr){
