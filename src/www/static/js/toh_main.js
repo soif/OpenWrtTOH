@@ -295,19 +295,19 @@ $(document).ready(function () {
 	var $container = $('#toh-image-preview');
 	$(document).on({
 		mouseenter: function(e) {
-		var $link = $(this);
-		var imageUrl = $link.attr('href');
-		$container.html('<img src="' + imageUrl + '" alt="Image Preview">');
+			var $link = $(this);
+			var imageUrl = $link.attr('href');
+			$container.html('<img src="' + imageUrl + '" alt="Image Preview">');
 		
-		// Wait for the image to load before positioning
-		$container.find('img').on('load', function() {
-			positionPreview($link, $container);
-		});
+			// Wait for the image to load before positioning
+			$container.find('img').on('load', function() {
+				positionPreview($link, $container);
+			});
 
-		$container.show();
+			$container.show();
 		},
 		mouseleave: function() {
-		$container.hide().empty();
+			$container.hide().empty();
 		}
 	}, 'a.cell-image');
 
