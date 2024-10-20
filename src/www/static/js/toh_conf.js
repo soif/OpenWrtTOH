@@ -606,11 +606,10 @@ let colFilterPresets={
 		title:"Ideal AC, Avail.",
 		description:"At least 8MB Flash and 64MB RAM + 802.11ac Wifi + (Available or Unknown)",
 		orig_url:"https://openwrt.org/toh/views/toh_available_864_ac-wifi",
-		filters:[
-			{field:	"wlan50ghz", 	type:"like",	value:'ac'},
-		],
+		filters:[],
 		features:[
 			'available',
+			'ideal_memory',
 			'wifi_ac',
 		]
 	},
@@ -622,6 +621,7 @@ let colFilterPresets={
 		filters:[],
 		features:[
 			'available',
+			'ideal_memory',
 			'wifi_ac',
 			'eth_1g',
 		]
@@ -635,6 +635,7 @@ let colFilterPresets={
 		filters:[],
 		features:[
 			'available',
+			'ideal_memory',
 			'wifi_ac',
 			'eth_1g',
 			'antennas',
