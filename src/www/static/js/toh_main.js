@@ -268,6 +268,16 @@ function createIndexedObject(arrayOfObjects, key) {
 	}, {});
 }
 
+// Check on/off ALL features checkboxes -------------------------
+function checkAllFeatures(state=true){
+	$(".toh-filter-feature INPUT").prop('checked',state);
+}
+
+// Check on/off a feature checkbox ------------------------------
+function checkFeature(feat,state=true){
+	$(".toh-filter-feature INPUT[data-key="+feat+"]").prop('checked',state);
+}
+
 
 
 // ############################################################################################################
@@ -305,27 +315,6 @@ $(document).ready(function () {
 	// Observe the DOM to show/hide the loading icon  --------------------------
 	// (because i've not found a Tabulator event to do that, ie when changing a large amount of column visibility)
 
-	/*
-	tabuTable.on("redrawStarted", function(){
-		console.log('redrawStarted');
-	});	
-	tabuTable.on("redrawComplete", function(){
-		console.log('redrawComplete');
-	});	
-	tabuTable.on("columnVisibilityChanged", function(){
-		console.log('columnVisibilityChanged');
-	});	
-	tabuTable.on("renderComplete", function(){
-		console.log('renderComplete');
-	});	
-	tabuTable.on("tableRendered", function(){
-		console.log('tableRendered');
-	});
-	tabuTable.on("tableBuilt", function(){
-		console.log('tableBuilt');
-	});	
-	*/
-
 	var observer = new MutationObserver(function(mutations) {
 		// Debounce the callback to avoid multiple triggers
 		clearTimeout(window.domChangeTimer);
@@ -340,7 +329,6 @@ $(document).ready(function () {
 
 	// Bind to the custom event
 	$(document).on('table-change-complete', function() {
-		//console.log('table changes completed');
 		hideLoading();
 	});
 	
@@ -348,14 +336,13 @@ $(document).ready(function () {
 	// Takes GET parameter of defauls ---------------------------------------
 	let init_view=getUrlParameterOrDefault('view',prefs.def_view);
 
-	// ---------------------------------------------------------------
+	// Set default Filters & View -------------------------------------------
 	function SetDefaults(){
 			//show presets
 			$(".toh-filters-but-toggle").trigger('click');
 			//default col view
 			$("#toh-view-menu-links A[data-key='"+init_view+"']").trigger('click');
 	}
-
 
 	// make column order from the colViewGroups ------------------------------
 	let columnOrder=[];
@@ -364,7 +351,6 @@ $(document).ready(function () {
 			columnOrder.push(field);
 		});
 	});
-
 
 	// display view menu links ------------------------------------------------
 	var tmp_html='';
@@ -375,7 +361,6 @@ $(document).ready(function () {
 		tmp_html+=htmlPresetButton('toh-view',key);
 	}
 	$('#toh-view-menu-links').html(tmp_html);
-	//groupsUpdateIcon();
 
 	// display filter Presets ------------------------------------------------
 	tmp_html='';
@@ -393,14 +378,14 @@ $(document).ready(function () {
 
 
 
-	// ---------------------------------------------------------------
+	//  Click: Toggle Filters Visibility -----------------------------
 	$('.toh-filters-but-toggle').on('click',function(e){
 		e.preventDefault();
 		$('#toh-filters-container').toggle();
 		$(this).children('I').toggleClass('fa-caret-right fa-caret-down');
 	});
 
-	// ---------------------------------------------------------------
+	//  Click: Toggle Views Visibility -------------------------------
 	$('.toh-views-but-toggle').on('click',function(e){
 		e.preventDefault();
 		$('#toh-views-container').toggle();
@@ -408,7 +393,7 @@ $(document).ready(function () {
 	});
 
 
-	// Fetch content and build table ------------------------------------------------------------
+	// Fetch content and build table ------------------------------------------
 	$.getJSON( owrtUrls.toh_json, function( data ){ 
 		//Makes columns
 		var columns = data.columns.map((value, index) => ({
@@ -447,9 +432,9 @@ $(document).ready(function () {
 
 
 
-
 	// Top Filters ##########################################################################################
-	// ---------------------------------------------------------------
+	
+	// get filters array (also merge features filters for Presets)--------------------------
 	function getFilterSet(type, key){
 		if(type=='preset'){
 			var set=colFilterPresets[key];
@@ -482,19 +467,9 @@ $(document).ready(function () {
 		return set;
 	}
 
-	// ---------------------------------------------------------------
-	function checkAllFeatures(state=true){
-		$(".toh-filter-feature INPUT").prop('checked',state);
-	}
-
-	// ---------------------------------------------------------------
-	function checkFeature(feat,state=true){
-		$(".toh-filter-feature INPUT[data-key="+feat+"]").prop('checked',state);
-	}
-
-	// ---------------------------------------------------------------
+	//  Click: Filter Preset ------------------------------------------
 	$('#toh-top-filters').on('click','.toh-filter-preset .toh-filter-button',function(e){
-		console.log("Click filter preset");
+		//console.log("Click filter preset");
 		e.preventDefault();
 		var key=$(this).attr('data-key');
 		var set=getFilterSet('preset',key);
@@ -504,37 +479,34 @@ $(document).ready(function () {
 		$.each(set.features,function(j,feat){
 			checkFeature(feat);
 		});
-		console.log(set);
-		//setColumHeaderColors();
+		//console.log(set);
 	});
 
-	// ---------------------------------------------------------------
+	// Click: Feature CheckBox -------------------------------------------
 	$('#toh-top-filters').on('click','.toh-filter-feature INPUT',function(e){
-		console.log("Click checkbox feature");
+		//console.log("Click checkbox feature");
 		var key=$(this).attr('data-key');
 		var set=getFilterSet('feature',key);
-		console.log(set);
+		//console.log(set);
 		if($(this).is(":checked")){
 			tabuTable.addFilter(set.filters);
 		}
 		else{
 			tabuTable.removeFilter(set.filters);
 		}
-		//setColumHeaderColors();
 	});
+
 
 
 	// Top Views ############################################################################################
 
-	// Click: view presets ---------------------------------------------------
+	// Click: View Preset ---------------------------------------------------
 	$('#toh-view-menu-links').on('click','A',function(e){
 		e.preventDefault();
 		let view=$(this).attr('data-key');
 		//console.log('apply '+view);
 		if(view=='custom'){
 			$(".toh-views-but-toggle").trigger('click');
-			//$('#toh-views-content').toggle();
-		    //$(this).children('I').toggleClass('fa-caret-right fa-caret-down');
 		}
 		else{
 			applyView(view);
@@ -544,7 +516,7 @@ $(document).ready(function () {
 		}
 	});
 
-	// Click (or viewchanged): one view ------------------------------------
+	// Click (or viewchanged): one view CheckBox ----------------------
 	$('#toh-views-content').on('click viewchanged','INPUT',function(e){
 		var field=$(this).val();
 		if($(this).is(":checked")){
@@ -559,7 +531,7 @@ $(document).ready(function () {
 		groupsUpdateIcon();
 	});
 
-	//  Click: View group ---------------------------------------------------
+	//  Click: View Group ---------------------------------------------------
 	$('#toh-views-content').on('click','.toh-colgroup-title A',function(e){
 		e.preventDefault();
 		//e.stopPropagation();
@@ -576,6 +548,7 @@ $(document).ready(function () {
 	});
 
 
+
 	// Top Buttons ###########################################################################################@
 
 	// -------------------------------------------
@@ -583,7 +556,7 @@ $(document).ready(function () {
 		var $but_clear_filt	=$('.toh-but-clearfilters');
 		var $but_clear_head	=$('.toh-but-clearheaderfilters');
 		var $but_clear_all	=$('.toh-but-clearallfilters');
-		//filters
+		// filters
 		var cur_filters		=tabuTable.getFilters();
 		if(cur_filters.length==0){
 			$but_clear_filt.hide();
@@ -591,7 +564,7 @@ $(document).ready(function () {
 		else{
 			$but_clear_filt.show();
 		}
-
+		// header filters
 		var cur_headfilters	=tabuTable.getHeaderFilters();
 		if(cur_headfilters.length==0){
 			$but_clear_head.hide();
@@ -599,21 +572,19 @@ $(document).ready(function () {
 		else{
 			$but_clear_head.show();
 		}
-
+		// ALL filters
 		if(cur_filters.length>0 && cur_headfilters.length>0 ){
 			$but_clear_all.show();
 		}
 		else{
 			$but_clear_all.hide();
 		}
-
 	}
 
 	// -------------------------------------------
 	function toggleSortClearButVisibility(){
 		var $but_clear_sort	=$('.toh-but-clearheadersorts');
 		//console.log(tabuTable.getSorters());
-		//sort
 		if(tabuTable.getSorters().length>0 ){
 			$but_clear_sort.show();
 		}
@@ -634,6 +605,7 @@ $(document).ready(function () {
 		tabuTable.clearFilter();
 		checkAllFeatures(false);
 	});
+
 	// Click: clear header filters ----------------
 	$(".toh-but-clearheaderfilters").on('click', function (e) {
 		e.preventDefault();
@@ -650,11 +622,9 @@ $(document).ready(function () {
 
 
 
-
 	// Header Filters ###########################################################################################@
 
-
-	// -------------------------------------------
+	// Set Colum Headers Color-------------------------------------------------
 	function setColumHeaderColors(){
 		var allfilters	=createIndexedObject(tabuTable.getFilters(true),	'field');
 		var filters		=createIndexedObject(tabuTable.getFilters(),		'field');
@@ -679,7 +649,6 @@ $(document).ready(function () {
 		});
 	}
 	
-
 	// Expand header-filter INPUT on focus -----------------------------------
 	$('#toh-table').on('focus','.tabulator-header-filter INPUT', function() {
 		var w=$(this).width();
