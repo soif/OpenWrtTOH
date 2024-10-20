@@ -74,7 +74,7 @@ function htmlViewGroup(title,group){
 }
 	
 // Display the custom view block ---------------------------------
-function displayCustomColumns(){
+function populateViewsContent(){
 	let columns = tabuTable.getColumnDefinitions();  
 	let view="";
 	let col={};
@@ -138,7 +138,7 @@ function applyView(key) {
 				arr.forEach(col => tabuTable.showColumn(col));
 			}
 		}
-		displayCustomColumns();
+		populateViewsContent();
 		//tabuTable.redraw(true);
 		//tabuTable.restoreRedraw();
 	},0);
@@ -314,7 +314,6 @@ $(document).ready(function () {
 
 	// Observe the DOM to show/hide the loading icon  --------------------------
 	// (because i've not found a Tabulator event to do that, ie when changing a large amount of column visibility)
-
 	var observer = new MutationObserver(function(mutations) {
 		// Debounce the callback to avoid multiple triggers
 		clearTimeout(window.domChangeTimer);
@@ -352,7 +351,7 @@ $(document).ready(function () {
 		});
 	});
 
-	// display view menu links ------------------------------------------------
+	// display View Preset menu --------------------------------------------------
 	var tmp_html='';
 	tmp_html+=htmlPresetButton('toh-view toh-view-custom','custom');
 	tmp_html+=htmlPresetButton('toh-view','all');
@@ -362,20 +361,19 @@ $(document).ready(function () {
 	}
 	$('#toh-views-presets').html(tmp_html);
 
-	// display filter Presets ------------------------------------------------
+	// display Filter Presets ------------------------------------------------
 	tmp_html='';
 	for (const key in colFilterPresets){
 		tmp_html+=htmlFilterDiv(colFilterPresets[key],key);
 	}
 	$('#toh-filters-presets .toh-filters-list').html(tmp_html);
 
-	// display filter Features ------------------------------------------------
+	// display Filter Features ------------------------------------------------
 	tmp_html='';
 	for (const key in colFilterFeatures){
 		tmp_html+=htmlFilterDiv(colFilterFeatures[key],key,true);
 	}
 	$('#toh-filters-features-content').html(tmp_html);
-
 
 
 	//  Click: Toggle Filters Visibility -----------------------------
@@ -498,7 +496,7 @@ $(document).ready(function () {
 
 
 
-	// Top Views ############################################################################################
+	// Top Views (columns) ################################################################################
 
 	// Click: View Preset ---------------------------------------------------
 	$('#toh-views-presets').on('click','A',function(e){
