@@ -86,6 +86,9 @@
 	line-height: 100%;
 	padding-bottom: 4px;
 }
+.toh-filter-preset{
+	margin-bottom: 3px;
+}
 .toh-filter-feature INPUT{
 	margin-right: 5px;
 }
