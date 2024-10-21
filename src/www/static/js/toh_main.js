@@ -57,11 +57,14 @@ function getUrlParameterOrDefault(name, defaultValue) {
 }
 
 // Make a "view" line -------------------------------------------
-function htmlViewLine(field,title,checked){
+function htmlViewLine(field,col,checked){
 	let html='';
+	let title	=col.title;
+	let tip		=col.headerTooltip;
+	if(tip==true){tip='';}
 	html +='<li><input type="checkbox" value="'+field+'"';
 	if( checked ){html +=' checked="true"';} 
-	html +='> '+title+"\n";
+	html +='> <a href="#" title="'+tip+'">'+title+"</a>\n";
 	return html;
 }
 
@@ -79,12 +82,12 @@ function populateViewsContent(){
 	let view="";
 	let col={};
 
-	// diplay known fields
+	// display known (on Prefs) fields
 	$.each(colViewGroups,function(key,arr){
 		view +=htmlViewGroup(arr.name,key);
 		$.each(arr.fields,function(k,field){
 			col=tabuTable.getColumn(field);
-			view +=htmlViewLine(field, col.getDefinition().title, col.isVisible())
+			view +=htmlViewLine(field, col.getDefinition(), col.isVisible())
 			//remove from colums
 			const index = columns.findIndex(item => item.field === field);
 			if (index !== -1) {columns.splice(index, 1)[0];}
@@ -92,15 +95,18 @@ function populateViewsContent(){
 		view +="</ul>\n</div>\n";
 	});
 
-	// handle unsorted (not defined) fields 
+	// handle remaining unsorted fields (not defined in Prefs)
 	if(columns.length > 0){
 		view +=htmlViewGroup('Unsorted','unsorted');
 		$.each(columns,function(key,arr){
 			col=tabuTable.getColumn(arr.field);
-			view +=htmlViewLine(arr.field, arr.title, col.isVisible())
+			var def=col.getDefinition();
+			def.headerTooltip +=' ('+arr.field+')'; //auto column dont have a tootil (only 'true')
+			view +=htmlViewLine(arr.field, def , col.isVisible())
 		});
 		view +="</ul>\n</div>\n";
 	}
+
 	$("#toh-views-content").html(view);
 	groupsUpdateIcon();
 }
@@ -531,6 +537,12 @@ $(document).ready(function () {
 		$('#toh-views-presets A[data-key=custom]').addClass('selected');
 
 		groupsUpdateIcon();
+	});
+
+	// Click: one view link ----------------------
+	$('#toh-views-list').on('click','A',function(e){
+		e.preventDefault();
+		var cb=$(this).parent().find('INPUT').trigger('click');
 	});
 
 	//  Click: View Group ---------------------------------------------------
