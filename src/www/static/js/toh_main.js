@@ -220,8 +220,7 @@ function htmlFilterDiv(filt,key,is_feature=false){
 
 // -------------------------------------------------------
 function formatFilterDesc(filter){
-	//console.log('fil');
-	var title=filter.field; // make it better by grabbing the col.title
+	var title=columnStyles[filter.field].title;
 	return title + " " + filter.type + " '" +filter.value + "'"; 
 }
 
@@ -521,7 +520,7 @@ $(document).ready(function () {
 			tabuTable.removeFilter(set.filters);
 		}
 	});
-	
+
 	// Click: Feature link ----------------------
 	$('#toh-top-filters').on('click','.toh-filter-title A',function(e){
 		e.preventDefault();
