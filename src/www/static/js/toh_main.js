@@ -521,7 +521,12 @@ $(document).ready(function () {
 			tabuTable.removeFilter(set.filters);
 		}
 	});
-
+	
+	// Click: Feature link ----------------------
+	$('#toh-top-filters').on('click','.toh-filter-title A',function(e){
+		e.preventDefault();
+		var cb=$(this).parent().find('INPUT').trigger('click');
+	});
 
 
 	// Top Views (columns) ################################################################################
