@@ -84,6 +84,11 @@
 	display: inline-block;
 	margin-right: 6px;
 }
+.toh-filter-description{
+	color: #555;
+	font-size: 12px;
+}
+
 #toh-filters-presets A{
 	display: block;
 	padding: 1px 5px;
