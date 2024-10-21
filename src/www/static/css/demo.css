@@ -40,7 +40,7 @@ div#demo-header h1 {
 	border: 1px solid #eee;
 	border-radius: 6px;
 	background: #fff;
-	font-size: 14px;
+	font-size: 13px;
 }
 #demo-foot{
 	border-top: 1px solid #ddd;
@@ -53,3 +53,4 @@ body,
 #demo-foot {
 	background-color: #eee;
 }
+
