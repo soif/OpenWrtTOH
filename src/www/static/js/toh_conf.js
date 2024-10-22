@@ -234,7 +234,7 @@ let columnStyles = {
 	installationmethods:				{title: "Inst.Method",	headerTooltip: 'Installation method(s)',		width: 90,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
 	jtag:								{title: "JTAG",			headerTooltip: 'has JTAG?',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterYesNo,		formatterParams: undefined},	
 	ledcount:							{title: "Leds",			headerTooltip: 'LED count',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanEmpty,	formatterParams: undefined,		...colFilterMin},
-	modem:								{title: "Modem",		headerTooltip: 'Modem Type',					width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+	modem:								{title: "Modem",		headerTooltip: 'Modem Type',					width: 55,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	oemdevicehomepageurl:				{title: "OEM",			headerTooltip: 'OEM Page',						width: 45,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'OEM'}},
 	outdoor:							{title: "OutDoor",		headerTooltip: 'OutDoor',						width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterYesNo,		formatterParams: undefined},
 	owrt_forum_topic_url:				{title: "Forum",		headerTooltip: 'Forum Topic',					width: 55,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'Forum'}},
@@ -464,7 +464,8 @@ let colViews={
 
 // implements from: https://openwrt.org/toh/views/start
 let colFilterFeatures={
-	// normal features -------
+
+	// normal features -------------------------------
 	antennas:{
 		title:		"Antennas",
 		description:"with detachable antennas",
@@ -483,17 +484,7 @@ let colFilterFeatures={
 			[
 				{field:	"availability", 	type:"like",	value:'available'},
 				{field:	"availability", 	type:"like",	value:'unknown'},
-			]
-		],
-	},
-
-	ideal_memory:{
-		title:		"Memory Ideal",
-		description:"at least 8MB Flash & 64MB RAM",
-		type:		"normal",
-		filters:[
-			{field:	"rammb", 		type:">=",		value:8	},
-			{field:	"flashmb", 		type:">=",		value:64},
+			],
 		],
 	},
 
@@ -507,28 +498,184 @@ let colFilterFeatures={
 				{field:	"ethernet2_5gports",	type:">=",	value:1},
 				{field:	"ethernet5gports",		type:">=",	value:1},
 				{field:	"ethernet10gports",		type:">=",	value:1},
-			]
+			],
 		],
 	},
 
-	poe:{
-		title:		"PoE",
-		description:"with PoE capability",
+	memory_ideal:{
+		title:		"Memory: Ideal",
+		description:"at least 8MB Flash & 64MB RAM",
 		type:		"normal",
 		filters:[
-			{field:	"powersupply", 	type:"like",	value:'poe'},
+			{field:	"rammb", 		type:">=",		value:8	},
+			{field:	"flashmb", 		type:">=",		value:64},
 		],
 	},
 
-	sfp:{
-		title:		"SFP ports",
+	memory_more:{
+		title:		"Memory: More",
+		description:"at least 16MB Flash & 128MB RAM",
+		type:		"normal",
+		filters:[
+			{field:	"rammb", 		type:">=",		value:16},
+			{field:	"flashmb", 		type:">=",		value:128},
+		],
+	},
+
+	modem_dsl:{
+		title:		"Modem: DSL",
+		description:"with DSL modem",
+		type:		"normal",
+		filters:[
+			{field:	"modem", 	type:"like",	value:'DSL'},
+		],
+	},
+
+	modem_cellular:{
+		title:		"Modem: Cell.",
+		description:"with cellular modem",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"modem", 	type:"like",	value:'LTE'},
+				{field:	"modem", 	type:"like",	value:'Cellular'},
+			],
+		],
+	},
+
+	outdoor:{
+		title:		"OutDoor",
+		description:"outdoor usage",
+		type:		"normal",
+		filters:[
+			{field:	"outdoor", 	type:"=",	value:'Yes'},
+		],
+	},
+
+	pci:{
+		title:		"PCI",
+		description:"with a PCI slot",
+		type:		"normal",
+		filters:[
+			{field:	"comments", 	type:"like",	value:'pci'},
+		],
+	},
+
+	port_audio:{
+		title:		"Port: Audio",
+		description:"with audio port",
+		type:		"normal",
+		filters:[
+			{field:	"audioports", 	type:"!=",	value: null},
+			{field:	"audioports", 	type:"!=",	value:'-'},
+		],
+	},
+
+	port_phone:{
+		title:		"Port: Phone",
+		description:"with phone port",
+		type:		"normal",
+		filters:[
+			{field:	"phoneports", 	type:"!=",	value: null},
+			{field:	"phoneports", 	type:"!=",	value:'-'},
+		],
+	},
+
+	port_sfp:{
+		title:		"Port: SFP",
 		description:"with SFP port",
 		type:		"normal",
 		filters:[
 			[
 				{field:	"sfp_ports", 		type:">",	value:'0'},
 				{field:	"sfp_plus_ports", 	type:">",	value:'0'},
+				{field:	"devicetype", 		type:"like",value:'SFP'},
 			],
+		],
+	},
+
+	port_usb:{
+		title:		"Port: USB",
+		description:"with USB port",
+		type:		"normal",
+		filters:[
+			{field:	"usbports", 	type:">=",	value:'1'},
+		],
+	},
+
+	port_video:{
+		title:		"Port: Video",
+		description:"with video port",
+		type:		"normal",
+		filters:[
+			{field:	"videoports", 	type:"!=",	value: null},
+			{field:	"videoports", 	type:"!=",	value:'-'},
+		],
+	},
+
+	power_bat:{
+		title:		"Power: Battery",
+		description:"battery powered",
+		type:		"normal",
+		filters:[
+			{field:	"powersupply", 	type:"like",	value:'battery'},
+		],
+	},
+
+	power_mains:{
+		title:		"Power: Mains",
+		description:"mains powered",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"powersupply", 	type:"like",	value:'240'},
+				{field:	"powersupply", 	type:"like",	value:'mains'},
+			],
+		],
+	},
+
+	power_poe:{
+		title:		"Power: PoE",
+		description:"PoE powered",
+		type:		"normal",
+		filters:[
+			{field:	"powersupply", 	type:"like",	value:'poe'},
+		],
+	},
+
+	power_usb:{
+		title:		"Power: USB",
+		description:"USB powered",
+		type:		"normal",
+		filters:[
+			{field:	"powersupply", 	type:"like",	value:'usb'},
+		],
+	},
+
+	type_board:{
+		title:		"Type: Board",
+		description:"single board computer",
+		type:		"normal",
+		filters:[
+			{field:	"devicetype", 	type:"like",	value:'Single Board Computer'},
+		],
+	},
+
+	type_switcth:{
+		title:		"Type: Switch",
+		description:"Switch oriented",
+		type:		"normal",
+		filters:[
+			{field:	"devicetype", 	type:"like",	value:'Switch'},
+		],
+	},
+
+	vlan:{
+		title:		"VLAN",
+		description:"Supports VLAN",
+		type:		"normal",
+		filters:[
+			{field:	"vlan", 	type:"=",	value:'Yes'},
 		],
 	},
 
@@ -537,10 +684,20 @@ let colFilterFeatures={
 		description:"802.11ac Wifi",
 		type:		"normal",
 		filters:[
+			{field:	"wlan50ghz", 	type:"like",	value:'ac'},
+		],
+	},
+
+	wifi_ax:{
+		title:		"Wifi AX",
+		description:"802.11ax Wifi",
+		type:		"normal",
+		filters:[
 			[
-				{field:	"wlan24ghz", 	type:"like",	value:'ac'},
-				{field:	"wlan50ghz", 	type:"like",	value:'ac'},
-			]
+				{field:	"wlan24ghz", 	type:"like",	value:'ax'},
+				{field:	"wlan50ghz", 	type:"like",	value:'ax'},
+				{field:	"wlan60ghz", 	type:"like",	value:'ax'},
+			],
 		],
 	},
 
@@ -552,11 +709,11 @@ let colFilterFeatures={
 			[
 				{field:	"wlan24ghz", 	type:"like",	value:'n'},
 				{field:	"wlan50ghz", 	type:"like",	value:'n'},
-			]
+			],
 		],
 	},
 
-	// admin features -------
+	// admin features --------------------------------
 
 	miss_commit:{
 		title:		"Miss Git",
@@ -576,6 +733,18 @@ let colFilterFeatures={
 		],
 	},
 
+	miss_picture:{
+		title:		"Miss Picture",
+		description:"missing Picture",
+		type:		"admin",
+		filters:[
+			[
+				{field:	"picture", 	type:"=",	value:null},
+				{field:	"picture", 	type:"like",	value:'genericrouter1.png'},
+			],
+		],
+	},
+
 	miss_pkg:{
 		title:		"Miss Pkg",
 		description:"missing Package Ach.",
@@ -584,15 +753,28 @@ let colFilterFeatures={
 			{field:	"packagearchitecture", 	type:"=",	value:null},
 		],
 	},
+
+	miss_wiki:{
+		title:		"Miss Wiki",
+		description:"missing Wiki page",
+		type:		"admin",
+		filters:[
+			{field:	"wikideviurl", 	type:"=",	value:null},
+		],
+	},
+
 	miss:{
 		title:		"Miss Something",
-		description:"miss Git | D.Page | Pkg",
+		description:"miss anything above",
 		type:		"admin",
 		filters:[
 			[
 				{field:	"supportedsincecommit", 	type:"=",	value:null},
 				{field:	"devicepage", 				type:"=",	value:null},
+				{field:	"picture", 					type:"=",	value:null},
+				{field:	"picture", 					type:"like",	value:'genericrouter1.png'},
 				{field:	"packagearchitecture", 		type:"=",	value:null},
+				{field:	"wikideviurl", 				type:"=",	value:null},
 			],
 		],
 	},
@@ -610,7 +792,7 @@ let colFilterPresets={
 		filters:[],
 		features:[
 			'available',
-			'ideal_memory',
+			'memory_ideal',
 			'wifi_ac',
 		]
 	},
@@ -622,7 +804,7 @@ let colFilterPresets={
 		filters:[],
 		features:[
 			'available',
-			'ideal_memory',
+			'memory_ideal',
 			'wifi_ac',
 			'eth_1g',
 		]
@@ -636,7 +818,7 @@ let colFilterPresets={
 		filters:[],
 		features:[
 			'available',
-			'ideal_memory',
+			'memory_ideal',
 			'wifi_ac',
 			'eth_1g',
 			'antennas',
@@ -645,11 +827,11 @@ let colFilterPresets={
 	},
 
 	poe: {
-		title:"Poe powered",
+		title:"PoE powered",
 		description:"Devices with PoE capability",
 		filters:[],
 		features:[
-			'poe',
+			'power_poe',
 		],
 
 	},
