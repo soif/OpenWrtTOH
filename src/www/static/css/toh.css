@@ -285,7 +285,7 @@ A.toh-but:hover{
 	font-size: 12px;
 }
 #toh-table .tabulator-header-filter {
-	padding-left: 15px;
+	padding-right: 15px;
 	margin-top: 5px;
 }
 #toh-table .tabulator-header-filter INPUT {
@@ -297,7 +297,7 @@ A.toh-but:hover{
 	display: block;
 	position: absolute;
 	top: 30px;
-	left: -2px;
+	right: 0;
 	z-index: 1000;
 }
 
