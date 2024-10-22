@@ -468,15 +468,24 @@ $(document).ready(function () {
 	
 
 	// Takes GET parameter of defauls ---------------------------------------
-	let def_filter	=getUrlParameterOrDefault('filter',	prefs.def_filter);
-	let def_view	=getUrlParameterOrDefault('view',	prefs.def_view);
+	let def_filter		=getUrlParameterOrDefault('filter',	prefs.def_filter);
+	let def_view		=getUrlParameterOrDefault('view',	prefs.def_view);
+	let def_features	=getUrlParameterOrDefault('feat',	prefs.def_features);
 
 	// Set default Filters & View -------------------------------------------
 	function SetDefaults(){
 			//show presets
 			$(".toh-filters-but-toggle").trigger('click');
+			
 			//default filter
 			$("#toh-filters-presets A[data-key='"+def_filter+"']").trigger('click');
+			
+			//default features
+			var def_features_array=def_features.split(',');
+			$.each(def_features_array,function(i,key){
+				$("#toh-filters-features A[data-key='"+key+"']").trigger('click');
+			});
+			
 			//default colunm view
 			$("#toh-views-presets A[data-key='"+def_view+"']").trigger('click');
 	}
