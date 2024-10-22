@@ -11,7 +11,9 @@ let owrtUrls={
 
 // Preferences --------------------------------------------------
 let prefs={
-	def_view: 'normal'
+	def_view: 		'normal',	// default Columns View Preset
+	def_filter: 	'',			// default Filter Preset
+	def_features: 	'',			// default Features (list ',' separated)
 };
 
 // options for tabulator table (tabuTable) ---------------------
