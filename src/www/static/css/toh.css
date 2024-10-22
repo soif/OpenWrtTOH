@@ -120,7 +120,7 @@
 	margin-right: 6px;
 }
 .toh-filter-description{
-	color: #555;
+	color: #999;
 	font-size: 12px;
 }
 
@@ -136,7 +136,6 @@
 }
 
 #toh-filters-features A{
-	font-weight: bold;	
 	color: #000;
 	text-decoration: none;
 }
