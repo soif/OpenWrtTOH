@@ -305,6 +305,114 @@ function checkFeature(feat,state=true){
 	$(".toh-filter-feature INPUT[data-key="+feat+"]").prop('checked',state);
 }
 
+// Return a (flatted) list of the current filtered fields ---------------------------------
+function getTableFiltersFields(type='filters'){
+	var fields=[];
+	if(type=='filters'){
+		var filters	=tabuTable.getFilters();
+	}
+	else if(type=='headerfilters'){
+		var filters	=tabuTable.getHeaderFilters();
+	}
+	else{ // all
+		var filters	=tabuTable.getFilters(true);
+	}
+	//console.log('GetFilterFields type='+type+' ----');
+	//console.log(filters);
+	$.each(filters,function(i,f){
+		if(Array.isArray(f)){
+			$.each(f,function(j,ff){
+				if (!fields.includes(ff.field)){
+					fields.push(ff.field);					
+				}
+			});
+		}
+		else{
+			if (!fields.includes(f.field)){
+				fields.push(f.field);					
+			}
+		}
+
+	});
+	//console.log(fields);
+	return fields;
+}
+
+// set a column view ------------------------------------------------
+// TODO refactor colum view, to not trigger a click, but rather globally apply columns view
+function toggleColumn(field,display){
+	var view=$("#toh-views-content INPUT[value="+field+"]");
+	if(display){
+		if(!view.is(':checked')){
+			view.trigger('click');
+		}
+	}
+	else{
+		if(view.is(':checked')){
+			view.trigger('click');
+		}
+	}
+}
+
+// set columns view depending on the selected Filter option ---------------------------------
+function applyViewFromFilters(){
+	var opt=$("#toh-filters-options INPUT[name='filtcol']:checked").val();
+	var fields	=getTableFiltersFields('all');
+	if(opt=='add'){
+		$.each(fields,function(i,f){
+			toggleColumn(f,true);
+		});
+		toggleColumn('brand',true);
+		toggleColumn('model',true);
+	}
+	else if(opt=='repl'){
+		$.each(columnStyles,function(f,arr){
+			if(fields.includes(f)){
+				toggleColumn(f,true);
+			}
+			else{
+				toggleColumn(f,false);
+			}
+		});
+		toggleColumn('brand',true);
+		toggleColumn('model',true);
+	}
+}
+
+
+// get filters array (also merge features filters for Presets)--------------------------
+function getFilterSet(type, key){
+	if(type=='preset'){
+		var set=colFilterPresets[key];
+	}
+	else if(type=='feature'){
+		var set=colFilterFeatures[key];
+	}
+	else{
+		console.log('Unknown ('+key+') type: '+ type);
+		return {};
+	}
+	if(typeof(set) !='object'){
+		console.log('Unknown Set key: '+ key);
+		return {};
+	}
+	//merge filters with features.filters
+	if(type=='preset'){
+		if( typeof(set.features) =='object'){ // cant we write it shorter ?
+			$.each(set.features,function(i,fv){
+				//console.log(i+'->'+fv)
+				$.each(colFilterFeatures[fv].filters,function(j,filt){
+					set.filters.push(filt);
+				});
+			});
+		}
+		else{
+			set.features={};
+		}
+	}
+	return set;
+}
+
 
 
 // ############################################################################################################
@@ -458,39 +566,6 @@ $(document).ready(function () {
 
 
 	// Top Filters ##########################################################################################
-	
-	// get filters array (also merge features filters for Presets)--------------------------
-	function getFilterSet(type, key){
-		if(type=='preset'){
-			var set=colFilterPresets[key];
-		}
-		else if(type=='feature'){
-			var set=colFilterFeatures[key];
-		}
-		else{
-			console.log('Unknown ('+key+') type: '+ type);
-			return {};
-		}
-		if(typeof(set) !='object'){
-			console.log('Unknown Set key: '+ key);
-			return {};
-		}
-		//merge filters with features.filters
-		if(type=='preset'){
-			if( typeof(set.features) =='object'){ // cant we write it shorter ?
-				$.each(set.features,function(i,fv){
-					//console.log(i+'->'+fv)
-					$.each(colFilterFeatures[fv].filters,function(j,filt){
-						set.filters.push(filt);
-					});
-				});
-			}
-			else{
-				set.features={};
-			}
-		}
-		return set;
-	}
 
 	//  Click: Filter Preset ------------------------------------------
 	$('#toh-top-filters').on('click','.toh-filter-preset .toh-filter-button',function(e){
@@ -662,26 +737,27 @@ $(document).ready(function () {
 
 	// Set Colum Headers Color-------------------------------------------------
 	function setColumHeaderColors(){
-		var allfilters	=createIndexedObject(tabuTable.getFilters(true),	'field');
-		var filters		=createIndexedObject(tabuTable.getFilters(),		'field');
-		var headfilters	=createIndexedObject(tabuTable.getHeaderFilters(),	'field');
+		var allfilters	=getTableFiltersFields('all');
+		var filters		=getTableFiltersFields('filters');
+		var headfilters	=getTableFiltersFields('headerfilters');
 		var myclass='';
 		$(".tabulator-col").removeClass('toh-col-allfilter toh-col-filter toh-col-headerfilter');
-		Object.keys(allfilters).forEach( f => {
-			if(typeof(filters[f]) =='object' && typeof(headfilters[f]) =='object' && filters[f].value !='' && headfilters[f].value.length > 1 ){
+		$.each(allfilters,function(i,f){
+			if(filters.includes(f) && headfilters.includes(f)){
 				myclass='toh-col-allfilter';
 			}
-			else if(typeof(filters[f]) =='object' && filters[f].value !=''){
+			else if(filters.includes(f)){
 				myclass='toh-col-filter';
 			}
-			else if(typeof(headfilters[f]) =='object' && headfilters[f].value.length > 1){
+			else if(headfilters.includes(f)){
 				myclass='toh-col-headerfilter';
 			}
-			//console.log(f+' -> '+myclass);
-		 	if(myclass !=''){
-				//console.log('applied');
+
+			if(myclass !=''){
+				//console.log('apply header class: '+myclass+' to '+f);
 				$(".tabulator-col[tabulator-field='"+f+"']").addClass(myclass);
 			}			
+
 		});
 	}
 	
@@ -717,9 +793,11 @@ $(document).ready(function () {
 
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
 	tabuTable.on("dataFiltered", function(filters, rows){
+		applyViewFromFilters();
 		setColumHeaderColors();
 		toggleFilterClearButVisibility();
 	});
+
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
 	tabuTable.on("dataSorted", function(filters, rows){
 		toggleSortClearButVisibility();

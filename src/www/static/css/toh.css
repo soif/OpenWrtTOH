@@ -54,6 +54,23 @@
 	float: right;
 }
 
+#toh-filters-options{
+	margin-top: 2px;
+	float: right;
+	font-size: 11px;
+	border: 1px solid #ddd;
+	background: #fafafa;
+	padding: 3px 5px;
+}
+.toh-options-title{
+}
+.toh-options-radios{
+	line-height: 110%;
+}
+.toh-options-radios LABEL{
+	font-weight: normal;
+}
+
 .toh-filters{
 	margin-bottom: 10px;
 }
