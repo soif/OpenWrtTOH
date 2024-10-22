@@ -468,14 +468,17 @@ $(document).ready(function () {
 	
 
 	// Takes GET parameter of defauls ---------------------------------------
-	let init_view=getUrlParameterOrDefault('view',prefs.def_view);
+	let def_filter	=getUrlParameterOrDefault('filter',	prefs.def_filter);
+	let def_view	=getUrlParameterOrDefault('view',	prefs.def_view);
 
 	// Set default Filters & View -------------------------------------------
 	function SetDefaults(){
 			//show presets
 			$(".toh-filters-but-toggle").trigger('click');
-			//default col view
-			$("#toh-views-presets A[data-key='"+init_view+"']").trigger('click');
+			//default filter
+			$("#toh-filters-presets A[data-key='"+def_filter+"']").trigger('click');
+			//default colunm view
+			$("#toh-views-presets A[data-key='"+def_view+"']").trigger('click');
 	}
 
 	// make column order from the colViewGroups ------------------------------
