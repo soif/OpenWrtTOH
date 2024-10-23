@@ -42,7 +42,16 @@ let tabulatorOptions={
 		{column:"brand", dir:"asc"}, 	//sort by this first
 		{column:"model", dir:"desc"}, //then sort by this second
 	],
+	//debugEventsInternal:['data-filtered'], 
+
 };
+
+
+
+
+// ########################################################################################################################################
+// Because these functions are referenced in the next colums definitions, we have to declare them first ###################################
+// ########################################################################################################################################
 
 
 // Cell Model Popup Formatter ###########################################################################################
@@ -192,7 +201,197 @@ function FormatterYesNo(cell, formatterParams, onRendered) {
 	return '<i class="'+icon+'"></i>';
 }
 
-// Columns Styles ################################################################################################################
+// Hande the 'flashmb' weird data format #####################################################################################
+// ---------------------
+function cellDebug(e, cell){
+	console.log(cell);
+	console.log(cell._cell.value);
+}
+
+
+// get the best value to use in sort/filter of the 'flashmb' column --------
+function _getFlashArrayBestValue(arr){
+	if(arr == null){
+		return '';
+	}
+	if( typeof(arr) !="object" ){
+		return arr;
+	}
+	var target=0;
+	arr.forEach((v) => {
+		if(v.match(/microsd/i) || v.match(/^SD$/)){
+			//console.log('SD found in :'+v);
+			v=128*1024;
+		}
+		else if(v.match(/eMMC/i) && arr.length==1){
+			v=1;
+		}
+		else{
+			v=v.replace(/[^\d]+/g,'');
+			v=Number(v);
+		}
+		if(v > target){
+			target=v;
+		}
+});
+	return target;
+}
+
+// create the 'flash>=' filter operator ----------------------------------------------
+Tabulator.extendModule("filter", "filters", {
+    "flash>=":function(filtValue, rowValue, rowData, filterParams){
+		console.log('-----');
+		console.log('filtValue='+filtValue+'	| rowValue='+rowValue);
+        return _getFlashArrayBestValue(rowValue) >= filtValue ? true : false;
+    }
+});
+
+// custom sorter for the 'flashmb' column----------------------------------------------
+function SorterFlash(a, b, aRow, bRow, column, dir, sorterParams){
+	var aa=_getFlashArrayBestValue(a);
+	var bb=_getFlashArrayBestValue(b);
+	//console.log(a);
+	//console.log(aa);
+	return aa - bb;
+}
+
+// Defines the custom HeaderFilter for the "flashmb" column ----------------------------
+// BUG : there is a bug in tabulator that DONT fire the dataFiltered event (certainly because the filter function is still registered), when emptying the field. 
+// So We cant update the collum/button colors
+function HeaderFilterFlash(cell, onRendered, success, cancel, editorParams){
+    var container = document.createElement("span");
+
+    //create and style inputs
+    var minimum = document.createElement("input");
+    minimum.setAttribute("type", "search");
+    minimum.style.padding	= "4px";
+    minimum.style.width		= "50%";
+    minimum.style.boxSizing = "border-box";
+    var search=minimum.cloneNode();
+	
+	minimum.setAttribute("placeholder", "Min");
+	search.setAttribute("placeholder", "Search");
+ 
+    minimum.value = cell.getValue();
+    search.value = cell.getValue();
+
+    function buildValues(){
+       	//console.log('ev-----');
+        //console.log('m:'+minimum.value);
+        //console.log('s:'+search.value);
+		if(minimum.value=='' && search.value==''){
+			console.log('flashmb headerfilter is now empty, but tabulator (BUG?) never clears the filter from the filters');
+			// var headfilters=tabuTable.getHeaderFilters();
+			// console.log(headfilters);
+			// for (const f of headfilters) {
+			// 	console.log(f);
+			// 	if(f.field=="flashmb" && typeof(f.type)=='function'){
+			// 		console.log('found');
+			// 		tabuTable.removeHeaderFilter(f);
+			// 	}
+			// }
+
+			// setTimeout(function() {
+			// 	console.log('empty2');
+			// 	//var f=tabuTable.getHeaderFilters();
+			// 	//console.log(f);
+	
+			// }, 2000);
+			// //cancel();
+		}
+		success({
+            minimum:	minimum.value,
+            search:		search.value,
+        });
+    }
+
+    // function keypress(e){
+
+	// 	if(e.keyCode == 13){	
+    //         buildValues();
+    //     }
+
+    //     if(e.keyCode == 27){  // esc
+    //         cancel();
+    //     }
+	// 	else{
+	// 		buildValues();
+	// 	}
+    // }
+
+	// events ---
+    minimum.addEventListener("change", buildValues);
+    minimum.addEventListener("blur", buildValues);
+    //minimum.addEventListener("keydown", buildValues);
+    minimum.addEventListener("keyup", buildValues); // for empty
+	//minimum.addEventListener("input", buildValues); // for empty
+	
+    search.addEventListener("change", buildValues);
+    search.addEventListener("blur", buildValues);
+    //search.addEventListener("keydown", buildValues);
+    search.addEventListener("keyup", buildValues); // for empty
+
+    container.appendChild(minimum);
+    container.appendChild(search);
+	
+    return container;
+ }
+
+// Handle custom HeaderFilter's logic for the 'flashmb' colum ---------------------------------------------
+function HeaderFilterFuncFlash(headerValue, rowValue, rowData, filterParams){
+	var b_minimum=true;
+	var b_search=true;
+	//console.log('val='+rowValue);
+	var m;
+	if(headerValue =='' || headerValue==null || headerValue == undefined){
+		//tabuTable.trigger()
+		return true;
+	}
+	
+	if(headerValue.minimum != ""){
+		b_minimum =  _getFlashArrayBestValue(rowValue) >= headerValue.minimum;
+	}
+	if(headerValue.search != ""){
+		console.log('---row='+rowValue);
+
+		b_search=false;
+		if(Array.isArray(rowValue)){
+			var reg		= new RegExp(headerValue.search,'i');
+			for (const v of rowValue) {
+				if(v !=null){
+					console.log('v='+v);
+					m=reg.test(v);
+					console.log(m);
+					if(m){
+						b_search=true;
+						break;	
+					}
+				}
+			};
+		}
+	}
+	return b_minimum && b_search;
+
+    //return true; //must return a boolean, true if it passes the filter.
+}
+
+// function HeaderFilterEmpty(value){
+// 	console.log('empty1:'+value);
+// 	if(value =='' || value==null || value==undefined){
+// 		return true;
+// 	}
+// 	console.log('empty2:'+value);
+// 	return false;
+// }
+
+
+
+
+
+
+// ##########################################################################################################################################################
+// Columns Styles ###########################################################################################################################################
+// ##########################################################################################################################################################
 let colFilterMin={headerFilterPlaceholder:"Minimum", headerFilterFunc:">="};
 
 let columnStyles = {
@@ -229,7 +428,7 @@ let columnStyles = {
 	firmwareopenwrtupgradeurl:			{title: "Upgrade",		headerTooltip: 'Owrt Firmware Upgrade',			width: 55,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'Upgr.'}},
 	firmwareopenwrtsnapshotinstallurl:	{title: "Snap.Inst.",	headerTooltip: 'Owrt Snapshot Install',			width: 70,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'Sn.Inst.'}},
 	firmwareopenwrtsnapshotupgradeurl:	{title: "Snap.Upgr.",	headerTooltip: 'Owrt Snapshot Upgrade',			width: 70,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'Sn.Upgr.'}},
-	flashmb:							{title: "Flash",		headerTooltip: 'Flash Memory (Mb)',				width: 90,	hozAlign: 'left',	sorter: 'array',	frozen: false,	formatter: FormatterArray,		formatterParams: undefined,		...colFilterMin,	sorterParams: {type: "min", alignEmptyValues: "bottom"}},
+	flashmb:							{title: "Flash",		headerTooltip: 'Flash Memory (Mb)',				width: 90,	hozAlign: 'left',	sorter: SorterFlash,frozen: false,	formatter: FormatterArray,		formatterParams: undefined, headerFilter:HeaderFilterFlash, headerFilterFunc:HeaderFilterFuncFlash, headerFilterLiveFilter:false },	// , cellClick:cellDebug  , headerFilterEmptyCheck:HeaderFilterEmpty
 	forumsearch:						{title: "Forum Search",	headerTooltip: 'Forum Search',					width: 90,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
 	gitsearch:							{title: "Git Search",	headerTooltip: 'Git Search',					width: 90,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
 	gpios:								{title: "GPIOs",		headerTooltip: 'GPIOs',							width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanWords,	formatterParams: undefined,		...colFilterMin},
@@ -509,8 +708,8 @@ let colFilterFeatures={
 		description:"at least 8MB Flash & 64MB RAM",
 		type:		"normal",
 		filters:[
-			{field:	"rammb", 		type:">=",		value:8	},
-			{field:	"flashmb", 		type:">=",		value:64},
+			{field:	"rammb", 		type:">=",			value:8	},
+			{field:	"flashmb", 		type:"flash>=",		value:64},
 		],
 	},
 
@@ -519,8 +718,8 @@ let colFilterFeatures={
 		description:"at least 16MB Flash & 128MB RAM",
 		type:		"normal",
 		filters:[
-			{field:	"rammb", 		type:">=",		value:16},
-			{field:	"flashmb", 		type:">=",		value:128},
+			{field:	"rammb", 		type:">=",			value:16},
+			{field:	"flashmb", 		type:"flash>=",		value:128},
 		],
 	},
 
@@ -810,7 +1009,6 @@ let colFilterPresets={
 			'wifi_ac',
 			'eth_1g',
 		]
-
 	},
 
 	available_864_ac_wifi_gbit_eth_ant: {
@@ -825,7 +1023,6 @@ let colFilterPresets={
 			'eth_1g',
 			'antennas',
 		]
-
 	},
 
 	poe: {
@@ -835,7 +1032,6 @@ let colFilterPresets={
 		features:[
 			'power_poe',
 		],
-
 	},
 
 
