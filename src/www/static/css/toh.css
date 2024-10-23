@@ -218,10 +218,19 @@
 
 /* Top Buttons ---------------------------- */
 #toh-top-buttons{
-	text-align: right;
-	padding-right: 10px;
 	min-height: 22px;
+	/* overflow: hidden; */
 }
+.toh-buttons-left{
+	float: left;
+	/* padding-left: 10px; */
+}
+.toh-buttons-right{
+	float: right;
+	padding-right: 10px;
+	text-align: right;
+}
+
 A.toh-but{
 	display: inline-block;
 	margin-left: 10px;
