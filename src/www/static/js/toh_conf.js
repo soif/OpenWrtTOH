@@ -492,8 +492,8 @@ let colViewGroups={
 			'cpu',
 			'cpucores',
 			'cpumhz',
-			'rammb',
 			'flashmb',
+			'rammb',
 			'switch',
 			'wlanhardware',
 		]
@@ -755,7 +755,7 @@ let colFilterFeatures={
 
 	pci:{
 		title:		"PCI",
-		description:"with a PCI slot",
+		description:"with PCI slot",
 		type:		"normal",
 		filters:[
 			{field:	"comments", 	type:"like",	value:'pci'},
@@ -873,7 +873,7 @@ let colFilterFeatures={
 
 	vlan:{
 		title:		"VLAN",
-		description:"Supports VLAN",
+		description:"supports VLAN",
 		type:		"normal",
 		filters:[
 			{field:	"vlan", 	type:"=",	value:'Yes'},
@@ -881,8 +881,8 @@ let colFilterFeatures={
 	},
 
 	wifi_ac:{
-		title:		"Wifi AC",
-		description:"802.11ac Wifi",
+		title:		"Wifi: AC",
+		description:"with 802.11ac Wifi",
 		type:		"normal",
 		filters:[
 			{field:	"wlan50ghz", 	type:"like",	value:'ac'},
@@ -890,8 +890,8 @@ let colFilterFeatures={
 	},
 
 	wifi_ax:{
-		title:		"Wifi AX",
-		description:"802.11ax Wifi",
+		title:		"Wifi: AX",
+		description:"with 802.11ax Wifi",
 		type:		"normal",
 		filters:[
 			[
@@ -903,8 +903,8 @@ let colFilterFeatures={
 	},
 
 	wifi_n:{
-		title:		"Wifi N",
-		description:"802.11n Wifi",
+		title:		"Wifi: N",
+		description:"with 802.11n Wifi",
 		type:		"normal",
 		filters:[
 			[
@@ -986,9 +986,9 @@ let colFilterFeatures={
 //---------------------------------------------------------
 let colFilterPresets={
 	
-	available_864_ac_wifi: {
-		title:"Ideal AC, Avail.",
-		description:"At least 8MB Flash and 64MB RAM + 802.11ac Wifi + (Available or Unknown)",
+	ideal_864_ac_avail: {
+		title:"Ideal, AC, Avail.",
+		description:"At least 8MB Flash and 64MB RAM + AC Wifi + (Available or Unknown)",
 		orig_url:"https://openwrt.org/toh/views/toh_available_864_ac-wifi",
 		filters:[],
 		features:[
@@ -998,9 +998,9 @@ let colFilterPresets={
 		]
 	},
 
-	available_864_ac_wifi_gbit_eth: {
-		title:"Ideal AC, Gbit, Avail.",
-		description:"At least 8MB Flash and 64MB RAM + 802.11ac Wifi + Eth >=1G + (Available or Unknown)",
+	ideal_864_ac_gbit_avail: {
+		title:"Ideal, AC, Gbit, Avail.",
+		description:"At least 8MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
 		orig_url:"https://openwrt.org/toh/views/toh_available_864_ac-wifi_gbit-eth",
 		filters:[],
 		features:[
@@ -1011,9 +1011,9 @@ let colFilterPresets={
 		]
 	},
 
-	available_864_ac_wifi_gbit_eth_ant: {
-		title:"Ideal AC, Gbit, Antennas, Avail.",
-		description:"At least 8MB Flash and 64MB RAM + 802.11ac Wifi + Eth >=1G + Antennas (Available or Unknown)",
+	ideal_864_ac_gbit_avail_ant: {
+		title:"Ideal, AC, Gbit, Avail., Antennas",
+		description:"At least 8MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown) + Antennas",
 		orig_url:"https://openwrt.org/toh/views/toh_available_864_dual-wifi_gbit_extant",
 		filters:[],
 		features:[
@@ -1025,13 +1025,43 @@ let colFilterPresets={
 		]
 	},
 
-	poe: {
-		title:"PoE powered",
-		description:"Devices with PoE capability",
+	ideal_864_ax_gbit_avail: {
+		title:"Ideal, AX, Gbit, Avail.",
+		description:"At least 8MB Flash and 64MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
+		orig_url:"",
 		filters:[],
 		features:[
-			'power_poe',
-		],
+			'available',
+			'memory_ideal',
+			'wifi_ax',
+			'eth_1g',
+		]
+	},
+
+	more_864_ac_gbit_avail: {
+		title:"More, AC, Gbit, Avail.",
+		description:"At least 16MB Flash and 128MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
+		orig_url:"",
+		filters:[],
+		features:[
+			'available',
+			'memory_more',
+			'wifi_ac',
+			'eth_1g',
+		]
+	},
+
+	more_864_ax_gbit_avail: {
+		title:"More, AX, Gbit, Avail.",
+		description:"At least 16MB Flash and 128MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
+		orig_url:"",
+		filters:[],
+		features:[
+			'available',
+			'memory_more',
+			'wifi_ax',
+			'eth_1g',
+		]
 	},
 
 
