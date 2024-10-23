@@ -775,9 +775,10 @@ $(document).ready(function () {
 	
 	// Expand header-filter INPUT on focus -----------------------------------
 	$('#toh-table').on('focus','.tabulator-header-filter INPUT', function() {
-		var w=$(this).width();
+		var w=$(this).outerWidth();
 		if (w < 50) {
-			$(this).attr('data-orig-width',w);
+			var pw=$(this)[0].style.width;
+			$(this).attr('data-orig-pwidth',pw);
 			$(this).css('position','absolute');
 			$(this).parents('.tabulator-col').css('overflow','visible');
 			$(this).animate({
@@ -788,13 +789,11 @@ $(document).ready(function () {
 
 	// Restore header-filter INPUT on blur ---------------------------------
 	$('#toh-table').on('blur','.tabulator-header-filter INPUT', function() {
-		var w=$(this).attr('data-orig-width');
-		if (w > 0) {
+		var pw=$(this).attr('data-orig-pwidth');
+		if (pw !='' || pw > 0) {
 			$(this).css('position','static');
 			$(this).parents('.tabulator-col').css('overflow','hidden');
-			$(this).animate({
-				width: '100%',
-			}, 100);
+			$(this).animate({width: pw}, 100);
 		}
 		setColumHeaderColors();
 	});
@@ -805,6 +804,8 @@ $(document).ready(function () {
 
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
 	tabuTable.on("dataFiltered", function(filters, rows){
+		//console.log('dataFiltered Event ----------');
+		//console.log(getTableFiltersFields('headerfilters'));
 		applyViewFromFilters();
 		setColumHeaderColors();
 		toggleFilterClearButVisibility();
