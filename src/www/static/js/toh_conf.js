@@ -202,38 +202,46 @@ function FormatterYesNo(cell, formatterParams, onRendered) {
 }
 
 // Hande the 'flashmb' weird data format #####################################################################################
-// ---------------------
+
+// ---------------------------------------------------------------------------------------
 function cellDebug(e, cell){
 	console.log(cell);
 	console.log(cell._cell.value);
 }
 
 
-// get the best value to use in sort/filter of the 'flashmb' column --------
+// get the best value to use in sort/filter of the 'flashmb' column ----------------------
 function _getFlashArrayBestValue(arr){
+	// ignore these, just in case (because JS is SOOOOOOO sensitive)
 	if(arr == null){
 		return '';
 	}
 	if( typeof(arr) !="object" ){
 		return arr;
 	}
-	var target=0;
+
+	var target=0;	
+	// now we can walk into the array of values, without throwing a fatal error (did I ever said I love JS ?) .....
 	arr.forEach((v) => {
+		// 'microSD' or 'SD' means(?) we have Gigas available, so we rank as 128G
 		if(v.match(/microsd/i) || v.match(/^SD$/)){
 			//console.log('SD found in :'+v);
 			v=128*1024;
 		}
+		// eMMC is unknown, but maybe(?) means at least 1M(?)
 		else if(v.match(/eMMC/i) && arr.length==1){
 			v=1;
 		}
+		// else we bet on the higher array.member value. (We only keep the number, ignoring letters)
 		else{
 			v=v.replace(/[^\d]+/g,'');
 			v=Number(v);
 		}
+		// target is the highest found value
 		if(v > target){
 			target=v;
 		}
-});
+	});
 	return target;
 }
 
@@ -256,7 +264,7 @@ function SorterFlash(a, b, aRow, bRow, column, dir, sorterParams){
 }
 
 // Defines the custom HeaderFilter for the "flashmb" column ----------------------------
-// BUG : there is a bug in tabulator that DONT fire the dataFiltered event (certainly because the filter function is still registered), when emptying the field. 
+// BUG : there is a bug in tabulator that DONT fire the 'dataFiltered' event (certainly because the filter function is still registered), when emptying the field. 
 // So We cant update the collum/button colors
 function HeaderFilterFlash(cell, onRendered, success, cancel, editorParams){
     var container = document.createElement("span");
