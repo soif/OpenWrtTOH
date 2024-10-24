@@ -133,6 +133,11 @@ function FormatterImages(cell, formatterParams, onRendered) {
 				label='<i class="fa-solid fa-image"></i>';
 			}
 			out +='<a href="' + url + '" target="_blank" class="cell-image">'+label+'</a> ';
+
+			// preload images
+			const img = new Image();
+			img.src = url;
+
 		});
 		return out;
 	} 
