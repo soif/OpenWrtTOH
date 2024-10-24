@@ -132,7 +132,7 @@ function FormatterImages(cell, formatterParams, onRendered) {
 			else{
 				label='<i class="fa-solid fa-image"></i>';
 			}
-			out +='<a href="' + url + '" target="_blank" class="cell-image" title="'+url+'">'+label+'</a> ';
+			out +='<a href="' + url + '" target="_blank" class="cell-image">'+label+'</a> ';
 		});
 		return out;
 	} 
@@ -400,7 +400,7 @@ let columnStyles = {
 	packagearchitecture:				{title: "Pkg Arch",		headerTooltip: 'Package Architecture',			width: 90,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	phoneports:							{title: "Phone",		headerTooltip: 'Phone Ports',					width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	powersupply:						{title: "Power",		headerTooltip: 'Power Supply',					width: 70,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	picture:							{title: "Image",		headerTooltip: 'Device Picture',				width: 70,	hozAlign: "center",	sorter: 'array',	frozen: false,	formatter: FormatterImages,		formatterParams: undefined},
+	picture:							{title: "Image",		headerTooltip: 'Device Picture',				width: 70,	hozAlign: "center",	sorter: 'array',	frozen: false,	formatter: FormatterImages,		formatterParams: undefined,		tooltip: false},
 	rammb:								{title: "RAM",			headerTooltip: 'RAM (Mb)',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
 	recoverymethods:					{title: "Recovery",		headerTooltip: 'Recovery Methods',				width: 80,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
 	sataports:							{title: "SATA",			headerTooltip: 'SATA Ports',					width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
