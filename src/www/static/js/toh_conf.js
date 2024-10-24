@@ -201,7 +201,8 @@ function FormatterYesNo(cell, formatterParams, onRendered) {
 	return '<i class="'+icon+'"></i>';
 }
 
-// Hande the 'flashmb' weird data format #####################################################################################
+
+// Handle the 'flashmb' weird data format #####################################################################################
 
 // ---------------------------------------------------------------------------------------
 function cellDebug(e, cell){
@@ -228,7 +229,7 @@ function _getFlashArrayBestValue(arr){
 			//console.log('SD found in :'+v);
 			v=128*1024;
 		}
-		// eMMC is unknown, but maybe(?) means at least 1M(?)
+		// eMMC size is unknown, but if it is alone, it maybe(?) means at least 1M(?)
 		else if(v.match(/eMMC/i) && arr.length==1){
 			v=1;
 		}
@@ -247,11 +248,11 @@ function _getFlashArrayBestValue(arr){
 
 // create the 'flash>=' filter operator ----------------------------------------------
 Tabulator.extendModule("filter", "filters", {
-    "flash>=":function(filtValue, rowValue, rowData, filterParams){
-		console.log('-----');
-		console.log('filtValue='+filtValue+'	| rowValue='+rowValue);
-        return _getFlashArrayBestValue(rowValue) >= filtValue ? true : false;
-    }
+	"flash>=":function(filtValue, rowValue, rowData, filterParams){
+		//console.log('-----');
+		//console.log('filtValue='+filtValue+'	| rowValue='+rowValue);
+		return _getFlashArrayBestValue(rowValue) >= filtValue ? true : false;
+	}
 });
 
 // custom sorter for the 'flashmb' column----------------------------------------------
@@ -264,85 +265,48 @@ function SorterFlash(a, b, aRow, bRow, column, dir, sorterParams){
 }
 
 // Defines the custom HeaderFilter for the "flashmb" column ----------------------------
-// BUG : there is a bug in tabulator that DONT fire the 'dataFiltered' event (certainly because the filter function is still registered), when emptying the field. 
-// So We cant update the collum/button colors
 function HeaderFilterFlash(cell, onRendered, success, cancel, editorParams){
-    var container = document.createElement("span");
+	var container = document.createElement("span");
 
-    //create and style inputs
-    var minimum = document.createElement("input");
-    minimum.setAttribute("type", "search");
-    minimum.style.padding	= "4px";
-    minimum.style.width		= "50%";
-    minimum.style.boxSizing = "border-box";
-    var search=minimum.cloneNode();
+	//create and style inputs
+	var minimum = document.createElement("input");
+	minimum.setAttribute("type", "text");
+	minimum.style.padding	= "4px";
+	minimum.style.width		= "50%";
+	minimum.style.boxSizing = "border-box";
+	var search=minimum.cloneNode();
 	
-	minimum.setAttribute("placeholder", "Min");
+	minimum.setAttribute("placeholder", "Minimum");
 	search.setAttribute("placeholder", "Search");
- 
-    minimum.value = cell.getValue();
-    search.value = cell.getValue();
 
-    function buildValues(){
-       	//console.log('ev-----');
-        //console.log('m:'+minimum.value);
-        //console.log('s:'+search.value);
-		if(minimum.value=='' && search.value==''){
-			console.log('flashmb headerfilter is now empty, but tabulator (BUG?) never clears the filter from the filters');
-			// var headfilters=tabuTable.getHeaderFilters();
-			// console.log(headfilters);
-			// for (const f of headfilters) {
-			// 	console.log(f);
-			// 	if(f.field=="flashmb" && typeof(f.type)=='function'){
-			// 		console.log('found');
-			// 		tabuTable.removeHeaderFilter(f);
-			// 	}
-			// }
+	minimum.value = cell.getValue();
+	search.value = cell.getValue();
 
-			// setTimeout(function() {
-			// 	console.log('empty2');
-			// 	//var f=tabuTable.getHeaderFilters();
-			// 	//console.log(f);
-	
-			// }, 2000);
-			// //cancel();
-		}
+	function buildValues(){
 		success({
-            minimum:	minimum.value,
-            search:		search.value,
-        });
-    }
-
-    // function keypress(e){
-
-	// 	if(e.keyCode == 13){	
-    //         buildValues();
-    //     }
-
-    //     if(e.keyCode == 27){  // esc
-    //         cancel();
-    //     }
-	// 	else{
-	// 		buildValues();
-	// 	}
-    // }
+			minimum:	minimum.value,
+			search:		search.value,
+		});
+		if(minimum.value=='' && search.value==''){
+			console.log('gotcha')
+			// this fixes the Tabulator Bug, who never fires the 'dataFiltered' event when emptying the field
+			tabuTable.setHeaderFilterValue('flashmb',null);
+		}	
+	}
 
 	// events ---
-    minimum.addEventListener("change", buildValues);
-    minimum.addEventListener("blur", buildValues);
-    //minimum.addEventListener("keydown", buildValues);
-    minimum.addEventListener("keyup", buildValues); // for empty
-	//minimum.addEventListener("input", buildValues); // for empty
-	
-    search.addEventListener("change", buildValues);
-    search.addEventListener("blur", buildValues);
-    //search.addEventListener("keydown", buildValues);
-    search.addEventListener("keyup", buildValues); // for empty
+	minimum.addEventListener("change",	buildValues);
+	minimum.addEventListener("blur", 	buildValues);
+	minimum.addEventListener("keyup",	buildValues); // for empty
+	//minimum.addEventListener("input",	buildValues); // for empty
+	search.addEventListener("change",	buildValues);
+	search.addEventListener("blur",		buildValues);
+	search.addEventListener("keyup",	buildValues); // for empty
 
-    container.appendChild(minimum);
-    container.appendChild(search);
+	container.appendChild(minimum);
+	container.appendChild(search);
 	
-    return container;
+	return container;
  }
 
 // Handle custom HeaderFilter's logic for the 'flashmb' colum ---------------------------------------------
@@ -352,7 +316,6 @@ function HeaderFilterFuncFlash(headerValue, rowValue, rowData, filterParams){
 	//console.log('val='+rowValue);
 	var m;
 	if(headerValue =='' || headerValue==null || headerValue == undefined){
-		//tabuTable.trigger()
 		return true;
 	}
 	
@@ -360,14 +323,13 @@ function HeaderFilterFuncFlash(headerValue, rowValue, rowData, filterParams){
 		b_minimum =  _getFlashArrayBestValue(rowValue) >= headerValue.minimum;
 	}
 	if(headerValue.search != ""){
-		console.log('---row='+rowValue);
-
+		//console.log('---row='+rowValue);
 		b_search=false;
 		if(Array.isArray(rowValue)){
 			var reg		= new RegExp(headerValue.search,'i');
 			for (const v of rowValue) {
 				if(v !=null){
-					console.log('v='+v);
+					//console.log('v='+v);
 					m=reg.test(v);
 					console.log(m);
 					if(m){
@@ -378,20 +340,8 @@ function HeaderFilterFuncFlash(headerValue, rowValue, rowData, filterParams){
 			};
 		}
 	}
-	return b_minimum && b_search;
-
-    //return true; //must return a boolean, true if it passes the filter.
+	return b_minimum && b_search; //must return a boolean, true if it passes the filter.
 }
-
-// function HeaderFilterEmpty(value){
-// 	console.log('empty1:'+value);
-// 	if(value =='' || value==null || value==undefined){
-// 		return true;
-// 	}
-// 	console.log('empty2:'+value);
-// 	return false;
-// }
-
 
 
 
