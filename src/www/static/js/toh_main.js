@@ -649,7 +649,7 @@ $(document).ready(function () {
 	});
 
 	// Click: one view link ----------------------
-	$('#toh-views-list').on('click','A',function(e){
+	$('.toh-views-list').on('click','A',function(e){
 		e.preventDefault();
 		var cb=$(this).parent().find('INPUT').trigger('click');
 	});

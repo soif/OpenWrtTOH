@@ -173,7 +173,7 @@
 	border-bottom: 1px solid #ccc;
 }
 
-#toh-views-list UL{
+.toh-views-list UL{
 	list-style-type: none;
 	padding-left: 15px;
 }
@@ -201,11 +201,11 @@
 		column-count: 2;
 	}
 }
-#toh-views-list A{
+.toh-views-list A{
 	color: #000;
 	text-decoration: none;
 }
-#toh-views-list .toh-colgroup-title A{
+.toh-views-list .toh-colgroup-title A{
 	font-size: 12px;
 	font-weight: bold;	
 	color: #888;
