@@ -189,24 +189,37 @@ function getTableFiltersFields(type='filters'){
 // ----------------------------------------------------
 function applyFilterPreset(key){
 	var set=getFilterSet('preset',key);
-	//console.log(set);
-	//tabuTable.refreshFilter();
-	tabuTable.setFilter(set.filters ); //,  {matchAll:true}
-	checkAllFeatures(false);
-	$.each(set.features,function(j,feat){
-		checkFeature(feat);
-	});
+	if(Object.keys(set).length > 0 ){
+		$('#toh-filters-presets A').removeClass('selected');
+		$("#toh-filters-presets A[data-key="+key+"]").addClass('selected');
+		tabuTable.setFilter(set.filters ); //,  {matchAll:true}
+		checkAllFeatures(false);
+		if(set.features.length > 0 ){		
+			$.each(set.features,function(j,feat){
+				checkFeature(feat);
+			});	
+		}
+	}
 }
 
 // ----------------------------------------------------
 function applyFilterFeature(key,bool){
 	var set=getFilterSet('feature',key);
-	//console.log(set);
-	if(bool){
-		tabuTable.addFilter(set.filters);
+	//console.log('Set Features '+key+' ---------------------------');
+	if(typeof(set.filters) !='object'){
+		return false;
 	}
-	else{
-		tabuTable.removeFilter(set.filters);
+	if(set.filters.length > 0){
+		//console.log('Set Features '+key+' ------- DONE --------------');
+		$('#toh-filters-presets A').removeClass('selected');
+		//console.log(set);
+		checkFeature(key,bool);
+		if(bool){
+			tabuTable.addFilter(set.filters);
+		}
+		else{
+			tabuTable.removeFilter(set.filters);
+		}		
 	}
 }
 
@@ -329,13 +342,13 @@ function checkAllColumns(state=true){
 
 //  Show and Check on/off ALL Column checkboxes ------------------------------
 function showAndCheckColumn(col,state=true){
+	checkColumn(col,state);
 	if(state){
 		tabuTable.showColumn(col);
 	}
 	else{
 		tabuTable.hideColumn(col);
 	}
-	checkColumn(col,state);
 }
 
 // Show or Hide ALL columns --------------------------------------
@@ -355,31 +368,39 @@ function showAllColumns(bool) {
 function applyColumnPreset(key){
 	showLoading();
 	setTimeout(function(){
+
 		//tabuTable.blockRedraw();
 		if(key=='all'){
-			showAllColumns(true);
+			$('#toh-cols-presets A').removeClass('selected');
+			$("#toh-cols-presets A[data-key="+key+"]").addClass('selected');
 			checkAllColumns(true);
-
+			showAllColumns(true);
 		}
 		else if(key=='none'){
-			showAllColumns(false);
+			$('#toh-cols-presets A').removeClass('selected');
+			$("#toh-cols-presets A[data-key="+key+"]").addClass('selected');	
 			checkAllColumns(false);
+			showAllColumns(false);
 		}
 		else{
 			var set=getColumnSet(key);
-			showAllColumns(false);
-			checkAllColumns(false);
-			set.forEach(col => {
-				showAndCheckColumn(col);
-			});
+			if(set.length > 0){
+				$('#toh-cols-presets A').removeClass('selected');
+				$("#toh-cols-presets A[data-key="+key+"]").addClass('selected');	
+				checkAllColumns(false);
+				showAllColumns(false);
+				set.forEach(col => {
+					showAndCheckColumn(col);
+				});	
+			}
 		}
-		$('#toh-cols-presets A').removeClass('selected');
-		$("#toh-cols-presets A[data-key="+key+"]").addClass('selected');
 		//tabuTable.redraw(true);
 		//tabuTable.restoreRedraw();
 	},0);
 
 }
+// Apply a (single) Column : show/hide -----------------------
+
 function applyColumCol(key,state){
 	showAndCheckColumn(key,state);
 }
@@ -445,7 +466,93 @@ function updateColGroupIcons(){
 }
 
 
-// Misc functions #######################################################################
+// URL functions ######################################################################################################
+
+// Get Url parameter -----------------------------------------------
+function getUrlParameter(name) {
+	name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+	var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+	var results = regex.exec(location.search);
+	return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+}
+// Get Url parameter or default value -----------------------------
+function getUrlParameterOrDefault(name, defaultValue='') {
+	var value = getUrlParameter(name);
+	return value !== '' ? value : defaultValue;
+}
+
+// update the browser Url (without reloading the page) ------------
+function updateBrowserUrl(newURL) {
+	const state = {}; // State object
+	const title = ''; // Title (ignored by most browsers)
+	history.replaceState(state, title, newURL);
+  }
+  
+  // get the currently checked features ---------------
+  function getCheckedFeatures(){
+	  var checked=[];
+	  $('.toh-filters-list INPUT').each(function(i){
+		  if($(this).is(':checked')){
+			  checked.push($(this).attr('data-key'));
+		  }
+	  });
+	  return checked;
+  }
+  
+  // get the currently checked columns ---------------
+  function getCheckedColumns(){
+	  var checked=[];
+	  $('.toh-col-column INPUT').each(function(i){
+		  if($(this).is(':checked')){
+			  checked.push($(this).attr('data-key'));
+		  }
+	  });
+	 // console.log(checked);
+	  return checked;
+  }
+
+  // build, then update the browser Url  ------------
+  function buildBrowserUrl(and_update=true){
+	//console.log('buildBrowserUrl');
+	var url=window.location.pathname;
+	var params=[];
+	var tmp_list;
+	var tmp_preset;
+
+	// make features
+	tmp_preset=$('#toh-filters-presets A.selected').attr('data-key');
+	if(tmp_preset !=undefined){
+		params.push(prefs.p_filter+'='+tmp_preset);
+	}
+	else{
+		tmp_list= getCheckedFeatures();
+		if(tmp_list.length>0){
+			params.push( prefs.p_features+'='+tmp_list.join(",") );
+		}
+	}
+
+	// make colums
+	tmp_preset=$('#toh-cols-presets A.selected').attr('data-key');
+	if(tmp_preset !=undefined && tmp_preset !='custom'){
+		params.push(prefs.p_view+'='+tmp_preset);
+	}
+	else{
+		tmp_list= getCheckedColumns();
+		if(tmp_list.length>0){
+			params.push( prefs.p_columns+'='+tmp_list.join(",") );
+		}  
+	}
+
+	if(and_update){
+		url +="?";
+		url +=params.join('&');
+		updateBrowserUrl(url);
+	}
+	console.log(url);
+  }
+  
+  
+// Misc functions ###################################################################################
 
 // Position the Image Preview div -------------------------------------------
 function positionPreview($link, $container) {
@@ -480,7 +587,6 @@ function positionPreview($link, $container) {
 	});
 }
 
-
 // Show Loading --------------------------------------------------------
 function showLoading(){
 	$('#toh-loading').show();
@@ -490,18 +596,56 @@ function hideLoading(){
 	$('#toh-loading').hide();
 }
 
-// Get Url parameter -----------------------------------------------
-function getUrlParameter(name) {
-	name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-	var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-	var results = regex.exec(location.search);
-	return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+// Set default Filters & View -------------------------------------------
+function SetDefaults(){
+	//console.log('SetDefaults');
+	//show presets
+	$(".toh-filters-but-toggle").trigger('click');
+	
+	var tmp_value;
+	var tmp_arr;
+	
+	//columns or columns preset
+	tmp_value=getUrlParameter(prefs.p_columns);
+	if(tmp_value == ''){
+		// set preset
+		tmp_value=getUrlParameterOrDefault(prefs.p_view, prefs.def_view);
+		if(getColumnSet(tmp_value).length == 0){
+			tmp_value=prefs.def_view;
+		}
+		applyColumnPreset(tmp_value);
+	}
+	else{
+		tmp_arr=tmp_value.split(',');
+		$.each(tmp_arr,function(i,key){
+			applyColumCol(key);
+		});
+	}
+	
+	
+	//features or filter preset
+	//console.log('SetDefaults Filter');
+	tmp_value=getUrlParameter(prefs.p_features);
+	if(tmp_value == ''){
+		//console.log('SetDefaults Filter Preset');
+		// set preset
+		tmp_value=getUrlParameterOrDefault(prefs.p_filter, prefs.def_filter);
+		applyFilterPreset(tmp_value);
+		//console.log('SetDefaults Filter Preset DONE');
+	}
+	else{
+		//console.log('SetDefaults Filter Features');
+		tmp_arr=tmp_value.split(',');
+		$.each(tmp_arr,function(i,key){
+			applyFilterFeature(key);
+		});
+	}
+	//console.log('SetDefaults URL');
+
+	buildBrowserUrl();
+	table_inited=true;
 }
-// Get Url parameter or default value -----------------------------
-function getUrlParameterOrDefault(name, defaultValue) {
-	var value = getUrlParameter(name);
-	return value !== '' ? value : defaultValue;
-}
+
 
 
 /*
@@ -523,6 +667,7 @@ function createIndexedObject(arrayOfObjects, key) {
 // ############################################################################################################
 
 var tabuTable;
+var table_inited=false;
 
 $(document).ready(function () {
 
@@ -569,30 +714,6 @@ $(document).ready(function () {
 		hideLoading();
 	});
 	
-
-	// Takes GET parameter of defauls ---------------------------------------
-	let def_filter		=getUrlParameterOrDefault('filter',	prefs.def_filter);
-	let def_view		=getUrlParameterOrDefault('view',	prefs.def_view);
-	let def_features	=getUrlParameterOrDefault('feat',	prefs.def_features);
-
-	// Set default Filters & View -------------------------------------------
-	function SetDefaults(){
-			//show presets
-			$(".toh-filters-but-toggle").trigger('click');
-			
-			//default filter
-			$("#toh-filters-presets A[data-key='"+def_filter+"']").trigger('click');
-			
-			//default features
-			var def_features_array=def_features.split(',');
-			$.each(def_features_array,function(i,key){
-				$("#toh-filters-features A[data-key='"+key+"']").trigger('click');
-			});
-			
-			//default colunm preset
-			applyColumnPreset(def_view);
-			//$("#toh-cols-presets A[data-key='"+def_view+"']").trigger('click');
-	}
 
 	// make column order from the colViewGroups ------------------------------
 	let columnOrder=[];
@@ -663,8 +784,6 @@ $(document).ready(function () {
 
 
 
-
-
 	// Top Filters ##########################################################################################
 
 	//  Click: Filter Preset ------------------------------------------
@@ -707,12 +826,9 @@ $(document).ready(function () {
 	// Click (or viewchanged): one view CheckBox ----------------------
 	$('#toh-cols-columns-content').on('click viewchanged','INPUT',function(e){
 		var key=$(this).attr('data-key');
-		applyColumCol(key, $(this).is(":checked") );
-
 		$('#toh-cols-presets A').removeClass('selected');
 		$('#toh-cols-presets A[data-key=custom]').addClass('selected');
-
-		//updateColGroupIcons();
+		applyColumCol(key, $(this).is(":checked") );
 	});
 
 	// Click: one view link ----------------------
@@ -867,7 +983,7 @@ $(document).ready(function () {
 
 
 
-	// events ################################################################################################
+	// tabuTable events ################################################################################################
 
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
 	tabuTable.on("dataFiltered", function(filters, rows){
@@ -876,12 +992,23 @@ $(document).ready(function () {
 		applyColumnsFromFilters();
 		setColumHeaderColors();
 		toggleFilterClearButVisibility();
+		if(table_inited){
+			buildBrowserUrl();
+		}
 	});
 
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
-	tabuTable.on("dataSorted", function(filters, rows){
+	tabuTable.on("columnVisibilityChanged", function(column, visible){
+		if(table_inited){
+			buildBrowserUrl();
+		}
+	});
+
+	// Resfresh column color on header-filter INPUT' blur ---------------------------------
+	tabuTable.on("dataSorted", function(sorters, rows){
 		toggleSortClearButVisibility();
 	});
 	
+
 
 });

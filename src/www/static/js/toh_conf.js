@@ -11,9 +11,15 @@ let owrtUrls={
 
 // Preferences --------------------------------------------------
 let prefs={
-	def_view: 		'normal',	// default Columns View Preset
-	def_filter: 	'',			// default Filter Preset
-	def_features: 	'',			// default Features (list ',' separated)
+	def_filter: 	'',				// default Filter Preset
+	def_features: 	'',				// default Features (list ',' separated)
+	def_view: 		'normal',		// default Columns View Preset
+	def_columns: 	'',				// default Columns (list ',' separated)
+
+	p_filter:		'filter',		//name of the filter preset URL parameter
+	p_features:		'features',		//name of the features URL parameter
+	p_view:			'view',			//name of the view URL parameter
+	p_columns:		'columns',		//name of the columns URL parameter
 };
 
 // options for tabulator table (tabuTable) ---------------------
