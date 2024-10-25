@@ -93,9 +93,22 @@ function htmlViewGroup(title,group){
 	html +='<ul>'+"\n";
 	return html;
 }
-	
-// Display the custom view block ---------------------------------
-function populateViewsContent(){
+
+
+// Display the views presets ---------------------------------
+function buildViewsPresets(){
+	var tmp_html='';
+	tmp_html+=htmlPresetButton('toh-view toh-view-custom','custom');
+	tmp_html+=htmlPresetButton('toh-view','all');
+	tmp_html+=htmlPresetButton('toh-view','none');
+	for (const key in colViews){
+		tmp_html+=htmlPresetButton('toh-view',key);
+	}
+	$('#toh-views-presets').html(tmp_html);
+}
+
+// Displays the views Columns ---------------------------------
+function buildViewsColumns(){
 	let columns = tabuTable.getColumnDefinitions();  
 	let view="";
 	let col={};
@@ -148,6 +161,26 @@ function groupsUpdateIcon(){
 	});
 }
 
+
+// display Filters Presets ------------------------------------------------
+function buildFiltersPresets(){
+	tmp_html='';
+	for (const key in colFilterPresets){
+		tmp_html+=htmlFilterDiv(colFilterPresets[key],key);
+	}
+	$('#toh-filters-presets .toh-filters-list').html(tmp_html);
+}
+
+// display Filters Features ------------------------------------------------
+function buildFiltersFeatures(){
+	tmp_html='';
+	for (const key in colFilterFeatures){
+		tmp_html+=htmlFilterDiv(colFilterFeatures[key],key,true);
+	}
+	$('#toh-filters-features-content').html(tmp_html);
+}
+
+
 // Apply a View Preset : show/hide columns -----------------------
 function applyView(key) {
 	showLoading();
@@ -166,7 +199,7 @@ function applyView(key) {
 				arr.forEach(col => tabuTable.showColumn(col));
 			}
 		}
-		populateViewsContent();
+		//buildViewsColumns();
 		//tabuTable.redraw(true);
 		//tabuTable.restoreRedraw();
 	},0);
@@ -487,7 +520,7 @@ $(document).ready(function () {
 			});
 			
 			//default colunm view
-			$("#toh-views-presets A[data-key='"+def_view+"']").trigger('click');
+			//$("#toh-views-presets A[data-key='"+def_view+"']").trigger('click');
 	}
 
 	// make column order from the colViewGroups ------------------------------
@@ -497,31 +530,6 @@ $(document).ready(function () {
 			columnOrder.push(field);
 		});
 	});
-
-	// display View Preset menu --------------------------------------------------
-	var tmp_html='';
-	tmp_html+=htmlPresetButton('toh-view toh-view-custom','custom');
-	tmp_html+=htmlPresetButton('toh-view','all');
-	tmp_html+=htmlPresetButton('toh-view','none');
-	for (const key in colViews){
-		tmp_html+=htmlPresetButton('toh-view',key);
-	}
-	$('#toh-views-presets').html(tmp_html);
-
-	// display Filter Presets ------------------------------------------------
-	tmp_html='';
-	for (const key in colFilterPresets){
-		tmp_html+=htmlFilterDiv(colFilterPresets[key],key);
-	}
-	$('#toh-filters-presets .toh-filters-list').html(tmp_html);
-
-	// display Filter Features ------------------------------------------------
-	tmp_html='';
-	for (const key in colFilterFeatures){
-		tmp_html+=htmlFilterDiv(colFilterFeatures[key],key,true);
-	}
-	$('#toh-filters-features-content').html(tmp_html);
-
 
 	//  Click: Toggle Filters Visibility -----------------------------
 	$('.toh-filters-but-toggle').on('click',function(e){
@@ -562,7 +570,14 @@ $(document).ready(function () {
 				return indexA - indexB;
 			});
 			tabuTable.setColumns(columns);
+	
 
+			// display Filters & views 
+			buildFiltersPresets();
+			buildFiltersFeatures();
+			buildViewsColumns();
+			buildViewsPresets();
+	
 			//set default views
 			SetDefaults();
 
