@@ -138,7 +138,7 @@ function buildViewsColumns(){
 		view +="</ul>\n</div>\n";
 	}
 
-	$("#toh-cols-content").html(view);
+	$("#toh-cols-columns-content").html(view);
 	groupsUpdateIcon();
 }
 
@@ -374,7 +374,7 @@ function getTableFiltersFields(type='filters'){
 // set a column view ------------------------------------------------
 // TODO refactor colum view, to not trigger a click, but rather globally apply columns view
 function toggleColumn(field,display){
-	var view=$("#toh-cols-content INPUT[value="+field+"]");
+	var view=$("#toh-cols-columns-content INPUT[value="+field+"]");
 	if(display){
 		if(!view.is(':checked')){
 			view.trigger('click');
@@ -649,7 +649,7 @@ $(document).ready(function () {
 	});
 
 	// Click (or viewchanged): one view CheckBox ----------------------
-	$('#toh-cols-content').on('click viewchanged','INPUT',function(e){
+	$('#toh-cols-columns-content').on('click viewchanged','INPUT',function(e){
 		var field=$(this).val();
 		if($(this).is(":checked")){
 			tabuTable.showColumn(field);
@@ -670,7 +670,7 @@ $(document).ready(function () {
 	});
 
 	//  Click: View Group ---------------------------------------------------
-	$('#toh-cols-content').on('click','.toh-colgroup-title A',function(e){
+	$('#toh-cols-columns-content').on('click','.toh-colgroup-title A',function(e){
 		e.preventDefault();
 		//e.stopPropagation();
 		showLoading();
