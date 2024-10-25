@@ -138,7 +138,7 @@ function buildViewsColumns(){
 		view +="</ul>\n</div>\n";
 	}
 
-	$("#toh-views-content").html(view);
+	$("#toh-cols-content").html(view);
 	groupsUpdateIcon();
 }
 
@@ -374,7 +374,7 @@ function getTableFiltersFields(type='filters'){
 // set a column view ------------------------------------------------
 // TODO refactor colum view, to not trigger a click, but rather globally apply columns view
 function toggleColumn(field,display){
-	var view=$("#toh-views-content INPUT[value="+field+"]");
+	var view=$("#toh-cols-content INPUT[value="+field+"]");
 	if(display){
 		if(!view.is(':checked')){
 			view.trigger('click');
@@ -539,9 +539,9 @@ $(document).ready(function () {
 	});
 
 	//  Click: Toggle Views Visibility -------------------------------
-	$('.toh-views-but-toggle').on('click',function(e){
+	$('.toh-cols-but-toggle').on('click',function(e){
 		e.preventDefault();
-		$('#toh-views-container').toggle();
+		$('#toh-cols-container').toggle();
 		$(this).children('I').toggleClass('fa-caret-right fa-caret-down');
 	});
 
@@ -638,7 +638,7 @@ $(document).ready(function () {
 		let view=$(this).attr('data-key');
 		//console.log('apply '+view);
 		if(view=='custom'){
-			$(".toh-views-but-toggle").trigger('click');
+			$(".toh-cols-but-toggle").trigger('click');
 		}
 		else{
 			applyView(view);
@@ -649,7 +649,7 @@ $(document).ready(function () {
 	});
 
 	// Click (or viewchanged): one view CheckBox ----------------------
-	$('#toh-views-content').on('click viewchanged','INPUT',function(e){
+	$('#toh-cols-content').on('click viewchanged','INPUT',function(e){
 		var field=$(this).val();
 		if($(this).is(":checked")){
 			tabuTable.showColumn(field);
@@ -664,13 +664,13 @@ $(document).ready(function () {
 	});
 
 	// Click: one view link ----------------------
-	$('.toh-views-list').on('click','A',function(e){
+	$('.toh-cols-list').on('click','A',function(e){
 		e.preventDefault();
 		var cb=$(this).parent().find('INPUT').trigger('click');
 	});
 
 	//  Click: View Group ---------------------------------------------------
-	$('#toh-views-content').on('click','.toh-colgroup-title A',function(e){
+	$('#toh-cols-content').on('click','.toh-colgroup-title A',function(e){
 		e.preventDefault();
 		//e.stopPropagation();
 		showLoading();

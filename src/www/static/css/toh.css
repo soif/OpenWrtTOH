@@ -164,48 +164,48 @@
 #toh-views{
 	margin-bottom: 10px;
 }
-#toh-views-title .toh-title{
+#toh-cols-title .toh-title{
 	border-right: 1px solid #ddd;
 }
 
-#toh-views-container{
+#toh-cols-container{
 	padding-bottom: 10px;
 	border-bottom: 1px solid #ccc;
 }
 
-.toh-views-list UL{
+.toh-cols-list UL{
 	list-style-type: none;
 	padding-left: 15px;
 }
-.toh-views-list-multi {
+.toh-cols-list-multi {
   column-count: 6;
   column-gap: 2em;
 }
 @media screen and (max-width: 1000px) {
-	.toh-views-list-multi {
+	.toh-cols-list-multi {
 		column-count: 5;
 	}
 }
 @media screen and (max-width: 800px) {
-	.toh-views-list-multi {
+	.toh-cols-list-multi {
 		column-count: 4;
 	}
 }
 @media screen and (max-width: 680px) {
-	.toh-views-list-multi {
+	.toh-cols-list-multi {
 		column-count: 3;
 	}
 }
 @media screen and (max-width: 540px) {
-	.toh-views-list-multi {
+	.toh-cols-list-multi {
 		column-count: 2;
 	}
 }
-.toh-views-list A{
+.toh-cols-list A{
 	color: #000;
 	text-decoration: none;
 }
-.toh-views-list .toh-colgroup-title A{
+.toh-cols-list .toh-colgroup-title A{
 	font-size: 12px;
 	font-weight: bold;	
 	color: #888;
