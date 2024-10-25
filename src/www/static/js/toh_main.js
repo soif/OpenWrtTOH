@@ -486,33 +486,33 @@ function updateBrowserUrl(newURL) {
 	const state = {}; // State object
 	const title = ''; // Title (ignored by most browsers)
 	history.replaceState(state, title, newURL);
-  }
-  
-  // get the currently checked features ---------------
-  function getCheckedFeatures(){
-	  var checked=[];
-	  $('.toh-filters-list INPUT').each(function(i){
-		  if($(this).is(':checked')){
-			  checked.push($(this).attr('data-key'));
-		  }
-	  });
-	  return checked;
-  }
-  
-  // get the currently checked columns ---------------
-  function getCheckedColumns(){
-	  var checked=[];
-	  $('.toh-col-column INPUT').each(function(i){
-		  if($(this).is(':checked')){
-			  checked.push($(this).attr('data-key'));
-		  }
-	  });
-	 // console.log(checked);
-	  return checked;
-  }
+}
+
+// get the currently checked features ---------------
+function getCheckedFeatures(){
+	var checked=[];
+	$('.toh-filters-list INPUT').each(function(i){
+		if($(this).is(':checked')){
+			checked.push($(this).attr('data-key'));
+		}
+	});
+	return checked;
+}
+
+// get the currently checked columns ---------------
+function getCheckedColumns(){
+	var checked=[];
+	$('.toh-col-column INPUT').each(function(i){
+		if($(this).is(':checked')){
+			checked.push($(this).attr('data-key'));
+		}
+	});
+	// console.log(checked);
+	return checked;
+}
 
   // build, then update the browser Url  ------------
-  function buildBrowserUrl(and_update=true){
+function buildBrowserUrl(and_update=true){
 	//console.log('buildBrowserUrl');
 	var url=window.location.pathname;
 	var params=[];
@@ -549,12 +549,93 @@ function updateBrowserUrl(newURL) {
 		updateBrowserUrl(url);
 	}
 	console.log(url);
+}
+
+
+// Cookie functions ###################################################################################
+
+// save a cookie ---------------------------------------------------
+function saveCookie(c_name, content, type='json', with_prefix=true){
+	var c_path=prefs.cook_path;
+	if(c_path==''){
+		c_path=window.location.pathname;
+	}
+	var c_content=content;
+	if(type=='json'){
+		c_content=JSON.stringify(content);
+	}
+	document.cookie = prefs.cook_prefix + c_name + "=" + encodeURIComponent(c_content) + "; max-age="+prefs.cook_duration+"; path="+c_path;
+}
+
+// extract a cookie from the list---------------------------------------------------
+function _extractCookie(name) {
+	const value = `; ${document.cookie}`;
+	const parts = value.split(`; ${name}=`);
+	if (parts.length === 2) return parts.pop().split(';').shift();
   }
-  
-  
+
+// load a cookie ---------------------------------------------------
+function loadCookie(c_name, type='json'){
+	//console.log('loadCookie:'+c_name);
+	var cookie=_extractCookie(prefs.cook_prefix + c_name);
+	//console.log('loadCookie Result:'+cookie);
+
+	if(cookie){
+		var c_content=decodeURIComponent(cookie);
+		if(type=='json'){
+			return JSON.parse(c_content);
+		}
+		else{
+			return c_content;
+		}
+	}
+	else{
+		return false;
+	}
+}
+
+// -----------------------------
+function loadPresetCookies(type){ //'features' or 'columns'
+	//console.log('loadPresetCookies:'+type);
+	var c_value	='';
+
+	for (let i = 1; i <= prefs.cook_preset_count; i++) {
+		c_value=loadCookie(prefs['cook_name_'+type]+i);
+		if(typeof(toh_cookies[type]) !='object'){
+			toh_cookies[type]={};
+		}
+		if(c_value !=undefined || c_value==''){
+			toh_cookies[type][i]=c_value;
+		}
+		else{
+			toh_cookies[type][i]={};
+		}		
+	}
+	//console.log(toh_cookies);
+}
+
+// -----------------------------
+function storePresetCookie(type, number=0, name='user'){ // type= 'features' or 'columns'
+	//console.log('StoreCookie:'+type+', '+number+', '+name);
+	var preset={
+		name: name,
+		list: []
+	};
+	if(type=='features'){
+		preset.list=getCheckedFeatures();
+		saveCookie(prefs.cook_name_features+number, preset);
+	}
+	else if(type=='columns'){
+		preset.list=getCheckedColumns();
+		saveCookie(prefs.cook_name_columns+number, preset);
+	}
+	//console.log('storePresetCookie:'+type+", "+number);
+	//console.log(preset.list);
+}
+
 // Misc functions ###################################################################################
 
-// Position the Image Preview div -------------------------------------------
+// Position the Image Preview div -------------------------------
 function positionPreview($link, $container) {
 	var linkOffset = $link.offset();
 	var linkWidth = $link.outerWidth();
@@ -668,6 +749,7 @@ function createIndexedObject(arrayOfObjects, key) {
 
 var tabuTable;
 var table_inited=false;
+var toh_cookies={};
 
 $(document).ready(function () {
 
@@ -772,6 +854,9 @@ $(document).ready(function () {
 	
 			//set default views
 			SetDefaults();
+			
+			//storePresetCookie('features',1);
+			//loadPresetCookies('features');
 
 			// sort columns						
 			tabuTable.setSort([

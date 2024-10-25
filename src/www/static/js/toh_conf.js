@@ -11,15 +11,23 @@ let owrtUrls={
 
 // Preferences --------------------------------------------------
 let prefs={
-	def_filter: 	'',				// default Filter Preset
-	def_features: 	'',				// default Features (list ',' separated)
-	def_view: 		'normal',		// default Columns View Preset
-	def_columns: 	'',				// default Columns (list ',' separated)
+	def_filter: 	'',					// default Filter Preset
+	def_features: 	'',					// default Features (list ',' separated)
+	def_view: 		'normal',			// default Columns View Preset
+	def_columns: 	'',					// default Columns (list ',' separated)
 
-	p_filter:		'filter',		//name of the filter preset URL parameter
-	p_features:		'features',		//name of the features URL parameter
-	p_view:			'view',			//name of the view URL parameter
-	p_columns:		'columns',		//name of the columns URL parameter
+	p_filter:		'filter',			//name of the filter preset URL parameter
+	p_features:		'features',			//name of the features URL parameter
+	p_view:			'view',				//name of the view URL parameter
+	p_columns:		'columns',			//name of the columns URL parameter
+
+	cook_prefix:	'toh_',				// the cookie's prefix,
+	cook_duration:	3600*24*730,		// the cookie's duration (in sec),
+	cook_path: 		'',					// the cookie's path (will be set to the current path if not set),
+	cook_preset_count: 	3,				// how many uset preset (features or columns) cookies do we use
+	cook_name_features:'myFeatures', 	// name of the features cookie,
+	cook_name_columns:'myColumns',		// name of the columns cookie,
+
 };
 
 // options for tabulator table (tabuTable) ---------------------
