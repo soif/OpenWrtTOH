@@ -52,180 +52,18 @@ function formatLinkToHtml(url, name='link', target_blank=true){
 	return url;
 }
 
-// Loading --------------------------------------------------------
-function showLoading(){
-	$('#toh-loading').show();
-}
 
-function hideLoading(){
-	$('#toh-loading').hide();
-}
+// Filters functions ###############################################################################
 
-// Get Url parameter -----------------------------------------------
-function getUrlParameter(name) {
-	name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-	var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-	var results = regex.exec(location.search);
-	return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-}
-// --------------------------------------------------------------
-function getUrlParameterOrDefault(name, defaultValue) {
-	var value = getUrlParameter(name);
-	return value !== '' ? value : defaultValue;
-}
-
-// Make a "view" line -------------------------------------------
-function htmlViewLine(field,col,checked){
-	let html='';
-	let title	=col.title;
-	let tip		=col.headerTooltip;
-	if(tip==true){tip='';}
-	html +='<li><input type="checkbox" value="'+field+'"';
-	if( checked ){html +=' checked="true"';} 
-	html +='> <a href="#" title="'+tip+'">'+title+"</a>\n";
-	return html;
-}
-
-// Make a "view" Group  ------------------------------------------
-function htmlViewGroup(title,group){
-	let html='';
-	html +='<div class="toh-colgroup" data-group="'+group+'">'+"\n"+'<div class="toh-colgroup-title"><a href="#" class="view-link" title="Toggle group visibility"><i class="fa-solid fa-square"></i> '+title+'</a></div>'+"\n";
-	html +='<ul>'+"\n";
-	return html;
-}
-
-
-// Display the views presets ---------------------------------
-function buildViewsPresets(){
-	var tmp_html='';
-	tmp_html+=htmlPresetButton('toh-view toh-view-custom','custom');
-	tmp_html+=htmlPresetButton('toh-view','all');
-	tmp_html+=htmlPresetButton('toh-view','none');
-	for (const key in colViews){
-		tmp_html+=htmlPresetButton('toh-view',key);
-	}
-	$('#toh-views-presets').html(tmp_html);
-}
-
-// Displays the views Columns ---------------------------------
-function buildViewsColumns(){
-	let columns = tabuTable.getColumnDefinitions();  
-	let view="";
-	let col={};
-
-	// display known (on Prefs) fields
-	$.each(colViewGroups,function(key,arr){
-		view +=htmlViewGroup(arr.name,key);
-		$.each(arr.fields,function(k,field){
-			col=tabuTable.getColumn(field);
-			view +=htmlViewLine(field, col.getDefinition(), col.isVisible())
-			//remove from colums
-			const index = columns.findIndex(item => item.field === field);
-			if (index !== -1) {columns.splice(index, 1)[0];}
-		});
-		view +="</ul>\n</div>\n";
-	});
-
-	// handle remaining unsorted fields (not defined in Prefs)
-	if(columns.length > 0){
-		view +=htmlViewGroup('Unsorted','unsorted');
-		$.each(columns,function(key,arr){
-			col=tabuTable.getColumn(arr.field);
-			var def=col.getDefinition();
-			def.headerTooltip +=' ('+arr.field+')'; //auto column dont have a tootil (only 'true')
-			view +=htmlViewLine(arr.field, def , col.isVisible())
-		});
-		view +="</ul>\n</div>\n";
-	}
-
-	$("#toh-cols-columns-content").html(view);
-	groupsUpdateIcon();
-}
-
-// Update group Icons in the custom view block ------------------
-function groupsUpdateIcon(){
-	$('.toh-colgroup').each(function(i){
-		var total=$(this).find('LI').length;
-		var checked=$(this).find('LI INPUT:checked').length;
-		var icon ="";
-		if(checked==total){
-			icon='fa-regular fa-square-check';
-		}
-		else if(checked==0){
-			icon='fa-regular fa-square';
-		}
-		else{
-			icon='fa-regular fa-square-minus';
-		}
-		$(this).find('.toh-colgroup-title I').removeClass().addClass(icon);
-	});
-}
-
-
-// display Filters Presets ------------------------------------------------
-function buildFiltersPresets(){
-	tmp_html='';
-	for (const key in colFilterPresets){
-		tmp_html+=htmlFilterDiv(colFilterPresets[key],key);
-	}
-	$('#toh-filters-presets .toh-filters-list').html(tmp_html);
-}
-
-// display Filters Features ------------------------------------------------
-function buildFiltersFeatures(){
-	tmp_html='';
-	for (const key in colFilterFeatures){
-		tmp_html+=htmlFilterDiv(colFilterFeatures[key],key,true);
-	}
-	$('#toh-filters-features-content').html(tmp_html);
-}
-
-
-// Apply a View Preset : show/hide columns -----------------------
-function applyView(key) {
-	showLoading();
-	setTimeout(function(){
-		//tabuTable.blockRedraw();
-		if(key=='all'){
-			showAllColumns(true);
-		}
-		else if(key=='none'){
-			showAllColumns(false);
-		}
-		else{
-			const arr = colViews[key];
-			if (arr) {
-				showAllColumns(false);
-				arr.forEach(col => tabuTable.showColumn(col));
-			}
-		}
-		//buildViewsColumns();
-		//tabuTable.redraw(true);
-		//tabuTable.restoreRedraw();
-	},0);
-}
-
-// Show or Hide ALL columns --------------------------------------
-function showAllColumns(bool) {
-	var columnDefs = tabuTable.getColumnDefinitions();  
-	columnDefs.forEach(function(column) {
-		if(bool){
-			tabuTable.showColumn(column.field);
-		}
-		else{
-			tabuTable.hideColumn(column.field);
-		}
-	});
-}
-
-// Make Preset Button ------------------------------------------
-function htmlPresetButton(myclass, value){
+// Make filter Preset Button ------------------------------------------
+function htmlFilterPresetButton(myclass, value){
 	var icon='';
 	var name=value;
 	name = name.replace(/_/g,' ');
 	name = name.replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase()); // UcFirst
 	return '<a href="#" class="'+myclass+'" data-key="'+value+'">'+icon+name+'</a>'+"";
 }
+
 // Make Filter Preset ------------------------------------------
 function htmlFilterDiv(filt,key,is_feature=false){
 	var html='';
@@ -251,12 +89,31 @@ function htmlFilterDiv(filt,key,is_feature=false){
 	return html;
 }
 
+// display Filters Presets ------------------------------------------------
+function buildFiltersPresets(){
+	tmp_html='';
+	for (const key in colFilterPresets){
+		tmp_html+=htmlFilterDiv(colFilterPresets[key],key);
+	}
+	$('#toh-filters-presets .toh-filters-list').html(tmp_html);
+}
+
+// display Filters Features ------------------------------------------------
+function buildFiltersFeatures(){
+	tmp_html='';
+	for (const key in colFilterFeatures){
+		tmp_html+=htmlFilterDiv(colFilterFeatures[key],key,true);
+	}
+	$('#toh-filters-features-content').html(tmp_html);
+}
+
 // -------------------------------------------------------
 function formatFilterDesc(filter){
 	var title=columnStyles[filter.field].title;
 	return title + " " + filter.type + " '" +filter.value + "'"; 
 }
 
+// -------------------------------------------------------
 function makeFeatureDescription(key){
 	var features=colFilterFeatures[key];
 	var desc='';
@@ -285,6 +142,310 @@ function makeFeatureDescription(key){
 	});
 	return desc;
 }
+
+// Check on/off ALL features checkboxes -------------------------
+function checkAllFeatures(state=true){
+	$(".toh-filter-feature INPUT").prop('checked',state);
+}
+
+// Check on/off a feature checkbox ------------------------------
+function checkFeature(feat,state=true){
+	$(".toh-filter-feature INPUT[data-key="+feat+"]").prop('checked',state);
+}
+
+// Return a (flatted) list of the current filtered fields ------------------
+function getTableFiltersFields(type='filters'){
+	var fields=[];
+	if(type=='filters'){
+		var filters	=tabuTable.getFilters();
+	}
+	else if(type=='headerfilters'){
+		var filters	=tabuTable.getHeaderFilters();
+	}
+	else{ // all
+		var filters	=tabuTable.getFilters(true);
+	}
+	//console.log('GetFilterFields type='+type+' ----');
+	//console.log(filters);
+	$.each(filters,function(i,f){
+		if(Array.isArray(f)){
+			$.each(f,function(j,ff){
+				if (!fields.includes(ff.field)){
+					fields.push(ff.field);					
+				}
+			});
+		}
+		else{
+			if (!fields.includes(f.field)){
+				fields.push(f.field);					
+			}
+		}
+
+	});
+	//console.log(fields);
+	return fields;
+}
+
+// ----------------------------------------------------
+function applyFilterPreset(key){
+	var set=getFilterSet('preset',key);
+	//console.log(set);
+	//tabuTable.refreshFilter();
+	tabuTable.setFilter(set.filters ); //,  {matchAll:true}
+	checkAllFeatures(false);
+	$.each(set.features,function(j,feat){
+		checkFeature(feat);
+	});
+}
+
+// ----------------------------------------------------
+function applyFilterFeature(key,bool){
+	var set=getFilterSet('feature',key);
+	//console.log(set);
+	if(bool){
+		tabuTable.addFilter(set.filters);
+	}
+	else{
+		tabuTable.removeFilter(set.filters);
+	}
+}
+
+// get filters array (also merge features filters for Presets)--------------------
+function getFilterSet(type, key){
+	if(type=='preset'){
+		var set=colFilterPresets[key];
+	}
+	else if(type=='feature'){
+		var set=colFilterFeatures[key];
+	}
+	else{
+		console.log('Unknown ('+key+') type: '+ type);
+		return {};
+	}
+	if(typeof(set) !='object'){
+		console.log('Unknown Set key: '+ key);
+		return {};
+	}
+	//merge filters with features.filters
+	if(type=='preset'){
+		if( typeof(set.features) =='object'){ // cant we write it shorter ?
+			$.each(set.features,function(i,fv){
+				//console.log(i+'->'+fv)
+				$.each(colFilterFeatures[fv].filters,function(j,filt){
+					set.filters.push(filt);
+				});
+			});
+		}
+		else{
+			set.features={};
+		}
+	}
+	return set;
+}
+
+
+// Views functions #########################################################################
+
+// Make a column line -------------------------------------------
+function htmlColumnLine(field,col,checked){
+	let html='';
+	let title	=col.title;
+	let tip		=col.headerTooltip;
+	if(tip==true){tip='';}
+	html +='<div class="toh-col toh-col-column">';
+	html +='<input type="checkbox" data-key="'+field+'"';
+	if( checked ){html +=' checked="true"';} 
+	html +='> <a href="#" title="'+tip+'">'+title+"</a>\n";
+	html +="</div>";
+	return html;
+}
+
+// Make a column Group  ------------------------------------------
+function htmlColumnGroup(title,group){
+	let html='';
+	html +='<div class="toh-colgroup" data-group="'+group+'">'+"\n"+'<div class="toh-colgroup-title"><a href="#" class="view-link" title="Toggle group visibility"><i class="fa-solid fa-square"></i> '+title+'</a></div>'+"\n";
+	html +='<ul>'+"\n";
+	return html;
+}
+
+// Display the views presets ---------------------------------
+function buildViewsPresets(){
+	var tmp_html='';
+	tmp_html+=htmlFilterPresetButton('toh-view toh-view-custom','custom');
+	tmp_html+=htmlFilterPresetButton('toh-view','all');
+	tmp_html+=htmlFilterPresetButton('toh-view','none');
+	for (const key in colViews){
+		tmp_html+=htmlFilterPresetButton('toh-view',key);
+	}
+	$('#toh-cols-presets').html(tmp_html);
+}
+
+// Displays the views Columns ---------------------------------
+function buildViewsColumns(){
+	let columns = tabuTable.getColumnDefinitions();  
+	let view="";
+	let col={};
+
+	// display known (on Prefs) fields
+	$.each(colViewGroups,function(key,arr){
+		view +=htmlColumnGroup(arr.name,key);
+		$.each(arr.fields,function(k,field){
+			col=tabuTable.getColumn(field);
+			view +=htmlColumnLine(field, col.getDefinition(), col.isVisible())
+			//remove from colums
+			const index = columns.findIndex(item => item.field === field);
+			if (index !== -1) {columns.splice(index, 1)[0];}
+		});
+		view +="</ul>\n</div>\n";
+	});
+
+	// handle remaining unsorted fields (not defined in Prefs)
+	if(columns.length > 0){
+		view +=htmlColumnGroup('Unsorted','unsorted');
+		$.each(columns,function(key,arr){
+			col=tabuTable.getColumn(arr.field);
+			var def=col.getDefinition();
+			def.headerTooltip +=' ('+arr.field+')'; //auto column dont have a tootil (only 'true')
+			view +=htmlColumnLine(arr.field, def , col.isVisible())
+		});
+		view +="</ul>\n</div>\n";
+	}
+
+	$("#toh-cols-columns-content").html(view);
+	updateColGroupIcons();
+}
+
+// Check on/off a Column checkbox ------------------------------
+function checkColumn(feat,state=true){
+	$(".toh-col-column INPUT[data-key="+feat+"]").prop('checked',state);
+	updateColGroupIcons();
+}
+
+// Check on/off ALL Columns checkboxes -------------------------
+function checkAllColumns(state=true){
+	$(".toh-col-column INPUT").prop('checked',state);
+	updateColGroupIcons();
+}
+
+//  Show and Check on/off ALL Column checkboxes ------------------------------
+function showAndCheckColumn(col,state=true){
+	if(state){
+		tabuTable.showColumn(col);
+	}
+	else{
+		tabuTable.hideColumn(col);
+	}
+	checkColumn(col,state);
+}
+
+// Show or Hide ALL columns --------------------------------------
+function showAllColumns(bool) {
+	var columnDefs = tabuTable.getColumnDefinitions();  
+	columnDefs.forEach(function(column) {
+		if(bool){
+			tabuTable.showColumn(column.field);
+		}
+		else{
+			tabuTable.hideColumn(column.field);
+		}
+	});
+}
+
+// Apply a View Preset : show/hide columns -----------------------
+function applyColumnPreset(key){
+	showLoading();
+	setTimeout(function(){
+		//tabuTable.blockRedraw();
+		if(key=='all'){
+			showAllColumns(true);
+			checkAllColumns(true);
+
+		}
+		else if(key=='none'){
+			showAllColumns(false);
+			checkAllColumns(false);
+		}
+		else{
+			var set=getColumnSet(key);
+			showAllColumns(false);
+			checkAllColumns(false);
+			set.forEach(col => {
+				showAndCheckColumn(col);
+			});
+		}
+		$('#toh-cols-presets A').removeClass('selected');
+		$("#toh-cols-presets A[data-key="+key+"]").addClass('selected');
+		//tabuTable.redraw(true);
+		//tabuTable.restoreRedraw();
+	},0);
+
+}
+function applyColumCol(key,state){
+	showAndCheckColumn(key,state);
+}
+
+// get filters array (also merge features filters for Presets)--------------------------
+function getColumnSet(key){
+	set=[];
+	if(key=='all'){
+		$.each(colViews,function(k,col){
+			if(!set.includes(col)){
+				set.push(col);
+			}
+		});
+	}
+	else if (key=='none'){
+		set=[];
+	}
+	else if(typeof(colViews[key]) !='undefined'){
+		set=colViews[key];
+	}
+	return set;
+}
+
+// set columns view depending on the selected Filter option ---------------------------------
+function applyColumnsFromFilters(){
+	var opt=$("#toh-filters-options INPUT[name='filtcol']:checked").val();
+	var fields	=getTableFiltersFields('all');
+	if(opt=='add'){
+		$.each(fields,function(i,col){
+			showAndCheckColumn(col);
+		});
+		showAndCheckColumn('brand');
+		showAndCheckColumn('model');
+	}
+	else if(opt=='repl'){
+		showAllColumns(false);
+		checkAllColumns(false);
+		$.each(fields,function(i,col){
+			showAndCheckColumn(col);
+		});
+		showAndCheckColumn('brand');
+		showAndCheckColumn('model');
+	}
+}
+
+// Update group Icons in the columns block ------------------
+function updateColGroupIcons(){
+	$('.toh-colgroup').each(function(i){
+		var total=$(this).find('.toh-col-column').length;
+		var checked=$(this).find('.toh-col-column INPUT:checked').length;
+		var icon ="";
+		if(checked==total){
+			icon='fa-regular fa-square-check';
+		}
+		else if(checked==0){
+			icon='fa-regular fa-square';
+		}
+		else{
+			icon='fa-regular fa-square-minus';
+		}
+		$(this).find('.toh-colgroup-title I').removeClass().addClass(icon);
+	});
+}
+
+
+// Misc functions #######################################################################
 
 // Position the Image Preview div -------------------------------------------
 function positionPreview($link, $container) {
@@ -318,6 +479,32 @@ function positionPreview($link, $container) {
 		top: top
 	});
 }
+
+
+// Show Loading --------------------------------------------------------
+function showLoading(){
+	$('#toh-loading').show();
+}
+// Hide Loading --------------------------------------------------------
+function hideLoading(){
+	$('#toh-loading').hide();
+}
+
+// Get Url parameter -----------------------------------------------
+function getUrlParameter(name) {
+	name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+	var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+	var results = regex.exec(location.search);
+	return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+}
+// Get Url parameter or default value -----------------------------
+function getUrlParameterOrDefault(name, defaultValue) {
+	var value = getUrlParameter(name);
+	return value !== '' ? value : defaultValue;
+}
+
+
+/*
 //create indexed object  ---------------------------------------
 function createIndexedObject(arrayOfObjects, key) {
 	return arrayOfObjects.reduce((acc, obj) => {
@@ -327,124 +514,7 @@ function createIndexedObject(arrayOfObjects, key) {
 		return acc;
 	}, {});
 }
-
-// Check on/off ALL features checkboxes -------------------------
-function checkAllFeatures(state=true){
-	$(".toh-filter-feature INPUT").prop('checked',state);
-}
-
-// Check on/off a feature checkbox ------------------------------
-function checkFeature(feat,state=true){
-	$(".toh-filter-feature INPUT[data-key="+feat+"]").prop('checked',state);
-}
-
-// Return a (flatted) list of the current filtered fields ---------------------------------
-function getTableFiltersFields(type='filters'){
-	var fields=[];
-	if(type=='filters'){
-		var filters	=tabuTable.getFilters();
-	}
-	else if(type=='headerfilters'){
-		var filters	=tabuTable.getHeaderFilters();
-	}
-	else{ // all
-		var filters	=tabuTable.getFilters(true);
-	}
-	//console.log('GetFilterFields type='+type+' ----');
-	//console.log(filters);
-	$.each(filters,function(i,f){
-		if(Array.isArray(f)){
-			$.each(f,function(j,ff){
-				if (!fields.includes(ff.field)){
-					fields.push(ff.field);					
-				}
-			});
-		}
-		else{
-			if (!fields.includes(f.field)){
-				fields.push(f.field);					
-			}
-		}
-
-	});
-	//console.log(fields);
-	return fields;
-}
-
-// set a column view ------------------------------------------------
-// TODO refactor colum view, to not trigger a click, but rather globally apply columns view
-function toggleColumn(field,display){
-	var view=$("#toh-cols-columns-content INPUT[value="+field+"]");
-	if(display){
-		if(!view.is(':checked')){
-			view.trigger('click');
-		}
-	}
-	else{
-		if(view.is(':checked')){
-			view.trigger('click');
-		}
-	}
-}
-
-// set columns view depending on the selected Filter option ---------------------------------
-function applyViewFromFilters(){
-	var opt=$("#toh-filters-options INPUT[name='filtcol']:checked").val();
-	var fields	=getTableFiltersFields('all');
-	if(opt=='add'){
-		$.each(fields,function(i,f){
-			toggleColumn(f,true);
-		});
-		toggleColumn('brand',true);
-		toggleColumn('model',true);
-	}
-	else if(opt=='repl'){
-		$.each(columnStyles,function(f,arr){
-			if(fields.includes(f)){
-				toggleColumn(f,true);
-			}
-			else{
-				toggleColumn(f,false);
-			}
-		});
-		toggleColumn('brand',true);
-		toggleColumn('model',true);
-	}
-}
-
-
-// get filters array (also merge features filters for Presets)--------------------------
-function getFilterSet(type, key){
-	if(type=='preset'){
-		var set=colFilterPresets[key];
-	}
-	else if(type=='feature'){
-		var set=colFilterFeatures[key];
-	}
-	else{
-		console.log('Unknown ('+key+') type: '+ type);
-		return {};
-	}
-	if(typeof(set) !='object'){
-		console.log('Unknown Set key: '+ key);
-		return {};
-	}
-	//merge filters with features.filters
-	if(type=='preset'){
-		if( typeof(set.features) =='object'){ // cant we write it shorter ?
-			$.each(set.features,function(i,fv){
-				//console.log(i+'->'+fv)
-				$.each(colFilterFeatures[fv].filters,function(j,filt){
-					set.filters.push(filt);
-				});
-			});
-		}
-		else{
-			set.features={};
-		}
-	}
-	return set;
-}
+*/
 
 
 
@@ -519,8 +589,9 @@ $(document).ready(function () {
 				$("#toh-filters-features A[data-key='"+key+"']").trigger('click');
 			});
 			
-			//default colunm view
-			//$("#toh-views-presets A[data-key='"+def_view+"']").trigger('click');
+			//default colunm preset
+			applyColumnPreset(def_view);
+			//$("#toh-cols-presets A[data-key='"+def_view+"']").trigger('click');
 	}
 
 	// make column order from the colViewGroups ------------------------------
@@ -592,6 +663,8 @@ $(document).ready(function () {
 
 
 
+
+
 	// Top Filters ##########################################################################################
 
 	//  Click: Filter Preset ------------------------------------------
@@ -599,28 +672,14 @@ $(document).ready(function () {
 		//console.log("Click filter preset");
 		e.preventDefault();
 		var key=$(this).attr('data-key');
-		var set=getFilterSet('preset',key);
-		//tabuTable.refreshFilter();
-		tabuTable.setFilter(set.filters ); //,  {matchAll:true}
-		checkAllFeatures(false);
-		$.each(set.features,function(j,feat){
-			checkFeature(feat);
-		});
-		//console.log(set);
+		applyFilterPreset(key);
 	});
 
 	// Click: Feature CheckBox -------------------------------------------
 	$('#toh-top-filters').on('click','.toh-filter-feature INPUT',function(e){
 		//console.log("Click checkbox feature");
 		var key=$(this).attr('data-key');
-		var set=getFilterSet('feature',key);
-		//console.log(set);
-		if($(this).is(":checked")){
-			tabuTable.addFilter(set.filters);
-		}
-		else{
-			tabuTable.removeFilter(set.filters);
-		}
+		applyFilterFeature(key, $(this).is(":checked") );
 	});
 
 	// Click: Feature link ----------------------
@@ -633,7 +692,7 @@ $(document).ready(function () {
 	// Top Views (columns) ################################################################################
 
 	// Click: View Preset ---------------------------------------------------
-	$('#toh-views-presets').on('click','A',function(e){
+	$('#toh-cols-presets').on('click','A',function(e){
 		e.preventDefault();
 		let view=$(this).attr('data-key');
 		//console.log('apply '+view);
@@ -641,26 +700,19 @@ $(document).ready(function () {
 			$(".toh-cols-but-toggle").trigger('click');
 		}
 		else{
-			applyView(view);
-			$('#toh-views-presets A').removeClass('selected');
-			$(this).addClass('selected');
-			groupsUpdateIcon();
+			applyColumnPreset(view);
 		}
 	});
 
 	// Click (or viewchanged): one view CheckBox ----------------------
 	$('#toh-cols-columns-content').on('click viewchanged','INPUT',function(e){
-		var field=$(this).val();
-		if($(this).is(":checked")){
-			tabuTable.showColumn(field);
-		}
-		else{
-			tabuTable.hideColumn(field);
-		}
-		$('#toh-views-presets A').removeClass('selected');
-		$('#toh-views-presets A[data-key=custom]').addClass('selected');
+		var key=$(this).attr('data-key');
+		applyColumCol(key, $(this).is(":checked") );
 
-		groupsUpdateIcon();
+		$('#toh-cols-presets A').removeClass('selected');
+		$('#toh-cols-presets A[data-key=custom]').addClass('selected');
+
+		//updateColGroupIcons();
 	});
 
 	// Click: one view link ----------------------
@@ -674,15 +726,15 @@ $(document).ready(function () {
 		e.preventDefault();
 		//e.stopPropagation();
 		showLoading();
-		var checked	=$(this).parents('.toh-colgroup').find('LI INPUT:checked').length;
-		var inputs	=$(this).parents('.toh-colgroup').find('LI INPUT');
+		var checked	=$(this).parents('.toh-colgroup').find('.toh-col-column INPUT:checked').length;
+		var inputs	=$(this).parents('.toh-colgroup').find('.toh-col-column INPUT');
 		if(checked==0){
 			inputs.prop('checked', true).trigger('viewchanged');
 		}
 		else{
 			inputs.prop('checked', false).trigger('viewchanged');
 		}
-		groupsUpdateIcon();
+		updateColGroupIcons();
 	});
 
 
@@ -821,7 +873,7 @@ $(document).ready(function () {
 	tabuTable.on("dataFiltered", function(filters, rows){
 		//console.log('dataFiltered Event ----------');
 		//console.log(getTableFiltersFields('headerfilters'));
-		applyViewFromFilters();
+		applyColumnsFromFilters();
 		setColumHeaderColors();
 		toggleFilterClearButVisibility();
 	});
