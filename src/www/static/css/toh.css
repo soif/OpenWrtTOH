@@ -118,8 +118,11 @@
 	border: 1px solid #ddd;
 	background: #fafafa;
 	padding: 3px 5px;
+	color: #777;
 }
-.toh-options-title{
+.toh-options-title A{
+	color: #777;
+	text-decoration: none;
 }
 .toh-options-radios{
 	line-height: 110%;
