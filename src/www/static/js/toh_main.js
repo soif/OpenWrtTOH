@@ -475,7 +475,7 @@ function updateColGroupIcons(){
 
 //
 function setPresetSelectedClass(type,key=''){
-	console.log('Set preset Class: '+type+'/'+key);
+	//console.log('Set preset Class: '+type+'/'+key);
 	var myclass='toh-selected';
 	if(type=='features'){
 		var sel='.toh-filters-presets';
@@ -822,7 +822,7 @@ function SetDefaults(){
 	
 	var tmp_value;
 	var tmp_arr;
-	
+		
 	//columns or columns preset
 	tmp_value=getUrlParameter(prefs.p_columns);
 	if(tmp_value == ''){
@@ -839,8 +839,7 @@ function SetDefaults(){
 			applyColumCol(key);
 		});
 	}
-	
-	
+		
 	//features or filter preset
 	//console.log('SetDefaults Filter');
 	tmp_value=getUrlParameter(prefs.p_features);
@@ -858,6 +857,7 @@ function SetDefaults(){
 			applyFilterFeature(key);
 		});
 	}
+
 	//console.log('SetDefaults URL');
 	buildBrowserUrl();
 	toh_table_inited=true;
@@ -1158,7 +1158,11 @@ $(document).ready(function () {
 		var cb=$(this).parent().find('INPUT').trigger('click');
 	});
 
-
+	// Click: Replace Option immediately populates columns ----------------------
+	$('#toh-filters-options INPUT[value=repl]').on('click',function(e){
+		//console.log('replace option clicked');
+		applyColumnsFromFilters();
+	});
 
 	// Top Views (columns) ################################################################################
 
