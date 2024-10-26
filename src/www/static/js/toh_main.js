@@ -196,8 +196,7 @@ function getTableFiltersFields(type='filters'){
 function applyFilterPreset(key){
 	var set=getFilterSet('preset',key);
 	if(Object.keys(set).length > 0 ){
-		$('#toh-filters-presets A').removeClass('selected');
-		$("#toh-filters-presets A[data-key="+key+"]").addClass('selected');
+		setColumnPresetSelectedClass(key);
 		tabuTable.setFilter(set.filters ); //,  {matchAll:true}
 		checkAllFeatures(false);
 		if(set.features.length > 0 ){		
@@ -217,7 +216,7 @@ function applyFilterFeature(key,bool){
 	}
 	if(set.filters.length > 0){
 		//console.log('Set Features '+key+' ------- DONE --------------');
-		$('#toh-filters-presets A').removeClass('selected');
+		setColumnPresetSelectedClass('custom');
 		//console.log(set);
 		checkFeature(key,bool);
 		if(bool){
@@ -378,27 +377,24 @@ function applyColumnPreset(key){
 
 		//tabuTable.blockRedraw();
 		if(key=='all'){
-			$('#toh-cols-presets A').removeClass('selected');
-			$("#toh-cols-presets A[data-key="+key+"]").addClass('selected');
 			checkAllColumns(true);
 			showAllColumns(true);
+			setColumnPresetSelectedClass(key);
 		}
 		else if(key=='none'){
-			$('#toh-cols-presets A').removeClass('selected');
-			$("#toh-cols-presets A[data-key="+key+"]").addClass('selected');	
 			checkAllColumns(false);
 			showAllColumns(false);
+			setColumnPresetSelectedClass(key);
 		}
 		else{
 			var set=getColumnSet(key);
 			if(set.length > 0){
-				$('#toh-cols-presets A').removeClass('selected');
-				$("#toh-cols-presets A[data-key="+key+"]").addClass('selected');	
 				checkAllColumns(false);
 				showAllColumns(false);
 				set.forEach(col => {
 					showAndCheckColumn(col);
 				});	
+				setColumnPresetSelectedClass(key);
 			}
 		}
 		//tabuTable.redraw(true);
@@ -472,6 +468,17 @@ function updateColGroupIcons(){
 	});
 }
 
+//
+function setColumnPresetSelectedClass(key=''){
+	var myclass='selected';
+	if(key !=''){
+		$('#toh-cols-presets A').removeClass(myclass);
+		$('#toh-cols-presets A[data-key='+key+']').addClass(myclass);
+	}
+	else{
+		$('#toh-cols-presets A').removeClass(myclass);
+	}
+}
 
 // URL functions ######################################################################################################
 
@@ -710,8 +717,7 @@ function applyUserPreset(type,num){
 	else if(type=='columns'){
 		showAllColumns(false);
 		checkAllColumns(false);
-		$('#toh-cols-presets A').removeClass('selected');
-		$('#toh-cols-presets A[data-key=custom]').addClass('selected');
+		setColumnPresetSelectedClass('custom');
 	}
 	else{
 		return false;
@@ -1128,8 +1134,7 @@ $(document).ready(function () {
 	$('#toh-cols-columns-content').on('click viewchanged','INPUT',function(e){
 		var key=$(this).attr('data-key');
 		console.log('Click col: '+key);
-		$('#toh-cols-presets A').removeClass('selected');
-		$('#toh-cols-presets A[data-key=custom]').addClass('selected');
+		setColumnPresetSelectedClass('custom');
 		applyColumCol(key, $(this).is(":checked") );
 	});
 
