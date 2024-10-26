@@ -435,6 +435,7 @@ function applyColumnsFromFilters(){
 	var opt=$("#toh-filters-options INPUT[name='filtcol']:checked").val();
 	var fields	=getTableFiltersFields('all');
 	if(opt=='add'){
+		setPresetSelectedClass('columns','custom');
 		$.each(fields,function(i,col){
 			showAndCheckColumn(col);
 		});
@@ -442,6 +443,7 @@ function applyColumnsFromFilters(){
 		showAndCheckColumn('model');
 	}
 	else if(opt=='repl'){
+		setPresetSelectedClass('columns','custom');
 		showAllColumns(false);
 		checkAllColumns(false);
 		$.each(fields,function(i,col){
