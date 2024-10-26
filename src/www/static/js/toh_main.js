@@ -195,7 +195,7 @@ function getTableFiltersFields(type='filters'){
 function applyFilterPreset(key){
 	var set=getFilterSet('preset',key);
 	if(Object.keys(set).length > 0 ){
-		setPresetSelectedClass('columns',key);
+		setPresetSelectedClass('features',key);
 		showLoading();
 		tabuTable.setFilter(set.filters ); //,  {matchAll:true}
 		checkAllFeatures(false);
@@ -218,6 +218,7 @@ function applyFilterFeature(key,bool){
 		//console.log('Set Features '+key+' ------- DONE --------------');
 		showLoading();
 		//console.log(set);
+		setPresetSelectedClass('features','custom');
 		if(bool){
 			tabuTable.addFilter(set.filters);
 		}
@@ -225,7 +226,6 @@ function applyFilterFeature(key,bool){
 			tabuTable.removeFilter(set.filters);
 		}		
 		checkFeature(key,bool);
-		setPresetSelectedClass('columns','custom');
 	}
 }
 
@@ -379,24 +379,24 @@ function applyColumnPreset(key){
 
 		//tabuTable.blockRedraw();
 		if(key=='all'){
+			setPresetSelectedClass('columns',key);
 			checkAllColumns(true);
 			showAllColumns(true);
-			setPresetSelectedClass('columns',key);
 		}
 		else if(key=='none'){
+			setPresetSelectedClass('columns',key);
 			checkAllColumns(false);
 			showAllColumns(false);
-			setPresetSelectedClass('columns',key);
 		}
 		else{
 			var set=getColumnSet(key);
 			if(set.length > 0){
+				setPresetSelectedClass('columns',key);
 				checkAllColumns(false);
 				showAllColumns(false);
 				set.forEach(col => {
 					showAndCheckColumn(col);
 				});	
-				setPresetSelectedClass('columns',key);
 			}
 		}
 		//tabuTable.redraw(true);
@@ -407,6 +407,7 @@ function applyColumnPreset(key){
 
 // Apply a (single) Column : show/hide -----------------------
 function applyColumCol(key,state){
+	setPresetSelectedClass('columns','custom');	
 	showAndCheckColumn(key,state);
 }
 
@@ -472,9 +473,10 @@ function updateColGroupIcons(){
 
 //
 function setPresetSelectedClass(type,key=''){
+	console.log('Set preset Class: '+type+'/'+key);
 	var myclass='toh-selected';
 	if(type=='features'){
-		var sel='#toh-filters-title .toh-top-title-presets';
+		var sel='.toh-filters-presets';
 	}
 	else if(type=='columns'){
 		var sel='#toh-cols-title .toh-top-title-presets';
@@ -551,7 +553,7 @@ function buildBrowserUrl(and_update=true){
 	var tmp_preset;
 
 	// make features
-	tmp_preset=$('#toh-filters-presets A.selected').attr('data-key');
+	tmp_preset=$('#toh-filters-presets A.toh-selected').attr('data-key');
 	if(tmp_preset !=undefined){
 		params.push(prefs.p_filter+'='+tmp_preset);
 	}
@@ -563,7 +565,7 @@ function buildBrowserUrl(and_update=true){
 	}
 
 	// make colums
-	tmp_preset=$('#toh-cols-presets A.selected').attr('data-key');
+	tmp_preset=$('#toh-cols-presets A.toh-selected').attr('data-key');
 	if(tmp_preset !=undefined && tmp_preset !='custom'){
 		params.push(prefs.p_view+'='+tmp_preset);
 	}
@@ -731,13 +733,14 @@ function applyUserPreset(type,num){
 		console.log('empty preset: '+type+'/'+num);
 	}
 	if(type=='features'){
+		setPresetSelectedClass(type,'custom');
 		clearAllFeatures();
 		checkAllFeatures(false);
 	}
 	else if(type=='columns'){
+		setPresetSelectedClass(type,'custom');
 		showAllColumns(false);
 		checkAllColumns(false);
-		setPresetSelectedClass('columns','custom');
 	}
 	else{
 		return false;
@@ -854,7 +857,6 @@ function SetDefaults(){
 		});
 	}
 	//console.log('SetDefaults URL');
-
 	buildBrowserUrl();
 	toh_table_inited=true;
 }
@@ -1135,16 +1137,16 @@ $(document).ready(function () {
 		//console.log("Click filter preset");
 		e.preventDefault();
 		var key=$(this).attr('data-key');
+		//setPresetSelectedClass('features',key);
 		applyFilterPreset(key);
-		setPresetSelectedClass('features');
 	});
 
 	// Click: Feature CheckBox -------------------------------------------
 	$('#toh-top-filters').on('click','.toh-filter-feature INPUT',function(e){
 		//console.log("Click checkbox feature");
 		var key=$(this).attr('data-key');
+		//setPresetSelectedClass('features');
 		applyFilterFeature(key, $(this).is(":checked") );
-		setPresetSelectedClass('features');
 
 	});
 
@@ -1175,7 +1177,7 @@ $(document).ready(function () {
 	$('#toh-cols-columns-content').on('click viewchanged','INPUT',function(e){
 		var key=$(this).attr('data-key');
 		console.log('Click col: '+key);
-		setPresetSelectedClass('columns','custom');
+		//setPresetSelectedClass('columns','custom');
 		applyColumCol(key, $(this).is(":checked") );
 	});
 
