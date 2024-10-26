@@ -406,7 +406,7 @@ A.toh-but:hover{
 	), #aaa;
 	color: #000;
 }
-.toh-top-title-presets A.selected{
+.toh-top-title-presets A.toh-selected{
 	background-color: #558;
 	background: linear-gradient(to bottom, 
 		rgba(255,255,255, 0.5),
@@ -414,7 +414,7 @@ A.toh-but:hover{
 	), #558;
 	color: #fff;
 }
-.toh-top-title-presets A.toh-view-custom.selected{
+.toh-top-title-presets A.toh-view-custom.toh-selected{
 	background-color: #448;
 }
 

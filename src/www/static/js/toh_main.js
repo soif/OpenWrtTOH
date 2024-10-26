@@ -196,7 +196,7 @@ function getTableFiltersFields(type='filters'){
 function applyFilterPreset(key){
 	var set=getFilterSet('preset',key);
 	if(Object.keys(set).length > 0 ){
-		setColumnPresetSelectedClass(key);
+		setPresetSelectedClass('columns',key);
 		tabuTable.setFilter(set.filters ); //,  {matchAll:true}
 		checkAllFeatures(false);
 		if(set.features.length > 0 ){		
@@ -216,7 +216,7 @@ function applyFilterFeature(key,bool){
 	}
 	if(set.filters.length > 0){
 		//console.log('Set Features '+key+' ------- DONE --------------');
-		setColumnPresetSelectedClass('custom');
+		setPresetSelectedClass('columns','custom');
 		//console.log(set);
 		checkFeature(key,bool);
 		if(bool){
@@ -379,12 +379,12 @@ function applyColumnPreset(key){
 		if(key=='all'){
 			checkAllColumns(true);
 			showAllColumns(true);
-			setColumnPresetSelectedClass(key);
+			setPresetSelectedClass('columns',key);
 		}
 		else if(key=='none'){
 			checkAllColumns(false);
 			showAllColumns(false);
-			setColumnPresetSelectedClass(key);
+			setPresetSelectedClass('columns',key);
 		}
 		else{
 			var set=getColumnSet(key);
@@ -394,7 +394,7 @@ function applyColumnPreset(key){
 				set.forEach(col => {
 					showAndCheckColumn(col);
 				});	
-				setColumnPresetSelectedClass(key);
+				setPresetSelectedClass('columns',key);
 			}
 		}
 		//tabuTable.redraw(true);
@@ -469,16 +469,30 @@ function updateColGroupIcons(){
 }
 
 //
-function setColumnPresetSelectedClass(key=''){
-	var myclass='selected';
-	if(key !=''){
-		$('#toh-cols-presets A').removeClass(myclass);
-		$('#toh-cols-presets A[data-key='+key+']').addClass(myclass);
+function setPresetSelectedClass(type,key=''){
+	var myclass='toh-selected';
+	if(type=='features'){
+		var sel='#toh-filters-title .toh-top-title-presets';
+	}
+	else if(type=='columns'){
+		var sel='#toh-cols-title .toh-top-title-presets';
+
 	}
 	else{
-		$('#toh-cols-presets A').removeClass(myclass);
+		console.log('Unkwnon type:'+type);
+		return false;
+	}
+	if(key !=''){
+		$(sel+' A').removeClass(myclass);
+		$(sel+' A[data-key='+key+']').addClass(myclass);
+		//toh_current_preset.columns=key;
+	}
+	else{
+		$(sel+' A').removeClass(myclass);
+		//toh_current_preset.columns='';
 	}
 }
+
 
 // URL functions ######################################################################################################
 
@@ -717,7 +731,7 @@ function applyUserPreset(type,num){
 	else if(type=='columns'){
 		showAllColumns(false);
 		checkAllColumns(false);
-		setColumnPresetSelectedClass('custom');
+		setPresetSelectedClass('columns','custom');
 	}
 	else{
 		return false;
@@ -869,6 +883,10 @@ function createIndexedObject(arrayOfObjects, key) {
 var tabuTable;
 var table_inited=false;
 var toh_cookies={};
+// var toh_current_preset={
+// 	features:	'',
+// 	columns:	''
+// };
 
 $(document).ready(function () {
 
@@ -1057,6 +1075,7 @@ $(document).ready(function () {
 					storePresetCookie(type,num,name);
 					exit();
 					$preset.html(name).removeClass('toh-used').addClass('toh-used');
+					setPresetSelectedClass(type,num)
 					//console.log('saved');
 				}
 			});	
@@ -1071,10 +1090,21 @@ $(document).ready(function () {
 			//console.log('delete');
 			deletePresetCookie(type,num);
 			$preset.html(num).removeClass('toh-used').fadeOut(150).fadeIn(50);
-		}
+			if(type=='features'&& $preset.hasClass('toh-selected')){
+				setPresetSelectedClass(type,'');
+			}
+			if(type=='columns'&& $preset.hasClass('toh-selected')){
+				setPresetSelectedClass(type,'custom');
+			}		}
 		else{
 			//console.log('load');
 			applyUserPreset(type,num);
+			if(type=='features' && $preset.hasClass('toh-used')){
+				setPresetSelectedClass(type,num);
+			}
+			if(type=='columns' && $preset.hasClass('toh-used')){
+				setPresetSelectedClass(type,num);
+			}
 		}
 	
 	});
@@ -1099,6 +1129,7 @@ $(document).ready(function () {
 		e.preventDefault();
 		var key=$(this).attr('data-key');
 		applyFilterPreset(key);
+		setPresetSelectedClass('features');
 	});
 
 	// Click: Feature CheckBox -------------------------------------------
@@ -1106,6 +1137,8 @@ $(document).ready(function () {
 		//console.log("Click checkbox feature");
 		var key=$(this).attr('data-key');
 		applyFilterFeature(key, $(this).is(":checked") );
+		setPresetSelectedClass('features');
+
 	});
 
 	// Click: Feature link ----------------------
@@ -1134,7 +1167,7 @@ $(document).ready(function () {
 	$('#toh-cols-columns-content').on('click viewchanged','INPUT',function(e){
 		var key=$(this).attr('data-key');
 		console.log('Click col: '+key);
-		setColumnPresetSelectedClass('custom');
+		setPresetSelectedClass('columns','custom');
 		applyColumCol(key, $(this).is(":checked") );
 	});
 
