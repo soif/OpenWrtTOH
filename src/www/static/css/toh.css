@@ -65,6 +65,11 @@
 	opacity: 1.0;
 	color: #000;
 }
+.toh-upresets-content A.toh-saving{
+	background-color: #fae9cb;
+	opacity: 1.0;
+	color: #000;
+}
 .toh-upresets{
 	float:right
 }
@@ -80,6 +85,26 @@
 }
 .toh-upresets-title A:hover{
 	color: #000;
+}
+
+/* upreset popup -------------------------*/
+#toh-upreset-popup-save{
+	position: absolute;
+	background-color: #f9f9ff;
+	border: 1px solid #ccc;
+	padding: 10px;
+	font-size: 12px;
+	z-index: 1000;
+}
+#toh-upreset-popup-save .toh-desc-mini{
+	font-size: 11px;
+	color: #aaa;
+	margin-top: 2px;
+	margin-bottom: 5px;
+}
+}
+#toh-upreset-popup-save BUTTON{
+	background-color: #fff;
 }
 
 /* Top Filters ---------------------------- */

@@ -27,8 +27,9 @@ let prefs={
 	cook_preset_count: 	3,				// how many uset preset (features or columns) cookies do we use
 	cook_name_features:'myFeatures', 	// name of the features cookie,
 	cook_name_columns:'myColumns',		// name of the columns cookie,
+	cook_max_chars: 	12,				// max number of character allowed in the cookie name
 
-	tooltip_upreset:"User Presets: Click to Load, SHIFT-click to save",
+	tooltip_upreset:"User Presets: Click to Load, Shit-click to save, Alt-click to delete",
 
 };
 

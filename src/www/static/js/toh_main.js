@@ -149,9 +149,15 @@ function checkAllFeatures(state=true){
 }
 
 // Check on/off a feature checkbox ------------------------------
-function checkFeature(feat,state=true){
-	$(".toh-filter-feature INPUT[data-key="+feat+"]").prop('checked',state);
+function checkFeature(key,state=true){
+	$(".toh-filter-feature INPUT[data-key="+key+"]").prop('checked',state);
 }
+
+// Show or Hide ALL features --------------------------------------
+function clearAllFeatures() {
+	tabuTable.clearFilter();
+}
+
 
 // Return a (flatted) list of the current filtered fields ------------------
 function getTableFiltersFields(type='filters'){
@@ -329,8 +335,8 @@ function buildViewsColumns(){
 }
 
 // Check on/off a Column checkbox ------------------------------
-function checkColumn(feat,state=true){
-	$(".toh-col-column INPUT[data-key="+feat+"]").prop('checked',state);
+function checkColumn(key,state=true){
+	$(".toh-col-column INPUT[data-key="+key+"]").prop('checked',state);
 	updateColGroupIcons();
 }
 
@@ -340,9 +346,10 @@ function checkAllColumns(state=true){
 	updateColGroupIcons();
 }
 
-//  Show and Check on/off ALL Column checkboxes ------------------------------
+//  Show and Check on/off Column checkbox ------------------------------
 function showAndCheckColumn(col,state=true){
 	checkColumn(col,state);
+	//console.log('show '+col+' / '+state);
 	if(state){
 		tabuTable.showColumn(col);
 	}
@@ -555,7 +562,7 @@ function buildBrowserUrl(and_update=true){
 // Cookie functions ###################################################################################
 
 // save a cookie ---------------------------------------------------
-function saveCookie(c_name, content, type='json', with_prefix=true){
+function saveCookie(c_name, content, do_delete=false, type='json'){
 	var c_path=prefs.cook_path;
 	if(c_path==''){
 		c_path=window.location.pathname;
@@ -564,7 +571,11 @@ function saveCookie(c_name, content, type='json', with_prefix=true){
 	if(type=='json'){
 		c_content=JSON.stringify(content);
 	}
-	document.cookie = prefs.cook_prefix + c_name + "=" + encodeURIComponent(c_content) + "; max-age="+prefs.cook_duration+"; path="+c_path;
+	var dur=prefs.cook_duration;
+	if(do_delete){
+		dur=0;
+	}
+	document.cookie = prefs.cook_prefix + c_name + "=" + encodeURIComponent(c_content) + "; max-age="+dur+"; path="+c_path;
 }
 
 // extract a cookie from the list---------------------------------------------------
@@ -633,15 +644,24 @@ function storePresetCookie(type, number=0, name='user'){ // type= 'features' or 
 	if(type=='features'){
 		preset.list=getCheckedFeatures();
 		saveCookie(prefs.cook_name_features+number, preset);
+		toh_cookies[type][number]=preset;
 	}
 	else if(type=='columns'){
 		preset.list=getCheckedColumns();
 		saveCookie(prefs.cook_name_columns+number, preset);
+		toh_cookies[type][number]=preset;
 	}
 	//console.log('storePresetCookie:'+type+", "+number);
 	//console.log(preset.list);
 }
-
+function deletePresetCookie(type, number){
+	if(type=='features'){
+		saveCookie(prefs.cook_name_features+number, false,true);
+	}
+	else if(type=='columns'){
+		saveCookie(prefs.cook_name_columns+number, false,true);
+	}
+}
 // -----------------------------
 function buildUserPresets(type){// type= 'features' or 'columns'
 	//console.log('buildUserPresets: '+type);
@@ -684,10 +704,14 @@ function applyUserPreset(type,num){
 		console.log('empty preset: '+type+'/'+num);
 	}
 	if(type=='features'){
+		clearAllFeatures();
 		checkAllFeatures(false);
 	}
 	else if(type=='columns'){
+		showAllColumns(false);
 		checkAllColumns(false);
+		$('#toh-cols-presets A').removeClass('selected');
+		$('#toh-cols-presets A[data-key=custom]').addClass('selected');
 	}
 	else{
 		return false;
@@ -808,6 +832,14 @@ function SetDefaults(){
 	table_inited=true;
 }
 
+// jquery shake effect -----------------------------------------------------
+$.fn.shake = function(interval = 100, distance = 10, times = 3) {
+	this.css('position', 'relative');
+	for (let i = 0; i < times + 1; i++) {
+		this.animate({left: (i % 2 == 0 ? distance : distance * -1)}, interval);
+	}
+	return this.animate({left: 0}, interval);
+};
 
 
 /*
@@ -926,17 +958,12 @@ $(document).ready(function () {
 			});
 			tabuTable.setColumns(columns);
 	
-
 			// display Filters & views 
-
 			buildFiltersPresets();
 			buildFiltersFeatures();
 			buildViewsColumns();
 			buildViewsPresets();
-			
-
-			//console.log(toh_cookies);
-	
+				
 			//set default views
 			SetDefaults();
 
@@ -954,25 +981,109 @@ $(document).ready(function () {
 
 	// User Presets ##########################################################################################
 
-
 	$('.toh-upresets-content').on('click','.toh-upreset-but',function(e){
 		e.preventDefault();
-		var num=$(this).attr('data-key');
-		var type=$(this).attr('data-type');
+		e.stopPropagation();
+		var $preset=$(this);
+		var num=$preset.attr('data-key');
+		var type=$preset.attr('data-type');
 		console.log("Click user preset:"+type+' '+num);
 		if(e.shiftKey){
-			console.log('save');
+			//console.log('save');
 			var name="user"+num;
-			storePresetCookie(type,num,name);
-			$(this).html(name);
-			$(this).removeClass('toh-used').addClass('toh-used');
+
+			$preset.addClass('toh-saving');
+
+			// show popup
+			var $popupDiv	=$('#toh-upreset-popup-save');
+			var $input			=$popupDiv.find('INPUT');
+			var $but_save		=$popupDiv.find('BUTTON');
+			$input.val('');
+			$popupDiv.show();
+			
+			// Position the popup div
+			var cellOffset = $(this).offset();
+			$popupDiv.css({
+				top: cellOffset.top +20,
+				left: cellOffset.left -90
+			});
+			$input.focus(); // nedd to be AFTER popup.show
+			
+			//set max
+			var max=prefs.cook_max_chars;
+			$('#toh-upreset-popup-max').html(max);
+			$input.attr('size',max);
+		
+			//clean events and exit
+			function exit(){
+				$input.off();
+				$but_save.off();
+				$popupDiv.off();
+				$preset.removeClass('toh-saving');
+				$popupDiv.hide();
+			}
+
+			//keyboard
+			$input.on('keyup',function(e){
+				var val=$input.val();
+				if(e.keyCode==13){		//return
+					$but_save.trigger('click');
+				}
+				if(e.keyCode==27){		//esc
+					exit();
+				}
+				if(val.length > max){
+					$input.val(val.substring(0, max)).shake(50,5,1);
+				}
+				//console.log(e);
+			});
+
+			//save on click, if name not empty
+			$but_save.on('click', function(e) {
+				e.preventDefault();
+				//e.stopPropagation();
+				name=$input.val();
+				if(name==''){
+					$input.shake();
+				}
+				else{
+					$preset.fadeOut(50).fadeIn(250);	// .shake(50,5,2);
+					storePresetCookie(type,num,name);
+					exit();
+					$preset.html(name).removeClass('toh-used').addClass('toh-used');
+					//console.log('saved');
+				}
+			});	
+
+			// Prevent the click event from propagating to the document
+			$popupDiv.on('click', function(e) {
+				e.stopPropagation();
+			});
+
+		}
+		else if(e.altKey){
+			//console.log('delete');
+			deletePresetCookie(type,num);
+			$preset.html(num).removeClass('toh-used').fadeOut(150).fadeIn(50);
 		}
 		else{
-			console.log('load');
+			//console.log('load');
 			applyUserPreset(type,num);
 		}
 	
 	});
+	// exit save preset when clicking elsewhere
+	$(document).on('click', function(e){
+		//console.log('exit1');
+		if(!$('#toh-upreset-popup-save').is(':visible')) return;
+		//console.log('exit2');
+		$('#toh-upreset-popup-save').hide();
+		$('.toh-upreset-but').removeClass('toh-saving');
+
+	});
+
+
+
 
 	// Top Filters ##########################################################################################
 
@@ -1016,6 +1127,7 @@ $(document).ready(function () {
 	// Click (or viewchanged): one view CheckBox ----------------------
 	$('#toh-cols-columns-content').on('click viewchanged','INPUT',function(e){
 		var key=$(this).attr('data-key');
+		console.log('Click col: '+key);
 		$('#toh-cols-presets A').removeClass('selected');
 		$('#toh-cols-presets A[data-key=custom]').addClass('selected');
 		applyColumCol(key, $(this).is(":checked") );
