@@ -28,6 +28,8 @@ let prefs={
 	cook_name_features:'myFeatures', 	// name of the features cookie,
 	cook_name_columns:'myColumns',		// name of the columns cookie,
 
+	tooltip_upreset:"User Presets: Click to Load, SHIFT-click to save",
+
 };
 
 // options for tabulator table (tabuTable) ---------------------

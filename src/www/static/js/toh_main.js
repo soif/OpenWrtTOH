@@ -596,27 +596,36 @@ function loadCookie(c_name, type='json'){
 
 // -----------------------------
 function loadPresetCookies(type){ //'features' or 'columns'
-	//console.log('loadPresetCookies:'+type);
+	//console.log('---loadPresetCookies:'+type);
 	var c_value	='';
 
 	for (let i = 1; i <= prefs.cook_preset_count; i++) {
 		c_value=loadCookie(prefs['cook_name_'+type]+i);
+		//console.log('p'+i);
+		//console.log(c_value);
 		if(typeof(toh_cookies[type]) !='object'){
+			//console.log('-create type:'+type);
 			toh_cookies[type]={};
 		}
 		if(c_value !=undefined || c_value==''){
+			//console.log('-save:'+c_value);
 			toh_cookies[type][i]=c_value;
 		}
 		else{
+			//console.log('-create index:'+i);
 			toh_cookies[type][i]={};
 		}		
 	}
+	//console.log('---loadPresetCookies RESULT:');
 	//console.log(toh_cookies);
 }
 
 // -----------------------------
 function storePresetCookie(type, number=0, name='user'){ // type= 'features' or 'columns'
 	//console.log('StoreCookie:'+type+', '+number+', '+name);
+	if(name==''){
+		name=number;
+	}
 	var preset={
 		name: name,
 		list: []
@@ -631,6 +640,78 @@ function storePresetCookie(type, number=0, name='user'){ // type= 'features' or 
 	}
 	//console.log('storePresetCookie:'+type+", "+number);
 	//console.log(preset.list);
+}
+
+// -----------------------------
+function buildUserPresets(type){// type= 'features' or 'columns'
+	//console.log('buildUserPresets: '+type);
+	var sel='';
+	var name='';
+	var html='';
+	if(type=='features'){
+		sel="#toh-filters-upresets .toh-upresets-content";
+	}
+	else if(type=='columns'){
+		sel="#toh-cols-upresets .toh-upresets-content";
+	}
+	else{
+		return false;
+	}
+	for (let i = 1; i <= prefs.cook_preset_count; i++) {
+		//console.log('pr'+i);
+		var myclass='';
+		if(typeof(toh_cookies[type][i])=='object'){
+			if(typeof(toh_cookies[type][i].name) =='string'){
+				name=toh_cookies[type][i].name;
+				myclass="toh-used";
+			}
+			else{
+				name=i;
+			}
+		}
+		else{
+			name=+i;
+		}
+		html +='<a href="#" class="toh-upreset-but '+myclass+'" data-key="'+i+'" data-type="'+type+'">'+name+'</a>';
+	}
+	$(sel).html(html);
+}
+
+//------------------------------------------------------
+function applyUserPreset(type,num){
+	var preset=toh_cookies[type][num];
+	if(preset==false){
+		console.log('empty preset: '+type+'/'+num);
+	}
+	if(type=='features'){
+		checkAllFeatures(false);
+	}
+	else if(type=='columns'){
+		checkAllColumns(false);
+	}
+	else{
+		return false;
+	}
+	$.each(preset.list,function(i,key){
+		if(type=='features'){
+			applyFilterFeature(key,true);
+		}
+		else if(type=='columns'){
+			applyColumCol(key,true);
+		}
+		else{
+			return false;
+		}
+	});
+}
+//------------------------------------------------------
+function loadCookiesAndBuildUserPresets(){
+	loadPresetCookies('features');
+	loadPresetCookies('columns');
+	buildUserPresets('features');
+	buildUserPresets('columns');
+	$(".toh-upresets-title A").prop('title',prefs.tooltip_upreset);
+	
 }
 
 // Misc functions ###################################################################################
@@ -847,16 +928,19 @@ $(document).ready(function () {
 	
 
 			// display Filters & views 
+
 			buildFiltersPresets();
 			buildFiltersFeatures();
 			buildViewsColumns();
 			buildViewsPresets();
+			
+
+			//console.log(toh_cookies);
 	
 			//set default views
 			SetDefaults();
-			
-			//storePresetCookie('features',1);
-			//loadPresetCookies('features');
+
+			loadCookiesAndBuildUserPresets();
 
 			// sort columns						
 			tabuTable.setSort([
@@ -868,6 +952,27 @@ $(document).ready(function () {
 	});
 
 
+	// User Presets ##########################################################################################
+
+
+	$('.toh-upresets-content').on('click','.toh-upreset-but',function(e){
+		e.preventDefault();
+		var num=$(this).attr('data-key');
+		var type=$(this).attr('data-type');
+		console.log("Click user preset:"+type+' '+num);
+		if(e.shiftKey){
+			console.log('save');
+			var name="user"+num;
+			storePresetCookie(type,num,name);
+			$(this).html(name);
+			$(this).removeClass('toh-used').addClass('toh-used');
+		}
+		else{
+			console.log('load');
+			applyUserPreset(type,num);
+		}
+	
+	});
 
 	// Top Filters ##########################################################################################
 
