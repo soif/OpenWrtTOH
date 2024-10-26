@@ -841,7 +841,6 @@ function SetDefaults(){
 	}
 		
 	//features or filter preset
-	//console.log('SetDefaults Filter');
 	tmp_value=getUrlParameter(prefs.p_features);
 	if(tmp_value == ''){
 		//console.log('SetDefaults Filter Preset');
@@ -856,6 +855,12 @@ function SetDefaults(){
 		$.each(tmp_arr,function(i,key){
 			applyFilterFeature(key);
 		});
+
+		// Quick&Dirty patch to display the ClearFiters button
+		// TODO: Figure why the btn is not displayed as it should, and make it work cleanly
+		if(tmp_arr.length >0 ){
+			$('.toh-but-clearfilters').show();
+		}
 	}
 
 	//console.log('SetDefaults URL');
@@ -1023,7 +1028,7 @@ $(document).ready(function () {
 		var $preset=$(this);
 		var num=$preset.attr('data-key');
 		var type=$preset.attr('data-type');
-		console.log("Click user preset:"+type+' '+num);
+		//console.log("Click user preset:"+type+' '+num);
 		if(e.shiftKey){
 			//console.log('save');
 			var name="user"+num;
