@@ -196,6 +196,7 @@ function applyFilterPreset(key){
 	var set=getFilterSet('preset',key);
 	if(Object.keys(set).length > 0 ){
 		setPresetSelectedClass('columns',key);
+		showLoading();
 		tabuTable.setFilter(set.filters ); //,  {matchAll:true}
 		checkAllFeatures(false);
 		if(set.features.length > 0 ){		
@@ -215,15 +216,16 @@ function applyFilterFeature(key,bool){
 	}
 	if(set.filters.length > 0){
 		//console.log('Set Features '+key+' ------- DONE --------------');
-		setPresetSelectedClass('columns','custom');
+		showLoading();
 		//console.log(set);
-		checkFeature(key,bool);
 		if(bool){
 			tabuTable.addFilter(set.filters);
 		}
 		else{
 			tabuTable.removeFilter(set.filters);
 		}		
+		checkFeature(key,bool);
+		setPresetSelectedClass('columns','custom');
 	}
 }
 
@@ -346,7 +348,7 @@ function checkAllColumns(state=true){
 
 //  Show and Check on/off Column checkbox ------------------------------
 function showAndCheckColumn(col,state=true){
-	checkColumn(col,state);
+	showLoading();
 	//console.log('show '+col+' / '+state);
 	if(state){
 		tabuTable.showColumn(col);
@@ -354,6 +356,7 @@ function showAndCheckColumn(col,state=true){
 	else{
 		tabuTable.hideColumn(col);
 	}
+	checkColumn(col,state);
 }
 
 // Show or Hide ALL columns --------------------------------------
