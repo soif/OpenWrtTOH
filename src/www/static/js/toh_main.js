@@ -1,5 +1,4 @@
 /*
-
 	Copyright (c) 2024 Francois Dechery
 
      This program is free software: you can redistribute it and/or modify it under the 
@@ -12,13 +11,13 @@
 
     You should have received a copy of the GNU General Public License along with this program. 
 	If not, see <https://www.gnu.org/licenses/>. 
-
  */
 
 
 
-// Functions for Cell Model Popup Formatter ---------------------------------------------
+// Functions for Cell Model Popup Formatter #######################################################
 
+// get my Columns definitions -----------------------------------
 function getMyColumnDefinition(field){
 	let cols=columnStyles;
 	let col={};
@@ -40,6 +39,7 @@ function getMyColumnDefinition(field){
 	return col;
 }
 
+// makes an A tag from an URL ----------------------------------------------
 function formatLinkToHtml(url, name='link', target_blank=true){
 	let pattern = /^http(s)?:\/\//;
 	let target='';
@@ -107,13 +107,13 @@ function buildFiltersFeatures(){
 	$('#toh-filters-features-content').html(tmp_html);
 }
 
-// -------------------------------------------------------
+// Formats one Filter description -------------------------------------
 function formatFilterDesc(filter){
 	var title=columnStyles[filter.field].title;
 	return title + " " + filter.type + " '" +filter.value + "'"; 
 }
 
-// -------------------------------------------------------
+// Makes the Feature Tooltip ------------------------------------------
 function makeFeatureDescription(key){
 	var features=colFilterFeatures[key];
 	var desc='';
@@ -158,7 +158,6 @@ function clearAllFeatures() {
 	tabuTable.clearFilter();
 }
 
-
 // Return a (flatted) list of the current filtered fields ------------------
 function getTableFiltersFields(type='filters'){
 	var fields=[];
@@ -192,7 +191,7 @@ function getTableFiltersFields(type='filters'){
 	return fields;
 }
 
-// ----------------------------------------------------
+// Apply a Filter Preset ----------------------------------------------------
 function applyFilterPreset(key){
 	var set=getFilterSet('preset',key);
 	if(Object.keys(set).length > 0 ){
@@ -207,7 +206,7 @@ function applyFilterPreset(key){
 	}
 }
 
-// ----------------------------------------------------
+// Apply a Filter Feature ------------------------------------------------
 function applyFilterFeature(key,bool){
 	var set=getFilterSet('feature',key);
 	//console.log('Set Features '+key+' ---------------------------');
@@ -262,7 +261,7 @@ function getFilterSet(type, key){
 }
 
 
-// Views functions #########################################################################
+// Views functions #############################################################################################
 
 // Make a column line -------------------------------------------
 function htmlColumnLine(field,col,checked){
@@ -402,8 +401,8 @@ function applyColumnPreset(key){
 	},0);
 
 }
-// Apply a (single) Column : show/hide -----------------------
 
+// Apply a (single) Column : show/hide -----------------------
 function applyColumCol(key,state){
 	showAndCheckColumn(key,state);
 }
@@ -503,6 +502,7 @@ function getUrlParameter(name) {
 	var results = regex.exec(location.search);
 	return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
+
 // Get Url parameter or default value -----------------------------
 function getUrlParameterOrDefault(name, defaultValue='') {
 	var value = getUrlParameter(name);
@@ -539,7 +539,7 @@ function getCheckedColumns(){
 	return checked;
 }
 
-  // build, then update the browser Url  ------------
+// build, then update the browser Url  ------------------------------
 function buildBrowserUrl(and_update=true){
 	//console.log('buildBrowserUrl');
 	var url=window.location.pathname;
@@ -626,7 +626,7 @@ function loadCookie(c_name, type='json'){
 	}
 }
 
-// -----------------------------
+// Load All Preset Cookies -----------------------------
 function loadPresetCookies(type){ //'features' or 'columns'
 	//console.log('---loadPresetCookies:'+type);
 	var c_value	='';
@@ -652,7 +652,7 @@ function loadPresetCookies(type){ //'features' or 'columns'
 	//console.log(toh_cookies);
 }
 
-// -----------------------------
+// Store User Preset in Cookie -----------------------------
 function storePresetCookie(type, number=0, name='user'){ // type= 'features' or 'columns'
 	//console.log('StoreCookie:'+type+', '+number+', '+name);
 	if(name==''){
@@ -675,6 +675,8 @@ function storePresetCookie(type, number=0, name='user'){ // type= 'features' or 
 	//console.log('storePresetCookie:'+type+", "+number);
 	//console.log(preset.list);
 }
+
+// Delete User Preset Cookie --------------------------
 function deletePresetCookie(type, number){
 	if(type=='features'){
 		saveCookie(prefs.cook_name_features+number, false,true);
@@ -683,7 +685,8 @@ function deletePresetCookie(type, number){
 		saveCookie(prefs.cook_name_columns+number, false,true);
 	}
 }
-// -----------------------------
+
+// Build User Preset Menu -----------------------------
 function buildUserPresets(type){// type= 'features' or 'columns'
 	//console.log('buildUserPresets: '+type);
 	var sel='';
@@ -718,7 +721,7 @@ function buildUserPresets(type){// type= 'features' or 'columns'
 	$(sel).html(html);
 }
 
-//------------------------------------------------------
+// Appy a User Preset -----------------------------------------------
 function applyUserPreset(type,num){
 	var preset=toh_cookies[type][num];
 	if(preset==false){
@@ -748,7 +751,8 @@ function applyUserPreset(type,num){
 		}
 	});
 }
-//------------------------------------------------------
+
+// Load Cookies and Build User Preset menu -----------------------------
 function loadCookiesAndBuildUserPresets(){
 	loadPresetCookies('features');
 	loadPresetCookies('columns');
@@ -849,7 +853,7 @@ function SetDefaults(){
 	//console.log('SetDefaults URL');
 
 	buildBrowserUrl();
-	table_inited=true;
+	toh_table_inited=true;
 }
 
 // jquery shake effect -----------------------------------------------------
@@ -881,7 +885,7 @@ function createIndexedObject(arrayOfObjects, key) {
 // ############################################################################################################
 
 var tabuTable;
-var table_inited=false;
+var toh_table_inited=false;
 var toh_cookies={};
 // var toh_current_preset={
 // 	features:	'',
@@ -957,7 +961,7 @@ $(document).ready(function () {
 	});
 
 
-	// Fetch content and build table ------------------------------------------
+	// Fetch content and build table ----------------------------------
 	$.getJSON( owrtUrls.toh_json, function( data ){ 
 		//Makes columns
 		var columns = data.columns.map((value, index) => ({
@@ -1001,6 +1005,7 @@ $(document).ready(function () {
 
 		});   
 	});
+
 
 
 	// User Presets ##########################################################################################
@@ -1120,7 +1125,6 @@ $(document).ready(function () {
 
 
 
-
 	// Top Filters ##########################################################################################
 
 	//  Click: Filter Preset ------------------------------------------
@@ -1146,6 +1150,7 @@ $(document).ready(function () {
 		e.preventDefault();
 		var cb=$(this).parent().find('INPUT').trigger('click');
 	});
+
 
 
 	// Top Views (columns) ################################################################################
@@ -1332,14 +1337,14 @@ $(document).ready(function () {
 		applyColumnsFromFilters();
 		setColumHeaderColors();
 		toggleFilterClearButVisibility();
-		if(table_inited){
+		if(toh_table_inited){
 			buildBrowserUrl();
 		}
 	});
 
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
 	tabuTable.on("columnVisibilityChanged", function(column, visible){
-		if(table_inited){
+		if(toh_table_inited){
 			buildBrowserUrl();
 		}
 	});
