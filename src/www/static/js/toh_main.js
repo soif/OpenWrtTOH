@@ -195,9 +195,21 @@ function getTableFiltersFields(type='filters'){
 function applyFilterPreset(key){
 	var set=getFilterSet('preset',key);
 	if(Object.keys(set).length > 0 ){
+		// console.log('***************** Set Filter :'+key);
+		// console.log(set.filters);
+		// console.log('* before ***');
+		// console.log(tabuTable.getFilters());
+		// console.log('************');
+
 		setPresetSelectedClass('features',key);
 		showLoading();
+
+		tabuTable.clearFilter();
 		tabuTable.setFilter(set.filters ); //,  {matchAll:true}
+
+		//console.log('* after');
+		//console.log(tabuTable.getFilters());
+
 		checkAllFeatures(false);
 		if(set.features.length > 0 ){		
 			$.each(set.features,function(j,feat){
@@ -210,20 +222,26 @@ function applyFilterPreset(key){
 // Apply a Filter Feature ------------------------------------------------
 function applyFilterFeature(key,bool){
 	var set=getFilterSet('feature',key);
-	//console.log('Set Features '+key+' ---------------------------');
+	// console.log('Set Features '+key+'/'+bool+' ---------------------------');
 	if(typeof(set.filters) !='object'){
 		return false;
 	}
 	if(set.filters.length > 0){
-		//console.log('Set Features '+key+' ------- DONE --------------');
+		// console.log('Set Features '+key+' ------- DONE --------------');
+		// console.log(set);
 		showLoading();
-		//console.log(set);
 		setPresetSelectedClass('features','custom');
 		if(bool){
 			tabuTable.addFilter(set.filters);
 		}
 		else{
+			// console.log('--- cur filters ----');
+			// console.log(tabuTable.getFilters());
 			tabuTable.removeFilter(set.filters);
+			// console.log('--remove');
+			// console.log(set.filters);
+			// console.log('--now');
+			// console.log(tabuTable.getFilters());
 		}		
 		checkFeature(key,bool);
 	}
@@ -231,25 +249,23 @@ function applyFilterFeature(key,bool){
 
 // get filters array (also merge features filters for Presets)--------------------
 function getFilterSet(type, key){
-	if(type=='preset'){
-		var set=colFilterPresets[key];
+	//console.log("-- getFilterSet ---------");
+	if(type=='preset' && key in colFilterPresets){
+		var set=JSON.parse(JSON.stringify(colFilterPresets[key])); // makes a clone
 	}
-	else if(type=='feature'){
-		var set=colFilterFeatures[key];
+	else if(type=='feature' && key in colFilterFeatures){
+		var set=JSON.parse(JSON.stringify(colFilterFeatures[key])); // makes a clone
 	}
 	else{
-		console.log('Unknown ('+key+') type: '+ type);
+		console.log('Unknow  key: "'+key+'",  type: '+ type);
 		return {};
 	}
-	if(typeof(set) !='object'){
-		console.log('Unknown Set key: '+ key);
-		return {};
-	}
+
 	//merge filters with features.filters
 	if(type=='preset'){
 		if( typeof(set.features) =='object'){ // cant we write it shorter ?
 			$.each(set.features,function(i,fv){
-				//console.log(i+'->'+fv)
+				// console.log(i+'->'+fv)
 				$.each(colFilterFeatures[fv].filters,function(j,filt){
 					set.filters.push(filt);
 				});
@@ -259,6 +275,7 @@ function getFilterSet(type, key){
 			set.features={};
 		}
 	}
+	// console.log(set);
 	return set;
 }
 
@@ -583,7 +600,7 @@ function buildBrowserUrl(and_update=true){
 		url +=params.join('&');
 		updateBrowserUrl(url);
 	}
-	console.log(url);
+	//console.log(url);
 }
 
 
@@ -836,7 +853,7 @@ function SetDefaults(){
 	else{
 		tmp_arr=tmp_value.split(',');
 		$.each(tmp_arr,function(i,key){
-			applyColumCol(key);
+			applyColumCol(key,true);
 		});
 	}
 		
@@ -853,14 +870,9 @@ function SetDefaults(){
 		//console.log('SetDefaults Filter Features');
 		tmp_arr=tmp_value.split(',');
 		$.each(tmp_arr,function(i,key){
-			applyFilterFeature(key);
+			applyFilterFeature(key,true);
 		});
 
-		// Quick&Dirty patch to display the ClearFiters button
-		// TODO: Figure why the btn is not displayed as it should, and make it work cleanly
-		if(tmp_arr.length >0 ){
-			$('.toh-but-clearfilters').show();
-		}
 	}
 
 	//console.log('SetDefaults URL');
