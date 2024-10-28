@@ -979,53 +979,53 @@ let colFilterFeatures={
 //---------------------------------------------------------
 let colFilterPresets={
 	
-	ideal_864_ac_avail: {
-		title:"Ideal, AC, Avail.",
-		description:"At least 8MB Flash and 64MB RAM + AC Wifi + (Available or Unknown)",
-		orig_url:"https://openwrt.org/toh/views/toh_available_864_ac-wifi",
+	minimum_1664_ac_avail: {
+		title:"Minimum, AC, Avail.",
+		description:"At least 16MB Flash and 64MB RAM + AC Wifi + (Available or Unknown)",
+		orig_url:"",
 		filters:[],
 		features:[
 			'available',
-			'memory_ideal',
+			'memory_minimum',
 			'wifi_ac',
 		]
 	},
 
-	ideal_864_ac_gbit_avail: {
-		title:"Ideal, AC, Gbit, Avail.",
-		description:"At least 8MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
+	minimum_1664_ac_gbit_avail: {
+		title:"Minimum, AC, Gbit, Avail.",
+		description:"At least 16MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
 		orig_url:"https://openwrt.org/toh/views/toh_available_864_ac-wifi_gbit-eth",
 		filters:[],
 		features:[
 			'available',
-			'memory_ideal',
+			'memory_minimum',
 			'wifi_ac',
 			'eth_1g',
 		]
 	},
 
-	ideal_864_ac_gbit_avail_ant: {
-		title:"Ideal, AC, Gbit, Avail., Antennas",
-		description:"At least 8MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown) + Antennas",
+	minimum_1664_ac_gbit_avail_ant: {
+		title:"Minimum, AC, Gbit, Avail., Antennas",
+		description:"At least 16MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown) + Antennas",
 		orig_url:"https://openwrt.org/toh/views/toh_available_864_dual-wifi_gbit_extant",
 		filters:[],
 		features:[
 			'available',
-			'memory_ideal',
+			'memory_minimum',
 			'wifi_ac',
 			'eth_1g',
 			'antennas',
 		]
 	},
 
-	ideal_864_ax_gbit_avail: {
-		title:"Ideal, AX, Gbit, Avail.",
-		description:"At least 8MB Flash and 64MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
+	minimum_1664_ax_gbit_avail: {
+		title:"Minimum, AX, Gbit, Avail.",
+		description:"At least 16MB Flash and 64MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
 		orig_url:"",
 		filters:[],
 		features:[
 			'available',
-			'memory_ideal',
+			'memory_minimum',
 			'wifi_ax',
 			'eth_1g',
 		]
@@ -1033,7 +1033,7 @@ let colFilterPresets={
 
 	more_864_ac_gbit_avail: {
 		title:"More, AC, Gbit, Avail.",
-		description:"At least 16MB Flash and 128MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
+		description:"At least 64MB Flash and 128MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
 		orig_url:"",
 		filters:[],
 		features:[
@@ -1046,7 +1046,7 @@ let colFilterPresets={
 
 	more_864_ax_gbit_avail: {
 		title:"More, AX, Gbit, Avail.",
-		description:"At least 16MB Flash and 128MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
+		description:"At least 64MB Flash and 128MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
 		orig_url:"",
 		filters:[],
 		features:[
