@@ -1066,15 +1066,5 @@ let colFilterPresets={
 		]
 	},
 
-	obsolete_in_24xx: {
-		title:"Obsolete in OpenWRT 24.xx",
-		description:"Only 8MB Flash",
-		orig_url:"",
-		filters:[
-			{field:	"flashmb", 		type:"flash==",		value:8},
-		],
-		features:[
-		]
-	},
 
 };
