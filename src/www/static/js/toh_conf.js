@@ -701,9 +701,7 @@ let colFilterFeatures={
 		description:"at least 10G Ethernet",
 		type:		"normal",
 		filters:[
-			[
-				{field:	"ethernet10gports",		type:">=",	value:1},
-			],
+			{field:	"ethernet10gports",		type:">=",	value:1},
 		],
 	},
 
