@@ -696,23 +696,23 @@ let colFilterFeatures={
 		],
 	},
 
-	memory_ideal:{
-		title:		"Memory: Ideal",
-		description:"at least 8MB Flash & 64MB RAM",
+	memory_minimum:{
+		title:		"Memory: Minimum",
+		description:"at least 16MB Flash & 64MB RAM",
 		type:		"normal",
 		filters:[
-			{field:	"rammb", 		type:">=",			value:8	},
-			{field:	"flashmb", 		type:"flash>=",		value:64},
+			{field:	"rammb", 		type:">=",		value:64},
+			{field:	"flashmb", 		type:"flash>=",		value:16},
 		],
 	},
 
 	memory_more:{
 		title:		"Memory: More",
-		description:"at least 16MB Flash & 128MB RAM",
+		description:"at least 64MB Flash & 128MB RAM",
 		type:		"normal",
 		filters:[
-			{field:	"rammb", 		type:">=",			value:16},
-			{field:	"flashmb", 		type:"flash>=",		value:128},
+			{field:	"rammb", 		type:">=",		value:128},
+			{field:	"flashmb", 		type:"flash>=",		value:64},
 		],
 	},
 
