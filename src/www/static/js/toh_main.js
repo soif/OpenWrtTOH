@@ -13,7 +13,7 @@
 	If not, see <https://www.gnu.org/licenses/>. 
  */
 
-// Functions for Cell Model Popup Formatter #######################################################
+// Functions for Cell Model Popup Formatter ##################################################################################
 
 // get my Columns definitions -----------------------------------
 function getMyColumnDefinition(field){
@@ -51,7 +51,7 @@ function formatLinkToHtml(url, name='link', target_blank=true){
 }
 
 
-// Filters functions ###############################################################################
+// Filters functions ######################################################################################################
 
 // Make filter Preset Button ------------------------------------------
 function htmlFilterPresetButton(myclass, value){
@@ -278,7 +278,7 @@ function getFilterSet(type, key){
 }
 
 
-// Views functions #############################################################################################
+// Views functions #########################################################################################################################
 
 // Make a column line -------------------------------------------
 function htmlColumnLine(field,col,checked){
