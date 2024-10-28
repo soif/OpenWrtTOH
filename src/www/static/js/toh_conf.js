@@ -683,23 +683,47 @@ let colFilterFeatures={
 		],
 	},
 
-	memory_ideal:{
-		title:		"Memory: Ideal",
-		description:"at least 8MB Flash & 64MB RAM",
+	eth_2d5g:{
+		title:		"Ethernet 2.5G",
+		description:"at least 2.5G Ethernet",
 		type:		"normal",
 		filters:[
-			{field:	"rammb", 		type:">=",			value:8	},
-			{field:	"flashmb", 		type:"flash>=",		value:64},
+			[
+				{field:	"ethernet2_5gports",	type:">=",	value:1},
+				{field:	"ethernet5gports",		type:">=",	value:1},
+				{field:	"ethernet10gports",		type:">=",	value:1},
+			],
+		],
+	},
+
+	eth_10g:{
+		title:		"Ethernet 10G",
+		description:"at least 10G Ethernet",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"ethernet10gports",		type:">=",	value:1},
+			],
+		],
+	},
+
+	memory_minimum:{
+		title:		"Memory: Minimum",
+		description:"at least 16MB Flash & 64MB RAM",
+		type:		"normal",
+		filters:[
+			{field:	"rammb", 		type:">=",		value:64},
+			{field:	"flashmb", 		type:"flash>=",		value:16},
 		],
 	},
 
 	memory_more:{
 		title:		"Memory: More",
-		description:"at least 16MB Flash & 128MB RAM",
+		description:"at least 64MB Flash & 128MB RAM",
 		type:		"normal",
 		filters:[
-			{field:	"rammb", 		type:">=",			value:16},
-			{field:	"flashmb", 		type:"flash>=",		value:128},
+			{field:	"rammb", 		type:">=",		value:128},
+			{field:	"flashmb", 		type:"flash>=",		value:64},
 		],
 	},
 
@@ -966,53 +990,53 @@ let colFilterFeatures={
 //---------------------------------------------------------
 let colFilterPresets={
 	
-	ideal_864_ac_avail: {
-		title:"Ideal, AC, Avail.",
-		description:"At least 8MB Flash and 64MB RAM + AC Wifi + (Available or Unknown)",
-		orig_url:"https://openwrt.org/toh/views/toh_available_864_ac-wifi",
+	minimum_1664_ac_avail: {
+		title:"Minimum, AC, Avail.",
+		description:"At least 16MB Flash and 64MB RAM + AC Wifi + (Available or Unknown)",
+		orig_url:"",
 		filters:[],
 		features:[
 			'available',
-			'memory_ideal',
+			'memory_minimum',
 			'wifi_ac',
 		]
 	},
 
-	ideal_864_ac_gbit_avail: {
-		title:"Ideal, AC, Gbit, Avail.",
-		description:"At least 8MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
+	minimum_1664_ac_gbit_avail: {
+		title:"Minimum, AC, Gbit, Avail.",
+		description:"At least 16MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
 		orig_url:"https://openwrt.org/toh/views/toh_available_864_ac-wifi_gbit-eth",
 		filters:[],
 		features:[
 			'available',
-			'memory_ideal',
+			'memory_minimum',
 			'wifi_ac',
 			'eth_1g',
 		]
 	},
 
-	ideal_864_ac_gbit_avail_ant: {
-		title:"Ideal, AC, Gbit, Avail., Antennas",
-		description:"At least 8MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown) + Antennas",
+	minimum_1664_ac_gbit_avail_ant: {
+		title:"Minimum, AC, Gbit, Avail., Antennas",
+		description:"At least 16MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown) + Antennas",
 		orig_url:"https://openwrt.org/toh/views/toh_available_864_dual-wifi_gbit_extant",
 		filters:[],
 		features:[
 			'available',
-			'memory_ideal',
+			'memory_minimum',
 			'wifi_ac',
 			'eth_1g',
 			'antennas',
 		]
 	},
 
-	ideal_864_ax_gbit_avail: {
-		title:"Ideal, AX, Gbit, Avail.",
-		description:"At least 8MB Flash and 64MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
+	minimum_1664_ax_gbit_avail: {
+		title:"Minimum, AX, Gbit, Avail.",
+		description:"At least 16MB Flash and 64MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
 		orig_url:"",
 		filters:[],
 		features:[
 			'available',
-			'memory_ideal',
+			'memory_minimum',
 			'wifi_ax',
 			'eth_1g',
 		]
@@ -1020,7 +1044,7 @@ let colFilterPresets={
 
 	more_864_ac_gbit_avail: {
 		title:"More, AC, Gbit, Avail.",
-		description:"At least 16MB Flash and 128MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
+		description:"At least 64MB Flash and 128MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
 		orig_url:"",
 		filters:[],
 		features:[
@@ -1033,7 +1057,7 @@ let colFilterPresets={
 
 	more_864_ax_gbit_avail: {
 		title:"More, AX, Gbit, Avail.",
-		description:"At least 16MB Flash and 128MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
+		description:"At least 64MB Flash and 128MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
 		orig_url:"",
 		filters:[],
 		features:[
@@ -1044,5 +1068,15 @@ let colFilterPresets={
 		]
 	},
 
+	obsolete_in_24xx: {
+		title:"Obsolete in OpenWRT 24.xx",
+		description:"Only 8MB Flash",
+		orig_url:"",
+		filters:[
+			{field:	"flashmb", 		type:"flash==",		value:8},
+		],
+		features:[
+		]
+	},
 
 };
