@@ -672,6 +672,30 @@ let colFilterFeatures={
 		],
 	},
 
+	eth_2d5g:{
+		title:		"Ethernet 2.5G",
+		description:"at least 2.5G Ethernet",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"ethernet2_5gports",	type:">=",	value:1},
+				{field:	"ethernet5gports",		type:">=",	value:1},
+				{field:	"ethernet10gports",		type:">=",	value:1},
+			],
+		],
+	},
+
+	eth_10g:{
+		title:		"Ethernet 10G",
+		description:"at least 10G Ethernet",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"ethernet10gports",		type:">=",	value:1},
+			],
+		],
+	},
+
 	memory_ideal:{
 		title:		"Memory: Ideal",
 		description:"at least 8MB Flash & 64MB RAM",
