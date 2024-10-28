@@ -13,8 +13,6 @@
 	If not, see <https://www.gnu.org/licenses/>. 
  */
 
-
-
 // Functions for Cell Model Popup Formatter #######################################################
 
 // get my Columns definitions -----------------------------------
@@ -257,7 +255,7 @@ function getFilterSet(type, key){
 		var set=JSON.parse(JSON.stringify(colFilterFeatures[key])); // makes a clone
 	}
 	else{
-		console.log('Unknow  key: "'+key+'",  type: '+ type);
+		console.log('getFilterSet - Type: '+ type +', Unknown key: "'+key+'"');
 		return {};
 	}
 
