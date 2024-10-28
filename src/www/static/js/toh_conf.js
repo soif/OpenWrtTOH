@@ -708,7 +708,7 @@ let colFilterFeatures={
 	},
 
 	memory_minimum:{
-		title:		"Memory: Minimum",
+		title:		"Memory: Mini",
 		description:"at least 16MB Flash & 64MB RAM",
 		type:		"normal",
 		filters:[
