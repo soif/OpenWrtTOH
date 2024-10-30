@@ -1312,6 +1312,8 @@ $(document).ready(function () {
 		e.preventDefault();
 		tabuTable.clearFilter();
 		checkAllFeatures(false);
+		setPresetSelectedClass('features','custom');
+		buildBrowserUrl();	
 	});
 
 	// Click: clear header filters ----------------
@@ -1326,6 +1328,8 @@ $(document).ready(function () {
 		tabuTable.clearHeaderFilter();
 		tabuTable.clearFilter();
 		checkAllFeatures(false);
+		setPresetSelectedClass('features','custom');
+		buildBrowserUrl();	
 	});
 
 
