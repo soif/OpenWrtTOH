@@ -10,7 +10,12 @@ ultimately which (of the 2600+) devices are shown.
 
 The resulting web page also makes it easy for users to search the table for interesting devices.
 
+<!--
 ## Unreleased
+
+-->
+
+## Version 1.52 - 2024-10-30
 
 * Fix the features add/remove Tabulator filtering bug
 * Correctly update browser URL after clearing filters
