@@ -663,8 +663,8 @@ let colFilterFeatures={
 		type:		"normal",
 		filters:[
 			[
-				{field:	"availability", 	type:"like",	value:'available'},
-				{field:	"availability", 	type:"like",	value:'unknown'},
+				{field:	"availability", 	type:"keywords",	value:'available unknown'},
+				{field:	"availability", 	type:"=",			value:null},
 			],
 		],
 	},
@@ -1065,6 +1065,5 @@ let colFilterPresets={
 			'eth_1g',
 		]
 	},
-
 
 };
