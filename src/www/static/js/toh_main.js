@@ -13,6 +13,18 @@
 	If not, see <https://www.gnu.org/licenses/>. 
  */
 
+
+
+// set the log level displayed in the console :
+// 0=none
+// 1=info
+// 2=debug
+// 3=verbose
+// 4=more verbose
+var toh_debug_level=1; 
+
+
+
 // Functions for Cell Model Popup Formatter ##################################################################################
 
 // get my Columns definitions -----------------------------------
@@ -168,8 +180,8 @@ function getTableFiltersFields(type='filters'){
 	else{ // all
 		var filters	=tabuTable.getFilters(true);
 	}
-	//console.log('GetFilterFields type='+type+' ----');
-	//console.log(filters);
+	myLogFunc('getTableFiltersFields type='+type+' ----');
+	myLogObj(filters,'filters');
 	$.each(filters,function(i,f){
 		if(Array.isArray(f)){
 			$.each(f,function(j,ff){
@@ -185,19 +197,18 @@ function getTableFiltersFields(type='filters'){
 		}
 
 	});
-	//console.log(fields);
+	myLogObj(fields,'fields');
 	return fields;
 }
 
 // Apply a Filter Preset ----------------------------------------------------
 function applyFilterPreset(key){
+	myLogFunc();
 	var set=getFilterSet('preset',key);
 	if(Object.keys(set).length > 0 ){
-		// console.log('***************** Set Filter :'+key);
-		// console.log(set.filters);
-		// console.log('* before ***');
-		// console.log(tabuTable.getFilters());
-		// console.log('************');
+		myLogStr('key: '+key);
+		myLogObj(set.filters,'Filter Set');
+		myLogObj(tabuTable.getFilters(),'Tabu Filters (before)');
 
 		setPresetSelectedClass('features',key);
 		showLoading();
@@ -205,8 +216,7 @@ function applyFilterPreset(key){
 		tabuTable.clearFilter();			// needed?
 		tabuTable.setFilter(set.filters ); //,  {matchAll:true}
 
-		//console.log('* after');
-		//console.log(tabuTable.getFilters());
+		myLogObj(tabuTable.getFilters(),'Tabu Filters (after)');
 
 		checkAllFeatures(false);
 		if(set.features.length > 0 ){		
@@ -219,14 +229,14 @@ function applyFilterPreset(key){
 
 // Check a Filter Feature and clear current preset -------------------------
 function checkFeatureAndClearPreset(key,bool){
+	myLogFunc('checkFeatureAndClearPreset : '+key+' / '+bool);
 	var set=getFilterSet('feature',key);
-	//console.log('Set Features '+key+'/'+bool+' ---------------------------');
 	if(typeof(set.filters) !='object'){
 		return false;
 	}
+	myLogObj(set.filters,'filter set');
 	if(set.filters.length > 0){
-		// console.log('Set Features '+key+' ------- DONE --------------');
-		//console.log(set.filters);
+		myLogObj('Set feature '+key+' DONE!');
 		setPresetSelectedClass('features','custom');	
 		checkFeature(key,bool);
 		//applyCheckedFeatures();
@@ -235,9 +245,9 @@ function checkFeatureAndClearPreset(key,bool){
 
 // set tabulator filters from checked features --------------------------------------
 function applyCheckedFeatures(){
-	//console.log('applyCheckedFeatures -----------------');
+	myLogFunc();
 	var features=getCheckedFeatures();
-	//console.log(features);
+	myLogObj(features,'checked features');
 	var filters=[];
 	features.forEach(feat => {
 		var feat_filters=colFilterFeatures[feat].filters;
@@ -255,6 +265,7 @@ function applyCheckedFeatures(){
 
 // reorder filters : objects, then arays-----------------------------------------------
 function reorderFilters(filters) {
+	myLogFunc();
 	const simpleFilters = [];
 	const arrayFilters = [];
 
@@ -272,7 +283,7 @@ function reorderFilters(filters) {
 
 // get filters array (also merge features filters for Presets)--------------------
 function getFilterSet(type, key){
-	//console.log("-- getFilterSet ---------");
+	myLogFunc();
 	if(type=='preset' && key in colFilterPresets){
 		var set=JSON.parse(JSON.stringify(colFilterPresets[key])); // makes a clone
 	}
@@ -280,7 +291,7 @@ function getFilterSet(type, key){
 		var set=JSON.parse(JSON.stringify(colFilterFeatures[key])); // makes a clone
 	}
 	else{
-		console.log('getFilterSet - Type: '+ type +', Unknown key: "'+key+'"');
+		myLogStr('getFilterSet - Type: '+ type +', Unknown key: "'+key+'"');
 		return {};
 	}
 
@@ -288,7 +299,7 @@ function getFilterSet(type, key){
 	if(type=='preset'){
 		if( typeof(set.features) =='object'){ // cant we write it shorter ?
 			$.each(set.features,function(i,fv){
-				// console.log(i+'->'+fv)
+				// myLogStr(i+'->'+fv,4);
 				$.each(colFilterFeatures[fv].filters,function(j,filt){
 					set.filters.push(filt);
 				});
@@ -298,7 +309,7 @@ function getFilterSet(type, key){
 			set.features={};
 		}
 	}
-	// console.log(set);
+	// myLogObj(set,'Filter Set');
 	return set;
 }
 
@@ -388,8 +399,8 @@ function checkAllColumns(state=true){
 
 //  Show and Check on/off Column checkbox ------------------------------
 function showAndCheckColumn(col,state=true){
+	myLogFunc('showAndCheckColumn : '+col+' / '+state);
 	showLoading();
-	//console.log('show '+col+' / '+state);
 	if(state){
 		tabuTable.showColumn(col);
 	}
@@ -401,6 +412,7 @@ function showAndCheckColumn(col,state=true){
 
 // Show or Hide ALL columns --------------------------------------
 function showAllColumns(bool) {
+	myLogFunc();
 	var columnDefs = tabuTable.getColumnDefinitions();  
 	columnDefs.forEach(function(column) {
 		if(bool){
@@ -414,10 +426,10 @@ function showAllColumns(bool) {
 
 // Apply a View Preset : show/hide columns -----------------------
 function applyColumnPreset(key){
+	myLogFunc();
 	showLoading();
 	//tabuTable.blockRedraw();
 	setTimeout(function(){
-
 		if(key=='all'){
 			setPresetSelectedClass('columns',key);
 			checkAllColumns(true);
@@ -447,12 +459,14 @@ function applyColumnPreset(key){
 
 // Apply a (single) Column : show/hide -----------------------
 function applyColumCol(key,state){
+	myLogFunc();
 	setPresetSelectedClass('columns','custom');	
 	showAndCheckColumn(key,state);
 }
 
 // get filters array (also merge features filters for Presets)--------------------------
 function getColumnSet(key){
+	myLogFunc();
 	set=[];
 	if(key=='all'){
 		$.each(colViews,function(k,col){
@@ -472,7 +486,7 @@ function getColumnSet(key){
 
 // set columns view depending on the selected Filter option ---------------------------------
 function applyColumnsFromFilters(){
-	//console.log('applyColumnsFromFilters -----------');
+	myLogFunc();
 	var opt=$("#toh-filters-options INPUT[name='filtcol']:checked").val();
 	var fields	=getTableFiltersFields('all');
 	showLoading();
@@ -500,6 +514,7 @@ function applyColumnsFromFilters(){
 
 // Update group Icons in the columns block ------------------
 function updateColGroupIcons(){
+	myLogFunc();
 	$('.toh-colgroup').each(function(i){
 		var total=$(this).find('.toh-col-column').length;
 		var checked=$(this).find('.toh-col-column INPUT:checked').length;
@@ -519,7 +534,7 @@ function updateColGroupIcons(){
 
 //
 function setPresetSelectedClass(type,key=''){
-	//console.log('Set preset Class: '+type+'/'+key);
+	myLogFunc('setPresetSelectedClass : '+type+'/'+key);
 	var myclass='toh-selected';
 	if(type=='features'){
 		var sel='.toh-filters-presets';
@@ -529,7 +544,7 @@ function setPresetSelectedClass(type,key=''){
 
 	}
 	else{
-		console.log('Unkwnon type:'+type);
+		myLogStr('setPresetSelectedClass - Unkwnon type:'+type,1);
 		return false;
 	}
 	if(key !=''){
@@ -586,13 +601,13 @@ function getCheckedColumns(){
 			checked.push($(this).attr('data-key'));
 		}
 	});
-	// console.log(checked);
+	// myLogObj(checked,'checked');
 	return checked;
 }
 
 // build, then update the browser Url  ------------------------------
 function buildBrowserUrl(and_update=true){
-	//console.log('buildBrowserUrl');
+	myLogFunc();
 	var url=window.location.pathname;
 	var params=[];
 	var tmp_list;
@@ -627,7 +642,7 @@ function buildBrowserUrl(and_update=true){
 		url +=params.join('&');
 		updateBrowserUrl(url);
 	}
-	//console.log(url);
+	//myLogStr('URL: '+url);
 }
 
 
@@ -635,6 +650,7 @@ function buildBrowserUrl(and_update=true){
 
 // save a cookie ---------------------------------------------------
 function saveCookie(c_name, content, do_delete=false, type='json'){
+	myLogFunc();
 	var c_path=prefs.cook_path;
 	if(c_path==''){
 		c_path=window.location.pathname;
@@ -652,6 +668,7 @@ function saveCookie(c_name, content, do_delete=false, type='json'){
 
 // extract a cookie from the list---------------------------------------------------
 function _extractCookie(name) {
+	myLogFunc();
 	const value = `; ${document.cookie}`;
 	const parts = value.split(`; ${name}=`);
 	if (parts.length === 2) return parts.pop().split(';').shift();
@@ -659,9 +676,9 @@ function _extractCookie(name) {
 
 // load a cookie ---------------------------------------------------
 function loadCookie(c_name, type='json'){
-	//console.log('loadCookie:'+c_name);
+	myLogFunc('loadCookie name: '+c_name);
 	var cookie=_extractCookie(prefs.cook_prefix + c_name);
-	//console.log('loadCookie Result:'+cookie);
+	myLogStr('result: '+cookie);
 
 	if(cookie){
 		var c_content=decodeURIComponent(cookie);
@@ -679,33 +696,31 @@ function loadCookie(c_name, type='json'){
 
 // Load All Preset Cookies -----------------------------
 function loadPresetCookies(type){ //'features' or 'columns'
-	//console.log('---loadPresetCookies:'+type);
+	myLogFunc('loadCookie name: '+type);
 	var c_value	='';
 
 	for (let i = 1; i <= prefs.cook_preset_count; i++) {
 		c_value=loadCookie(prefs['cook_name_'+type]+i);
-		//console.log('p'+i);
-		//console.log(c_value);
+		myLogStr('p'+i+' / '+c_value,4);
 		if(typeof(toh_cookies[type]) !='object'){
-			//console.log('-create type:'+type);
+			myLogStr('create type:'+type,4);
 			toh_cookies[type]={};
 		}
 		if(c_value !=undefined || c_value==''){
-			//console.log('-save:'+c_value);
+			myLogStr('save: '+c_value,4);
 			toh_cookies[type][i]=c_value;
 		}
 		else{
-			//console.log('-create index:'+i);
+			myLogStr('create index: '+i,4);
 			toh_cookies[type][i]={};
 		}		
 	}
-	//console.log('---loadPresetCookies RESULT:');
-	//console.log(toh_cookies);
+	myLogObj(toh_cookies,'result',4);
 }
 
 // Store User Preset in Cookie -----------------------------
 function storePresetCookie(type, number=0, name='user'){ // type= 'features' or 'columns'
-	//console.log('StoreCookie:'+type+', '+number+', '+name);
+	myLogFunc('storePresetCookie: '+type+', '+number+', '+name);
 	if(name==''){
 		name=number;
 	}
@@ -723,8 +738,7 @@ function storePresetCookie(type, number=0, name='user'){ // type= 'features' or 
 		saveCookie(prefs.cook_name_columns+number, preset);
 		toh_cookies[type][number]=preset;
 	}
-	//console.log('storePresetCookie:'+type+", "+number);
-	//console.log(preset.list);
+	myLogObj(preset.list,'preset.list',4);
 }
 
 // Delete User Preset Cookie --------------------------
@@ -739,7 +753,7 @@ function deletePresetCookie(type, number){
 
 // Build User Preset Menu -----------------------------
 function buildUserPresets(type){// type= 'features' or 'columns'
-	//console.log('buildUserPresets: '+type);
+	myLogFunc('buildUserPresets: '+type);
 	var sel='';
 	var name='';
 	var html='';
@@ -753,7 +767,7 @@ function buildUserPresets(type){// type= 'features' or 'columns'
 		return false;
 	}
 	for (let i = 1; i <= prefs.cook_preset_count; i++) {
-		//console.log('pr'+i);
+		myLogStr('pr'+i,4);
 		var myclass='';
 		if(typeof(toh_cookies[type][i])=='object'){
 			if(typeof(toh_cookies[type][i].name) =='string'){
@@ -774,9 +788,10 @@ function buildUserPresets(type){// type= 'features' or 'columns'
 
 // Appy a User Preset -----------------------------------------------
 function applyUserPreset(type,num){
+	myLogFunc();
 	var preset=toh_cookies[type][num];
 	if(preset==false){
-		console.log('empty preset: '+type+'/'+num);
+		myLogStr('empty preset: '+type+'/'+num,1);
 	}
 	if(type=='features'){
 		setPresetSelectedClass(type,'custom');
@@ -817,6 +832,67 @@ function loadCookiesAndBuildUserPresets(){
 	
 }
 
+
+
+// Log functions ###################################################################################
+
+// custom log String -----------------------------------------------------
+function myLogStr(line=null, level=3, is_title=false) { // levels: 1=info, 2=debug, 3=verbose, 4=full
+
+	if(level > toh_debug_level){
+		return;
+	}
+	const pad_lenght=80;
+	const p='-';
+	if(is_title){
+		line =p+p+" "+ line + " ";
+		line =line.padEnd(pad_lenght,p);
+	}
+	else{
+		line= " - "+line;
+	}
+
+	console.log(line);
+}
+// custom log Function -----------------------------------------------------
+function myLogFunc(custom_title=null,level=3){
+	if(level > toh_debug_level){
+		return;
+	}
+	if(custom_title==null){
+		//custom_title= arguments.callee.caller.name;
+		custom_title=getCallerName();
+	}
+	myLogStr(custom_title,level,true);
+}
+// custom log Object -------------------------------------------------------
+function myLogObj(obj,desc='',level=3) {
+	if(level > toh_debug_level){
+		return;
+	}
+	if(desc.length>0){
+		desc=desc + ": ";
+	}
+
+	console.log(" * "+desc+": ",obj);
+}
+// get the Calling func name
+function getCallerName() {
+	try {
+		throw new Error();
+	} catch (e) {
+		const stack = e.stack.split('\n');
+		// The caller is typically the third item in the stack
+		const callerLine = stack[2];
+		//myLogObj(callerLine,'Stack');
+		// Extract the function name using regex
+		const match = callerLine.match(/(at)?\s*([^@]+)/);
+		//myLogStr('found: '+match[2]);
+		return match ? match[2] : 'anonymous';
+	}
+  }
+
+
 // Misc functions ###################################################################################
 
 // Position the Image Preview div -------------------------------
@@ -854,18 +930,18 @@ function positionPreview($link, $container) {
 
 // Show Loading --------------------------------------------------------
 function showLoading(){
-	//console.log('showLoading ----------');
+	myLogFunc();
 	$('#toh-loading').show();
 }
 // Hide Loading --------------------------------------------------------
 function hideLoading(){
-	//console.log('hideLoading ----------');
+	myLogFunc();
 	$('#toh-loading').hide();
 }
 
 // Set default Filters & View -------------------------------------------
 function SetDefaults(){
-	//console.log('SetDefaults');
+	myLogFunc();
 	//show presets
 	$(".toh-filters-but-toggle").trigger('click');
 	
@@ -892,14 +968,14 @@ function SetDefaults(){
 	//features or filter preset
 	tmp_value=getUrlParameter(prefs.p_features);
 	if(tmp_value == ''){
-		//console.log('SetDefaults Filter Preset');
+		myLogStr('Set Filter Preset',4);
 		// set preset
 		tmp_value=getUrlParameterOrDefault(prefs.p_filter, prefs.def_filter);
 		applyFilterPreset(tmp_value);
-		//console.log('SetDefaults Filter Preset DONE');
+		//myLogStr('DONE',4);
 	}
 	else{
-		//console.log('SetDefaults Filter Features');
+		myLogStr('Set Filter Features',4);
 		tmp_arr=tmp_value.split(',');
 		$.each(tmp_arr,function(i,key){
 			checkFeatureAndClearPreset(key,true);
@@ -907,7 +983,7 @@ function SetDefaults(){
 		applyCheckedFeatures();
 	}
 
-	//console.log('SetDefaults URL');
+	//myLogStr('SetDefaults URL',4);
 	buildBrowserUrl();
 	toh_table_inited=true;
 }
@@ -1075,9 +1151,9 @@ $(document).ready(function () {
 		var $preset=$(this);
 		var num=$preset.attr('data-key');
 		var type=$preset.attr('data-type');
-		//console.log("Click user preset:"+type+' '+num);
+		myLogFunc("Click user preset:"+type+' / '+num);
 		if(e.shiftKey){
-			//console.log('save');
+			myLogStr('save');
 			var name="user"+num;
 
 			$preset.addClass('toh-saving');
@@ -1123,7 +1199,7 @@ $(document).ready(function () {
 				if(val.length > max){
 					$input.val(val.substring(0, max)).shake(50,5,1);
 				}
-				//console.log(e);
+				myLogObj(e,'keyup event');
 			});
 
 			//save on click, if name not empty
@@ -1140,7 +1216,7 @@ $(document).ready(function () {
 					exit();
 					$preset.html(name).removeClass('toh-used').addClass('toh-used');
 					setPresetSelectedClass(type,num)
-					//console.log('saved');
+					myLogStr('saved');
 				}
 			});	
 
@@ -1151,7 +1227,7 @@ $(document).ready(function () {
 
 		}
 		else if(e.altKey){
-			//console.log('delete');
+			myLogStr('delete');
 			deletePresetCookie(type,num);
 			$preset.html(num).removeClass('toh-used').fadeOut(150).fadeIn(50);
 			if(type=='features'&& $preset.hasClass('toh-selected')){
@@ -1159,9 +1235,10 @@ $(document).ready(function () {
 			}
 			if(type=='columns'&& $preset.hasClass('toh-selected')){
 				setPresetSelectedClass(type,'custom');
-			}		}
+			}
+		}
 		else{
-			//console.log('load');
+			myLogStr('load');
 			applyUserPreset(type,num);
 			if(type=='features' && $preset.hasClass('toh-used')){
 				setPresetSelectedClass(type,num);
@@ -1174,9 +1251,9 @@ $(document).ready(function () {
 	});
 	// exit save preset when clicking elsewhere
 	$(document).on('click', function(e){
-		//console.log('exit1');
+		myLogFunc('on Click document');
 		if(!$('#toh-upreset-popup-save').is(':visible')) return;
-		//console.log('exit2');
+		myLogStr('Click document USED');
 		$('#toh-upreset-popup-save').hide();
 		$('.toh-upreset-but').removeClass('toh-saving');
 
@@ -1188,7 +1265,7 @@ $(document).ready(function () {
 
 	//  Click: Filter Preset ------------------------------------------
 	$('#toh-top-filters').on('click','.toh-filter-preset .toh-filter-button',function(e){
-		//console.log("Click filter preset");
+		myLogFunc("on Click filter preset");
 		e.preventDefault();
 		var key=$(this).attr('data-key');
 		//setPresetSelectedClass('features',key);
@@ -1197,7 +1274,7 @@ $(document).ready(function () {
 
 	// Click: Feature CheckBox -------------------------------------------
 	$('#toh-top-filters').on('click','.toh-filter-feature INPUT',function(e){
-		//console.log("Click checkbox feature");
+		myLogFunc("on Click checkbox feature");
 		var key=$(this).attr('data-key');
 		//setPresetSelectedClass('features');
 		checkFeatureAndClearPreset(key, $(this).is(":checked") );
@@ -1212,7 +1289,7 @@ $(document).ready(function () {
 
 	// Click: Replace Option immediately populates columns ----------------------
 	$('#toh-filters-options INPUT[value=repl]').on('click',function(e){
-		//console.log('replace option clicked');
+		myLogFunc('on Click replace option');
 		applyColumnsFromFilters();
 	});
 
@@ -1222,7 +1299,8 @@ $(document).ready(function () {
 	$('#toh-cols-presets').on('click','A',function(e){
 		e.preventDefault();
 		let view=$(this).attr('data-key');
-		//console.log('apply '+view);
+		myLogFunc('on Click Col Preset');
+		myLogStr('Apply view: '+view);
 		if(view=='custom'){
 			$(".toh-cols-but-toggle").trigger('click');
 		}
@@ -1234,19 +1312,21 @@ $(document).ready(function () {
 	// Click (or viewchanged): one view CheckBox ----------------------
 	$('#toh-cols-columns-content').on('click viewchanged','INPUT',function(e){
 		var key=$(this).attr('data-key');
-		console.log('Click col: '+key);
+		myLogFunc('on Click Checkbox Col: '+key);
 		//setPresetSelectedClass('columns','custom');
 		applyColumCol(key, $(this).is(":checked") );
 	});
 
 	// Click: one view link ----------------------
 	$('.toh-cols-list').on('click','A',function(e){
+		myLogFunc('on Click Checkbox Link');
 		e.preventDefault();
 		var cb=$(this).parent().find('INPUT').trigger('click');
 	});
 
 	//  Click: View Group ---------------------------------------------------
 	$('#toh-cols-columns-content').on('click','.toh-colgroup-title A',function(e){
+		myLogFunc('on Click Column Preset');
 		e.preventDefault();
 		//e.stopPropagation();
 		showLoading();
@@ -1267,6 +1347,7 @@ $(document).ready(function () {
 
 	// -------------------------------------------
 	function toggleFilterClearButVisibility(){
+		myLogFunc();
 		var $but_clear_filt	=$('.toh-but-clearfilters');
 		var $but_clear_head	=$('.toh-but-clearheaderfilters');
 		var $but_clear_all	=$('.toh-but-clearallfilters');
@@ -1297,8 +1378,9 @@ $(document).ready(function () {
 
 	// -------------------------------------------
 	function toggleSortClearButVisibility(){
+		myLogFunc();
 		var $but_clear_sort	=$('.toh-but-clearheadersorts');
-		//console.log(tabuTable.getSorters());
+		myLogObj(tabuTable.getSorters(), 'tabu Sorters');
 		if(tabuTable.getSorters().length>0 ){
 			$but_clear_sort.show();
 		}
@@ -1309,12 +1391,14 @@ $(document).ready(function () {
 
 	// Click: clear header sorts ----------------
 	$(".toh-but-clearheadersorts").on('click', function (e) {
+		myLogFunc('on Click But ClearSort');
 		e.preventDefault();
 		tabuTable.clearSort();
 	});
 
 	// Click: clear filters ----------------
 	$(".toh-but-clearfilters").on('click', function (e) {
+		myLogFunc('on Click But ClearFilters');
 		e.preventDefault();
 		tabuTable.clearFilter();
 		checkAllFeatures(false);
@@ -1324,12 +1408,14 @@ $(document).ready(function () {
 
 	// Click: clear header filters ----------------
 	$(".toh-but-clearheaderfilters").on('click', function (e) {
+		myLogFunc('on Click But ClearHeaderFilters');
 		e.preventDefault();
 		tabuTable.clearHeaderFilter();
 	});
 
 	// Click: clear all filters ----------------
 	$(".toh-but-clearallfilters").on('click', function (e) {
+		myLogFunc('on Click But ClearAllFilters');
 		e.preventDefault();
 		tabuTable.clearHeaderFilter();
 		tabuTable.clearFilter();
@@ -1344,6 +1430,7 @@ $(document).ready(function () {
 
 	// Set Colum Headers Color-------------------------------------------------
 	function setColumHeaderColors(){
+		myLogFunc();
 		var allfilters	=getTableFiltersFields('all');
 		var filters		=getTableFiltersFields('filters');
 		var headfilters	=getTableFiltersFields('headerfilters');
@@ -1361,7 +1448,7 @@ $(document).ready(function () {
 			}
 
 			if(myclass !=''){
-				//console.log('apply header class: '+myclass+' to '+f);
+				//myLogStr('apply header class: '+myclass+' to '+f);
 				$(".tabulator-col[tabulator-field='"+f+"']").addClass(myclass);
 			}			
 
@@ -1399,9 +1486,9 @@ $(document).ready(function () {
 
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
 	tabuTable.on("dataFiltered", function(filters, rows){
-		//console.log('dataFiltered Event ----------');
-		//console.log(getTableFiltersFields('filters'));
-		//console.log(tabuTable.getFilters());
+		//myLogFunc('on dataFiltered Event');
+		//myLogObj(getTableFiltersFields('filters'),'Filters');
+		//myLogObj(tabuTable.getFilters(), 'Tabu Filters');
 		applyColumnsFromFilters();
 		setColumHeaderColors();
 		toggleFilterClearButVisibility();
