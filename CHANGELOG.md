@@ -12,27 +12,28 @@ The resulting web page also makes it easy for users to search the table for inte
 
 ## Unreleased
 
-_... list feature that have not yet been released..._
+* Correctly update browser URL after clearing filters
+* Update "Availability" filters
 
-## Version 1.50 - 28 Oct 2024
+## Version 1.50 - 2024-10-28
 
 * Add preset "obsolete in 24.xx"
 * Update presets to use 16+64 and 64+128 features
 * Add filters for 2.5GbE and 10GbE
 * other updates
 
-## Version 1.40 - 25 Oct 2024
+## Version 1.40 - 2024-10-25
 
 * Populate checked filter, features, view, columns in the URL, allowlng to bookmark/recall a whole view 
 * Significant refactor of the code
 
-## Version 1.10 to 1.30 - 24 Oct 2024
+## Version 1.10 to 1.30 - 2024-10-24
 
 * Considerable reformatting of the table appearance and columns
 * Implement most filters
 * Add many presets
 
-## Version 1.0 - 17 Oct 2024
+## Version 1.0 - 2024-10-17
 
 * Initial commit
 * Basic functionality
