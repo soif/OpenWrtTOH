@@ -202,7 +202,7 @@ function applyFilterPreset(key){
 		setPresetSelectedClass('features',key);
 		showLoading();
 
-		tabuTable.clearFilter();
+		tabuTable.clearFilter();			// needed?
 		tabuTable.setFilter(set.filters ); //,  {matchAll:true}
 
 		//console.log('* after');
@@ -217,33 +217,58 @@ function applyFilterPreset(key){
 	}
 }
 
-// Apply a Filter Feature ------------------------------------------------
-function applyFilterFeature(key,bool){
+// Check a Filter Feature and clear current preset -------------------------
+function checkFeatureAndClearPreset(key,bool){
 	var set=getFilterSet('feature',key);
-	// console.log('Set Features '+key+'/'+bool+' ---------------------------');
+	//console.log('Set Features '+key+'/'+bool+' ---------------------------');
 	if(typeof(set.filters) !='object'){
 		return false;
 	}
 	if(set.filters.length > 0){
 		// console.log('Set Features '+key+' ------- DONE --------------');
-		// console.log(set);
-		showLoading();
-		setPresetSelectedClass('features','custom');
-		if(bool){
-			tabuTable.addFilter(set.filters);
-		}
-		else{
-			// console.log('--- cur filters ----');
-			// console.log(tabuTable.getFilters());
-			tabuTable.removeFilter(set.filters);
-			// console.log('--remove');
-			// console.log(set.filters);
-			// console.log('--now');
-			// console.log(tabuTable.getFilters());
-		}		
+		//console.log(set.filters);
+		setPresetSelectedClass('features','custom');	
 		checkFeature(key,bool);
+		//applyCheckedFeatures();
 	}
 }
+
+// set tabulator filters from checked features --------------------------------------
+function applyCheckedFeatures(){
+	//console.log('applyCheckedFeatures -----------------');
+	var features=getCheckedFeatures();
+	//console.log(features);
+	var filters=[];
+	features.forEach(feat => {
+		var feat_filters=colFilterFeatures[feat].filters;
+		feat_filters.forEach(filt => {
+			if(typeof filt === 'object'){
+				filters.push(filt);
+			}
+		});
+	});
+	showLoading();
+	filters=reorderFilters(filters); // certainly not needed, but eases debug
+	tabuTable.setFilter(filters);
+}
+
+
+// reorder filters : objects, then arays-----------------------------------------------
+function reorderFilters(filters) {
+	const simpleFilters = [];
+	const arrayFilters = [];
+
+	filters.forEach(filter => {
+		if(Array.isArray(filter)) {
+			arrayFilters.push(filter);
+		} 
+		else if(typeof filter === 'object' && filter !== null) {
+			simpleFilters.push(filter);
+		}
+	});
+	return [...simpleFilters, ...arrayFilters];
+}
+
 
 // get filters array (also merge features filters for Presets)--------------------
 function getFilterSet(type, key){
@@ -764,7 +789,7 @@ function applyUserPreset(type,num){
 	}
 	$.each(preset.list,function(i,key){
 		if(type=='features'){
-			applyFilterFeature(key,true);
+			checkFeatureAndClearPreset(key,true);
 		}
 		else if(type=='columns'){
 			applyColumCol(key,true);
@@ -773,6 +798,9 @@ function applyUserPreset(type,num){
 			return false;
 		}
 	});
+	if(type=='features'){
+		applyCheckedFeatures();
+	}
 }
 
 // Load Cookies and Build User Preset menu -----------------------------
@@ -868,9 +896,9 @@ function SetDefaults(){
 		//console.log('SetDefaults Filter Features');
 		tmp_arr=tmp_value.split(',');
 		$.each(tmp_arr,function(i,key){
-			applyFilterFeature(key,true);
+			checkFeatureAndClearPreset(key,true);
 		});
-
+		applyCheckedFeatures();
 	}
 
 	//console.log('SetDefaults URL');
@@ -899,6 +927,9 @@ function createIndexedObject(arrayOfObjects, key) {
 	}, {});
 }
 */
+
+
+
 
 
 
@@ -1163,8 +1194,8 @@ $(document).ready(function () {
 		//console.log("Click checkbox feature");
 		var key=$(this).attr('data-key');
 		//setPresetSelectedClass('features');
-		applyFilterFeature(key, $(this).is(":checked") );
-
+		checkFeatureAndClearPreset(key, $(this).is(":checked") );
+		applyCheckedFeatures();
 	});
 
 	// Click: Feature link ----------------------
@@ -1359,7 +1390,8 @@ $(document).ready(function () {
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
 	tabuTable.on("dataFiltered", function(filters, rows){
 		//console.log('dataFiltered Event ----------');
-		//console.log(getTableFiltersFields('headerfilters'));
+		//console.log(getTableFiltersFields('filters'));
+		//console.log(tabuTable.getFilters());
 		applyColumnsFromFilters();
 		setColumHeaderColors();
 		toggleFilterClearButVisibility();
