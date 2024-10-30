@@ -415,9 +415,9 @@ function showAllColumns(bool) {
 // Apply a View Preset : show/hide columns -----------------------
 function applyColumnPreset(key){
 	showLoading();
+	//tabuTable.blockRedraw();
 	setTimeout(function(){
 
-		//tabuTable.blockRedraw();
 		if(key=='all'){
 			setPresetSelectedClass('columns',key);
 			checkAllColumns(true);
@@ -439,9 +439,9 @@ function applyColumnPreset(key){
 				});	
 			}
 		}
-		//tabuTable.redraw(true);
-		//tabuTable.restoreRedraw();
 	},0);
+	//tabuTable.redraw(true);
+	//tabuTable.restoreRedraw();
 
 }
 
@@ -472,26 +472,30 @@ function getColumnSet(key){
 
 // set columns view depending on the selected Filter option ---------------------------------
 function applyColumnsFromFilters(){
+	//console.log('applyColumnsFromFilters -----------');
 	var opt=$("#toh-filters-options INPUT[name='filtcol']:checked").val();
 	var fields	=getTableFiltersFields('all');
-	if(opt=='add'){
-		setPresetSelectedClass('columns','custom');
-		$.each(fields,function(i,col){
-			showAndCheckColumn(col);
-		});
-		showAndCheckColumn('brand');
-		showAndCheckColumn('model');
-	}
-	else if(opt=='repl'){
-		setPresetSelectedClass('columns','custom');
-		showAllColumns(false);
-		checkAllColumns(false);
-		$.each(fields,function(i,col){
-			showAndCheckColumn(col);
-		});
-		showAndCheckColumn('brand');
-		showAndCheckColumn('model');
-	}
+	showLoading();
+	setTimeout(function(){
+		if(opt=='add'){
+			setPresetSelectedClass('columns','custom');
+			$.each(fields,function(i,col){
+				showAndCheckColumn(col);
+			});
+			showAndCheckColumn('brand');
+			showAndCheckColumn('model');
+		}
+		else if(opt=='repl'){
+			setPresetSelectedClass('columns','custom');
+			showAllColumns(false);
+			checkAllColumns(false);
+			$.each(fields,function(i,col){
+				showAndCheckColumn(col);
+			});
+			showAndCheckColumn('brand');
+			showAndCheckColumn('model');
+		}
+	},0);
 }
 
 // Update group Icons in the columns block ------------------
@@ -850,10 +854,12 @@ function positionPreview($link, $container) {
 
 // Show Loading --------------------------------------------------------
 function showLoading(){
+	//console.log('showLoading ----------');
 	$('#toh-loading').show();
 }
 // Hide Loading --------------------------------------------------------
 function hideLoading(){
+	//console.log('hideLoading ----------');
 	$('#toh-loading').hide();
 }
 
