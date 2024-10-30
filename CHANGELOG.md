@@ -12,11 +12,16 @@ The resulting web page also makes it easy for users to search the table for inte
 
 ## Unreleased
 
+* Fix the features add/remove Tabulator filtering bug
 * Correctly update browser URL after clearing filters
 * Update "Availability" filters
+* More "loading" icon displayed on long tasks 
+* Add a CHANGELOG file
+* Deluxe console logs (for developers)
 
 ## Version 1.50 - 2024-10-28
 
+* Implement User's presets (stored in Cookies) 
 * Add preset "obsolete in 24.xx"
 * Update presets to use 16+64 and 64+128 features
 * Add filters for 2.5GbE and 10GbE
