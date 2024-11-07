@@ -839,7 +839,7 @@ let colFilterFeatures={
 
 	power_poe:{
 		title:		"Power: PoE",
-		description:"PoE powered",
+		description:"PoE capable",
 		type:		"normal",
 		filters:[
 			{field:	"powersupply", 	type:"like",	value:'poe'},

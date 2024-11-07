@@ -18,6 +18,10 @@ The resulting web page also makes it easy for users to search the table for inte
 
 -->
 
+## Version 1.53 - 2024-11-07
+
+* Rename feature filter: from "PoE powered" to "PoE capable"
+
 ## Version 1.52 - 2024-10-30
 
 * Fix the features add/remove Tabulator filtering bug
