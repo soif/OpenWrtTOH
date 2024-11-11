@@ -13,7 +13,7 @@ The resulting web page also makes it easy for users to search the table for inte
 <!--
 ## Unreleased
 
-* 
+* Mimic current Firmware-Selector page Header
 * Add OpenWrt FavIcon
 
 -->
