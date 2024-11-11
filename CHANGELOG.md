@@ -14,7 +14,7 @@ The resulting web page also makes it easy for users to search the table for inte
 ## Unreleased
 
 * 
-* 
+* Add OpenWrt FavIcon
 
 -->
 
