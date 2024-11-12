@@ -13,11 +13,15 @@ The resulting web page also makes it easy for users to search the table for inte
 <!--
 ## Unreleased
 
+*
+
+-->
+
+## Version 1.60 - 2024-11-12
+
 * Mimic current Firmware-Selector page Header
 * Mimic current Firmware-Selector page
 * Add OpenWrt FavIcon
-
--->
 
 ## Version 1.53 - 2024-11-07
 
