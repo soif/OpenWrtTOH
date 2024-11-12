@@ -2,16 +2,19 @@
 	http://src.dev.lo.lo/OpenWrtTOH/src/www/static/css/demo.css */
 
 /* Layout ------------------------------ */
-#demo-page{
-	background-color: #f9f9f9;
+#toh-page{
+	background-color: rgb(245, 245, 245);
 }
 
 /* Header ------------------------------------------------------------------------------------------------------  */
 #toh-header{
 	height: 64px;
 	background: rgb(0, 163, 225);
-	border-bottom: 1px solid #777;
+	border-bottom: 1px solid #999;
 	margin-bottom: 20px;
+	box-shadow: 0em 0.125em 0.25em -0.06em rgba(0, 0, 0, 0.2),
+		0em 0.25em 0.3em 0em rgba(0, 0, 0, 0.14),
+		0em 0.06em 0.625em 0em rgba(0, 0, 0, 0.12);
 }
 
 #toh-header-logo{
@@ -32,8 +35,26 @@
 	color: #fff;
 }
 
-/* Page content ----------------------------------------------------------------------------------------------  */
 
+/* Footer ------------------------------------------------------------------------------------------------------  */
+
+#toh-footer{
+	border-top: 1px solid #777;
+    font-size: 0.85em;
+	padding: 10px 0;
+	text-align: center;
+	color: #ddf;
+}
+#toh-footer A{
+	color: #fff
+}
+body,
+#toh-footer {
+	background: rgb(0, 163, 225);
+}
+
+
+/* Page content ----------------------------------------------------------------------------------------------  */
 
 #demo-intro{
 	margin-bottom: 20px;
@@ -41,34 +62,35 @@
 	text-align: center;
 	opacity: 0.7;
 }
-#demo-toh{
-    margin-bottom: 20px;
-	padding-top: 15px;
-	border: 1px solid #eee;
-	border-radius: 6px;
+
+.toh-box{
+	border-color: #ccc;
+	border-radius: 4px;
 	background: #fff;
-}
-#demo-info{
-    margin-bottom: 50px;
-}
-.demo-box{
-	margin-bottom: 10px;
-	padding: 0 10px 10px 10px;
-	border: 1px solid #eee;
-	border-radius: 6px;
-	background: #fff;
-	font-size: 13px;
-}
-#demo-foot{
-	border-top: 1px solid #ddd;
-    font-size: 0.85em;
-	padding: 10px 0;
-	text-align: center;
-	color: #777;
+	box-shadow: 0em 0.06em 0.19em 0em rgba(0, 0, 0, 0.2),
+		0em 0.06em 0.1em 0em rgba(0, 0, 0, 0.14),
+		0em 0.125em 0.13em 0em rgba(0, 0, 0, 0.12);
+	/* transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; */
+	/* border: 1px solid #eee; */
 }
 
-body,
-#demo-foot {
-	background-color: #eee;
+#toh-main{
+	padding-top: 0;
+	margin-bottom: 20px;
+}
+
+#toh-table{
+	border-color: #ccc;
+	border-width: 1px 0 0 0;
+	border-bottom: 0px;
+}
+
+#toh-info{
+	margin-bottom: 50px;
+}
+#toh-info .toh-box{
+	margin-bottom: 10px;
+	padding: 1px 10px 10px 10px;
+	font-size: 13px;
 }
 
