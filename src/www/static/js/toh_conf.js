@@ -989,8 +989,8 @@ let colFilterFeatures={
 let colFilterPresets={
 	
 	minimum_1664_ac_avail: {
-		title:"Minimum, AC, Avail.",
-		description:"At least 16MB Flash and 64MB RAM + AC Wifi + (Available or Unknown)",
+		title:"Mini, AC, Avail.",
+		description:"At least 16MB Flash and 64MB RAM + AC Wifi + Available",
 		orig_url:"",
 		filters:[],
 		features:[
@@ -1001,8 +1001,8 @@ let colFilterPresets={
 	},
 
 	minimum_1664_ac_gbit_avail: {
-		title:"Minimum, AC, Gbit, Avail.",
-		description:"At least 16MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
+		title:"Mini, AC, Gbit, Avail.",
+		description:"At least 16MB Flash & 64MB RAM + AC Wifi + 1Gb Eth. + Available",
 		orig_url:"https://openwrt.org/toh/views/toh_available_864_ac-wifi_gbit-eth",
 		filters:[],
 		features:[
@@ -1014,8 +1014,8 @@ let colFilterPresets={
 	},
 
 	minimum_1664_ac_gbit_avail_ant: {
-		title:"Minimum, AC, Gbit, Avail., Antennas",
-		description:"At least 16MB Flash and 64MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown) + Antennas",
+		title:"Mini, AC, Gbit, Avail., Ant.",
+		description:"At least 16MB Flash & 64MB RAM + AC Wifi + 1Gb Eth. + Available + Antennas",
 		orig_url:"https://openwrt.org/toh/views/toh_available_864_dual-wifi_gbit_extant",
 		filters:[],
 		features:[
@@ -1028,8 +1028,8 @@ let colFilterPresets={
 	},
 
 	minimum_1664_ax_gbit_avail: {
-		title:"Minimum, AX, Gbit, Avail.",
-		description:"At least 16MB Flash and 64MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
+		title:"Mini, AX, Gbit, Avail.",
+		description:"At least 16MB Flash & 64MB RAM + AX Wifi + 1Gb Eth. + Available",
 		orig_url:"",
 		filters:[],
 		features:[
@@ -1042,7 +1042,7 @@ let colFilterPresets={
 
 	more_864_ac_gbit_avail: {
 		title:"More, AC, Gbit, Avail.",
-		description:"At least 64MB Flash and 128MB RAM + AC Wifi + 1Gb Eth. + (Available or Unknown)",
+		description:"At least 64MB Flash & 128MB RAM + AC Wifi + 1Gb Eth. + Available",
 		orig_url:"",
 		filters:[],
 		features:[
@@ -1055,7 +1055,7 @@ let colFilterPresets={
 
 	more_864_ax_gbit_avail: {
 		title:"More, AX, Gbit, Avail.",
-		description:"At least 64MB Flash and 128MB RAM + AX Wifi + 1Gb Eth. + (Available or Unknown)",
+		description:"At least 64MB Flash & 128MB RAM + AX Wifi + 1Gb Eth. + Available",
 		orig_url:"",
 		filters:[],
 		features:[
