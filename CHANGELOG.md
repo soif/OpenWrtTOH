@@ -13,6 +13,7 @@ The resulting web page also makes it easy for users to search the table for inte
 <!--
 ## Unreleased
 
+* Fixes RamMb HeaderFilter & Sort
 * Smaller Filter Preset buttons
 
 -->

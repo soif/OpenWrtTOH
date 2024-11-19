@@ -365,6 +365,72 @@ function HeaderFilterFuncFlash(headerValue, rowValue, rowData, filterParams){
 	return b_minimum && b_search; //must return a boolean, true if it passes the filter.
 }
 
+// get a clean number from a string column----------------------------------------------
+function _getCleanNumber(rowValue,type=''){
+	if(rowValue ==null){
+		return '';
+	}
+	rowValue=rowValue.trim();
+	if(rowValue==''){
+		return '';
+	}
+
+	// if we have a sring like "64, 128, 256",  we keep the max
+	if(rowValue.match(/,/i)){
+		rowValue= rowValue.replace(/ /g,'');
+		const numbers = rowValue.split(',').map(Number);
+  		rowValue= Math.max(...numbers);
+	}
+
+	// specific to Ram column
+	if(type=='ram'){
+		if(String(rowValue).match(/[^\d]+/g)){
+			//remove letter at start
+			rowValue=rowValue.replace(/.*?(\d+)/g,'$1');
+			// do we have GB ?
+			if(rowValue.match(/[\d]+\s*GB/i)){
+				rowValue=rowValue.replace(/[^\d]+/g,'');
+				rowValue=Number(rowValue) * 1024 +1; //we add 1 to be sorted , ie for 4GB, just after 4096
+			}
+		}
+	}
+
+	// if we have letters, dont cast to number
+	if(String(rowValue).match(/[^\d]+/g)){
+		return rowValue;
+	}
+	else{
+		return Number(rowValue);
+	}
+}
+
+// custom sorter for the 'RamMb' column----------------------------------------------
+function SorterRam(a, b, aRow, bRow, column, dir, sorterParams){
+	var aa=_getCleanNumber(a,'ram');
+	var bb=_getCleanNumber(b,'ram');
+	//console.log(a);
+	//console.log(aa);
+	return Number(aa) - Number(bb);
+}
+
+// Handle custom HeaderFilter's logic for the 'RamMb' colum ---------------------------------------------
+function HeaderFilterFuncRamMb(headerValue, rowValue, rowData, filterParams){
+	//console.log(typeof(rowValue) + rowValue);
+	if(headerValue =='' || headerValue==null || headerValue == undefined){
+		return true;
+	}
+	var val=_getCleanNumber(rowValue,'ram');
+	if(val ==''){
+		return true;
+	}
+
+	// if we have something else than number, consider true;
+	if(String(val).match(/[^\d]+/g)){
+		return true;
+	}
+
+	return Number(val) >= Number(headerValue);
+}
 
 
 
@@ -408,7 +474,7 @@ let columnStyles = {
 	firmwareopenwrtupgradeurl:			{title: "Upgrade",		headerTooltip: 'Owrt Firmware Upgrade',			width: 55,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'Upgr.'}},
 	firmwareopenwrtsnapshotinstallurl:	{title: "Snap.Inst.",	headerTooltip: 'Owrt Snapshot Install',			width: 70,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'Sn.Inst.'}},
 	firmwareopenwrtsnapshotupgradeurl:	{title: "Snap.Upgr.",	headerTooltip: 'Owrt Snapshot Upgrade',			width: 70,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'Sn.Upgr.'}},
-	flashmb:							{title: "Flash",		headerTooltip: 'Flash Memory (Mb)',				width: 90,	hozAlign: 'left',	sorter: SorterFlash,frozen: false,	formatter: FormatterArray,		formatterParams: undefined, headerFilter:HeaderFilterFlash, headerFilterFunc:HeaderFilterFuncFlash, headerFilterLiveFilter:false },	// , cellClick:cellDebug  , headerFilterEmptyCheck:HeaderFilterEmpty
+	flashmb:							{title: "Flash",		headerTooltip: 'Flash Memory (Mb)',				width: 90,	hozAlign: 'right',	sorter: SorterFlash,frozen: false,	formatter: FormatterArray,		formatterParams: undefined, headerFilter:HeaderFilterFlash, headerFilterFunc:HeaderFilterFuncFlash, headerFilterLiveFilter:false },	// , cellClick:cellDebug  , headerFilterEmptyCheck:HeaderFilterEmpty
 	forumsearch:						{title: "Forum Search",	headerTooltip: 'Forum Search',					width: 90,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
 	gitsearch:							{title: "Git Search",	headerTooltip: 'Git Search',					width: 90,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
 	gpios:								{title: "GPIOs",		headerTooltip: 'GPIOs',							width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanWords,	formatterParams: undefined,		...colFilterMin},
@@ -423,7 +489,7 @@ let columnStyles = {
 	phoneports:							{title: "Phone",		headerTooltip: 'Phone Ports',					width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	powersupply:						{title: "Power",		headerTooltip: 'Power Supply',					width: 70,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	picture:							{title: "Image",		headerTooltip: 'Device Picture',				width: 70,	hozAlign: "center",	sorter: 'array',	frozen: false,	formatter: FormatterImages,		formatterParams: undefined,		tooltip: false},
-	rammb:								{title: "RAM",			headerTooltip: 'RAM (Mb)',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
+	rammb:								{title: "RAM",			headerTooltip: 'RAM (Mb)',						width: 40,	hozAlign: 'right',	sorter: SorterRam,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin,headerFilterFunc:HeaderFilterFuncRamMb},
 	recoverymethods:					{title: "Recovery",		headerTooltip: 'Recovery Methods',				width: 80,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
 	sataports:							{title: "SATA",			headerTooltip: 'SATA Ports',					width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
 	serial:								{title: "Serial",		headerTooltip: 'Serial port',					width: 45,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterYesNo,		formatterParams: undefined},	
