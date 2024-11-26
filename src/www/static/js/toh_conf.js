@@ -797,6 +797,7 @@ let colFilterFeatures={
 		type:		"normal",
 		filters:[
 			{field:	"modem", 	type:"like",	value:'DSL'},
+			{field:	"unsupported_functions", 	type:"regex",	value:'^((?!DSL).)*$'},
 		],
 	},
 
