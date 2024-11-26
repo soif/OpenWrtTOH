@@ -931,7 +931,7 @@ let colFilterFeatures={
 		],
 	},
 
-	type_switcth:{
+	type_switch:{
 		title:		"Type: Switch",
 		description:"Switch oriented",
 		type:		"normal",
