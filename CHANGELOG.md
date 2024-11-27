@@ -13,12 +13,17 @@ The resulting web page also makes it easy for users to search the table for inte
 <!--
 ## Unreleased
 
+*
+
+-->
+
+## Version 1.65 - 2024-11-27
+
 * Fixes Wlan 600Ghz Title typo (was 200Ghz)
 * 'Modem DSL' feature excludes items with unsupported DSL modem
 * Correctly sorts 'Unsupported' column
 * Memory, Modem & Type features are each mutually exclusive
 
--->
 ## Version 1.61 - 2024-11-20
 
 * Fixes RamMb HeaderFilter & Sort
