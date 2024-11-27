@@ -87,7 +87,11 @@ function htmlFilterDiv(filt,key,is_feature=false){
 	html +='<div class="toh-filter toh-filter-'+myclass+'">';
 	html +='<span class="toh-filter-title">';
 	if(is_feature){
-		html +='<input type="checkbox" data-key="'+key+'">';
+		var dgroup=''
+		if(typeof filt.group =='string'){
+			dgroup=filt.group;
+		}
+		html +='<input type="checkbox" data-key="'+key+'" data-group="'+dgroup+'">';
 	}
 	html +='<a href="#" class="toh-filter-button" data-key="'+key+'" title="';
 	if(is_feature){
@@ -160,6 +164,13 @@ function checkAllFeatures(state=true){
 
 // Check on/off a feature checkbox ------------------------------
 function checkFeature(key,state=true){
+	if(state){
+		var group=$(".toh-filter-feature INPUT[data-key="+key+"]").attr('data-group');
+		//myLogStr(group,1);
+		if(group.length > 0){
+			$(".toh-filter-feature INPUT[data-group="+group+"]").prop('checked',false);
+		}
+	}
 	$(".toh-filter-feature INPUT[data-key="+key+"]").prop('checked',state);
 }
 
