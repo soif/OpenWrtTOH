@@ -20,6 +20,7 @@ The resulting web page also makes it easy for users to search the table for inte
 
 ## Version 1.65 - 2024-11-27
 
+* Add all 'Type' filter features
 * Fixes Wlan 600Ghz Title typo (was 200Ghz)
 * 'Modem DSL' feature excludes items with unsupported DSL modem
 * Correctly sorts 'Unsupported' column
