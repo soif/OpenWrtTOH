@@ -924,10 +924,19 @@ let colFilterFeatures={
 
 	type_board:{
 		title:		"Type: Board",
-		description:"single board computer",
+		description:"Single board computer",
 		type:		"normal",
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Single Board Computer'},
+		],
+	},
+
+	type_modem:{
+		title:		"Type: Modem",
+		description:"with modem",
+		type:		"normal",
+		filters:[
+			{field:	"devicetype", 	type:"like",	value:'Modem'},
 		],
 	},
 
@@ -939,6 +948,34 @@ let colFilterFeatures={
 			{field:	"devicetype", 	type:"like",	value:'Switch'},
 		],
 	},
+
+	type_travel:{
+		title:		"Type: Travel",
+		description:"Portable device",
+		type:		"normal",
+		filters:[
+			{field:	"devicetype", 	type:"like",	value:'Travel'},
+		],
+	},
+
+	type_wifiap:{
+		title:		"Type: Wifi AP",
+		description:"Wifi AP",
+		type:		"normal",
+		filters:[
+			{field:	"devicetype", 	type:"like",	value:'Wifi AP'},
+		],
+	},
+
+	type_wifirouter:{
+		title:		"Type: Wifi Router",
+		description:"Wifi Router",
+		type:		"normal",
+		filters:[
+			{field:	"devicetype", 	type:"like",	value:'Wifi Router'},
+		],
+	},
+
 
 	vlan:{
 		title:		"VLAN",
