@@ -747,6 +747,7 @@ let colFilterFeatures={
 				{field:	"ethernet10gports",		type:">=",	value:1},
 			],
 		],
+		group: "eth",
 	},
 
 	eth_2d5g:{
@@ -760,6 +761,7 @@ let colFilterFeatures={
 				{field:	"ethernet10gports",		type:">=",	value:1},
 			],
 		],
+		group: "eth",
 	},
 
 	eth_10g:{
@@ -769,6 +771,7 @@ let colFilterFeatures={
 		filters:[
 			{field:	"ethernet10gports",		type:">=",	value:1},
 		],
+		group: "eth",
 	},
 
 	memory_minimum:{
