@@ -779,6 +779,7 @@ let colFilterFeatures={
 			{field:	"rammb", 		type:">=",		value:64},
 			{field:	"flashmb", 		type:"flash>=",		value:16},
 		],
+		group: "memory",
 	},
 
 	memory_more:{
@@ -789,6 +790,7 @@ let colFilterFeatures={
 			{field:	"rammb", 		type:">=",		value:128},
 			{field:	"flashmb", 		type:"flash>=",		value:64},
 		],
+		group: "memory",
 	},
 
 	modem_dsl:{
@@ -799,6 +801,7 @@ let colFilterFeatures={
 			{field:	"modem", 	type:"like",	value:'DSL'},
 			{field:	"unsupported_functions", 	type:"regex",	value:'^((?!DSL).)*$'},
 		],
+		group: "modem",
 	},
 
 	modem_cellular:{
@@ -811,6 +814,7 @@ let colFilterFeatures={
 				{field:	"modem", 	type:"like",	value:'Cellular'},
 			],
 		],
+		group: "modem",
 	},
 
 	outdoor:{
@@ -929,6 +933,7 @@ let colFilterFeatures={
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Single Board Computer'},
 		],
+		group: "type",
 	},
 
 	type_modem:{
@@ -938,6 +943,7 @@ let colFilterFeatures={
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Modem'},
 		],
+		group: "type",
 	},
 
 	type_switch:{
@@ -947,6 +953,7 @@ let colFilterFeatures={
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Switch'},
 		],
+		group: "type",
 	},
 
 	type_travel:{
@@ -956,6 +963,7 @@ let colFilterFeatures={
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Travel'},
 		],
+		group: "type",
 	},
 
 	type_wifiap:{
@@ -965,6 +973,7 @@ let colFilterFeatures={
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Wifi AP'},
 		],
+		group: "type",
 	},
 
 	type_wifirouter:{
@@ -974,6 +983,7 @@ let colFilterFeatures={
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Wifi Router'},
 		],
+		group: "type",
 	},
 
 
