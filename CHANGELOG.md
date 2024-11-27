@@ -14,8 +14,9 @@ The resulting web page also makes it easy for users to search the table for inte
 ## Unreleased
 
 * Fixes Wlan 600Ghz Title typo (was 200Ghz)
-* 'Modem DSL' Feature excludes items with unsupported DSL modem
-* Correctly sorts Unsupported column
+* 'Modem DSL' feature excludes items with unsupported DSL modem
+* Correctly sorts 'Unsupported' column
+* Memory, Modem & Type features are each mutually exclusive
 
 -->
 ## Version 1.61 - 2024-11-20
