@@ -512,8 +512,8 @@ let columnStyles = {
 	wlandriver:							{title: "WLAN Driver",	headerTooltip: 'WLAN Driver',					width: 80,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	wlan24ghz:							{title: "2.4Ghz",		headerTooltip: 'WLAN 2.4 Ghz',					width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	wlan50ghz:							{title: "5.0Ghz",		headerTooltip: 'WLAN 5.0 Ghz',					width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	wlan60ghz:							{title: "6.0Ghz",		headerTooltip: 'WLAN 60 Ghz',					width: 60,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	wlan600ghz:							{title: "600Ghz",		headerTooltip: 'WLAN 600 Ghz',					width: 60,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
+	wlan60ghz:							{title: "6.0Ghz",		headerTooltip: 'WLAN 6.0 Ghz',					width: 60,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
+	wlan600ghz:							{title: "60Ghz",		headerTooltip: 'WLAN 60 Ghz',					width: 60,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	wlanhardware:						{title: "WLAN Hardware",headerTooltip: 'WLAN Hardware',					width: 120,	hozAlign: 'left',	sorter: 'array',	frozen: false,	formatter: FormatterArray,		formatterParams: undefined},
 	wlancomments:						{title: "WLAN Comments",headerTooltip: 'WLAN Comments',					width: 100,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	wikideviurl:						{title: "Wiki",			headerTooltip: 'Wiki Page',						width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'Wiki'}}
