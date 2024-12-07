@@ -14,7 +14,7 @@ The resulting web page also makes it easy for users to search the table for inte
 ## Unreleased
 
 * 'Ethernet' filter features are now mutually exclusives
-*
+* Fixes Wlan 60Ghz Title typo (was 600Ghz)
 
 -->
 
