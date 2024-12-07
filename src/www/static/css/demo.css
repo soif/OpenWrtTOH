@@ -31,12 +31,16 @@
 	margin: 0;
 	line-height: 64px;
 	text-align: left;
-	font-size: 2em;
+	font-size: 2.2em;
+}
+#toh-header h1,
+#toh-header h1 A{
 	color: #fff;
+	text-decoration: none;
 }
 #toh-header-count{
 	float: right;
-	margin-top: 23px;
+	line-height: 64px;
 	margin-right: 70px;
 	color: #fff;
 	font-size: 0.9em;
