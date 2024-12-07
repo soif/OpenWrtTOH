@@ -13,12 +13,17 @@ The resulting web page also makes it easy for users to search the table for inte
 <!--
 ## Unreleased
 
+*
+*
+-->
+
+## Version 1.68 - 2024-12-07
+
 * 'Ethernet' filter features are now mutually exclusives
 * Fixes Wlan 60Ghz Title typo (was 600Ghz)
 * Displays Filtered / Total count in the header
 * Links Header Title to TOH's base URL
 
--->
 
 ## Version 1.65 - 2024-11-27
 
