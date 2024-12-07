@@ -34,7 +34,20 @@
 	font-size: 2em;
 	color: #fff;
 }
-
+#toh-header-count{
+	float: right;
+	margin-top: 23px;
+	margin-right: 70px;
+	color: #fff;
+	font-size: 0.9em;
+}
+#toh-count B{
+	font-weight: normal;
+	color: yellow;
+}
+#toh-count I{
+	font-style: normal;
+}
 
 /* Footer ------------------------------------------------------------------------------------------------------  */
 

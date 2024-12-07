@@ -999,6 +999,18 @@ function SetDefaults(){
 	toh_table_inited=true;
 }
 
+// Display filtered / total count ------------------------------------------
+function UpdateCount(selected, total){
+	var html='';
+	selected	=tabuTable.getDataCount("active");
+	total		=tabuTable.getDataCount();
+	if(selected < total){
+		html='<b>'+selected+"</b> / ";
+	}
+	html +="<i>"+total+"</i>";
+	$('#toh-count').html(html);
+}
+
 // jquery shake effect -----------------------------------------------------
 $.fn.shake = function(interval = 100, distance = 10, times = 3) {
 	this.css('position', 'relative');
@@ -1507,6 +1519,13 @@ $(document).ready(function () {
 			buildBrowserUrl();
 		}
 	});
+
+
+	// Update the counter when 'dataFiltered' event is REALLY finished --------------------
+	tabuTable.on("renderComplete", function(){
+		UpdateCount();
+	});
+	
 
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
 	tabuTable.on("columnVisibilityChanged", function(column, visible){
