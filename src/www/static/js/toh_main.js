@@ -1052,6 +1052,9 @@ var toh_cookies={};
 
 $(document).ready(function () {
 
+	//set title Link URL ----------------------------------------------------
+	$('#toh-header-title H1 A').attr('href',window.location.pathname);
+
 	// initialize table  -----------------------------------------------------
 	tabuTable = new Tabulator("#toh-table", tabulatorOptions);
 
