@@ -596,7 +596,7 @@ let colViewGroups={
 	},
 
 	openwrt:{
-		name: 'OpenWRT',
+		name: 'OpenWrt',
 		fields:[
 			'deviceid',
 			'target',
