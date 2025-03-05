@@ -13,8 +13,9 @@ The resulting web page also makes it easy for users to search the table for inte
 <!--
 ## Unreleased
 
-*
-*
+## Version 1.70 - 2025-03-05
+
+* Replace Owrt abbreviation  by OpenWrt (in tooltip & Detail view)
 -->
 
 ## Version 1.69 - 2025-03-05
