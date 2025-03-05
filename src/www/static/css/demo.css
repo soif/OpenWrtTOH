@@ -111,3 +111,18 @@ body,
 	font-size: 13px;
 }
 
+#demo-tips UL{
+	column-count: 3;
+	column-gap: 2em;  
+
+}
+@media screen and (max-width: 1600px) {
+	#demo-tips UL {
+		column-count: 2;
+	}
+}
+@media screen and (max-width: 900px) {
+	#demo-tips UL {
+		column-count: 1;
+	}
+}

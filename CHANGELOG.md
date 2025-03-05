@@ -15,6 +15,7 @@ The resulting web page also makes it easy for users to search the table for inte
 
 ## Version 1.70 - 2025-03-05
 
+* Removes bottom feedback box
 * Replaces Owrt abbreviation  by OpenWrt (in tooltip & Detail view)
 * Credits contributors
 
