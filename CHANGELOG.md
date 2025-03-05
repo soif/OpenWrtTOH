@@ -17,6 +17,11 @@ The resulting web page also makes it easy for users to search the table for inte
 *
 -->
 
+## Version 1.69 - 2025-03-05
+
+* Rename OpenWRT to OpenWrt
+
+
 ## Version 1.68 - 2024-12-07
 
 * 'Ethernet' filter features are now mutually exclusives
