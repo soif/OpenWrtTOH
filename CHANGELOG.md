@@ -18,8 +18,9 @@ The resulting web page also makes it easy for users to search the table for inte
 * Removes bottom feedback box
 * Replaces Owrt abbreviation  by OpenWrt (in tooltip & Detail view)
 * Credits contributors
-* adds .domains file (for codeberg hosting)
-* moves www files to the root folder (for easy deployment)
+* Adds .domains file (for codeberg hosting)
+* Moves www files to the root folder (for easy deployment)
+* Prepares migration to https://github.com/openwrt/toh-openwrt-org/
 
 -->
 
