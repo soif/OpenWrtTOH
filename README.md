@@ -1,45 +1,28 @@
-# Enhanced OpenWrt Table of Hardware
+# OpenWrt Table Of Hardware (TOH)
 
-Although OpenWrt is fantastic router firmware, navigating its
-[Table of Hardware (ToH)](https://openwrt.org/toh/start)
-is very slow and a bit clunky.
+> "The Coolest Thing Since Sliced Bread"
 
-This project enhances the user experience
-by providing a much faster user interface
-and offering straightforward options for controlling
-which (of the seventy or so) columns are shown,
-which models are shown,
-and ultimately which (of the 2600+) devices are shown.
+Welcome to the slick, shiny foundation of the new official **Table of Hardware (TOH)** page for OpenWrt, now rocking the internet at [https://toh.openwrt.org](https://toh.openwrt.org). Adopted by the OpenWrt team to ditch the old, clunky setup, this project is here to deliver hardware compatibility data with style, speed, and a sprinkle of open-source swagger.
 
-The resulting web page also makes it easy for users to
-search the table for interesting devices.
+## Overview
 
-### Feel free to test the [preprod version of the ToH](https://openwrt.github.io/toh-openwrt-org)
+At its core, this bad boy parses the [`toh.json`](https://openwrt.org/toh.json) file—a chaotic, "dirty build" Frankenstein stitched together from OpenWrt wiki entries. We take that mess, polish it up, and serve it fresh for the TOH page, keeping your hardware info accurate and your router dreams alive.
 
-Your feedback would be greatly appreciated!
+## Features
 
-## How it works
+- **Official TOH Vibes**: Powers the live OpenWrt Table of Hardware at [https://toh.openwrt.org](https://toh.openwrt.org).
+- **JSON Wizardry**: Slices and dices [`toh.json`](https://openwrt.org/toh.json) like a ninja chef, turning wiki chaos into structured gold.
+- **Community Swagger**: We need YOU—yes, YOU—to jump in and make this thing even cooler.
 
-The enhanced ToH retrieves
-[openwrt.org/toh.json](https://openwrt.org/toh.json)
-from the OpenWrt server, then uses that data structure
-to build table for its web page.
+## Preproduction Sneak Peek
 
-The `toh.json` file is regenerated nightly by a process that
-combines information from the Techdata pages
-for each device (for example, here's the
-[Techdata page for GL.iNet GL-MT6000](https://openwrt.org/toh/hwdata/gl.inet/gl.inet_gl-mt6000)).
+Want a taste of the action before it goes live? Check out the preproduction preview at [https://openwrt.github.io/toh-openwrt-org](https://openwrt.github.io/toh-openwrt-org). Once we’ve ironed out the wrinkles (and maybe added some glitter), it gets unleashed on the official TOH URL: [https://toh.openwrt.org](https://toh.openwrt.org).
 
-## Current status / Future development
+## Contributing - Be the Hero We Need!
 
-The current project (October 2024) remains a work-in-progress.
-It is under rapid development: changes are likely when reports
-come in either through Issues in this Github repo,
-or through comments placed in the
-[topic in the OpenWrt Forum](https://forum.openwrt.org/t/better-and-faster-table-of-hardware/213570)
+This project is begging for your brilliance! Got a knack for code? A flair for design? Or just a burning desire to make routers everywhere proud? Contributions are not just welcome—they’re celebrated with virtual high-fives and eternal glory. Here’s how to join the party:
+- **Pull Requests**: Fix bugs, add features, or just flex your coding muscles—we’re here for it.
+- **Issues**: Spot something wonky? Have a wild idea? Shout it out loud!
+- **JSON Jamming**: Peek at [`toh.json`](https://openwrt.org/toh.json) and tell us how to tame that beast even better.
 
-If this seems valuable
-(and I hope the OpenWrt team feels this way),
-I’m prepared to submit a pull request (PR) to
-include these improvements on the main OpenWrt site. 
-
+Fork this repo, tweak it, break it, make it sing—then send us a pull request. Together, we’ll turn the TOH into the stuff of legends. Don’t just sit there—grab your keyboard and let’s make OpenWrt history!
