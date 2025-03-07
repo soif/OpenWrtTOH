@@ -14,7 +14,7 @@ and ultimately which (of the 2600+) devices are shown.
 The resulting web page also makes it easy for users to
 search the table for interesting devices.
 
-### Feel free to test the [current version of the ToH](https://soif.github.io/OpenWrtTOH/)
+### Feel free to test the [preprod version of the ToH](https://openwrt.github.io/toh-openwrt-org)
 
 Your feedback would be greatly appreciated!
 
