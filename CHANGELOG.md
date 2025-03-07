@@ -13,7 +13,9 @@ The resulting web page also makes it easy for users to search the table for inte
 <!--
 ## Unreleased
 
-## Version 1.70 - 2025-03-05
+
+-->
+## Version 1.70 - 2025-03-07
 
 * Removes bottom feedback box
 * Replaces Owrt abbreviation  by OpenWrt (in tooltip & Detail view)
@@ -22,7 +24,7 @@ The resulting web page also makes it easy for users to search the table for inte
 * Moves www files to the root folder (for easy deployment)
 * Prepares migration to https://github.com/openwrt/toh-openwrt-org/
 
--->
+
 
 ## Version 1.69 - 2025-03-05
 
