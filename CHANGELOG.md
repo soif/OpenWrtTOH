@@ -15,6 +15,7 @@ The resulting web page also makes it easy for users to search the table for inte
 ## Version 1.71 - 2025-03-xx
 * Adds HwData column
 * Adds row edit icon link
+* Removes useless column filters (links & downloads) 
 
 -->
 
