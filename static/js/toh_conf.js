@@ -4,6 +4,7 @@
 // Urls --------------------------------------------------------
 let owrtUrls={
 	www: 			"https://openwrt.org/",
+	hwdata: 		"https://openwrt.org/toh/hwdata/",
 	toh_json:		"https://openwrt.org/toh.json",
 	media:			"https://openwrt.org/_media/",
 	github_commit:	"https://github.com/openwrt/openwrt/commit/",
@@ -59,6 +60,7 @@ let tabulatorOptions={
 		{column:"brand", dir:"asc"}, 	//sort by this first
 		{column:"model", dir:"desc"}, //then sort by this second
 	],
+	
 	//debugEventsInternal:['data-filtered'], 
 
 };
@@ -128,6 +130,30 @@ function FormatterLinkDevice(cell, formatterParams, onRendered) {
 	} 
 	return value;
 }
+// --------------------------------------------------------
+function _formatHwDataUrl(deviceid){
+	const [brand, model] = deviceid.split(":");
+	return owrtUrls.hwdata + brand + '/' + model;
+}
+// --------------------------------------------------------
+function FormatterLinkHwData(cell, formatterParams, onRendered) {
+	var value = cell.getRow().getData().deviceid;
+	if (value && value.length > 0) {
+		return "<a href='" + _formatHwDataUrl(value)  + "' target='_blank'>HwData</a>";
+	} 
+	return value;
+}
+// --------------------------------------------------------
+function FormatterEditHwData(cell, formatterParams, onRendered) {
+	var value = cell.getRow().getData().deviceid;
+	var title = "Edit " + cell.getRow().getData().model;
+	if (value && value.length > 0) {
+		return '<a href="' + _formatHwDataUrl(value)  + '" target="_blank" title="'+title+'"><i class="fa-solid fa-pencil"></i></a>';
+	} 
+	return value;
+}
+
+
 // --------------------------------------------------------
 function FormatterImages(cell, formatterParams, onRendered) {
 	var arr = cell.getValue();
@@ -461,7 +487,7 @@ let columnStyles = {
 	cpumhz:								{title: "Mhz",			headerTooltip: 'CPU Speed (MHz)',				width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
 	detachableantennas:					{title: "D.Ant.",		headerTooltip: 'Detachable Antennas',			width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	deviceid:							{title: "Device ID",	headerTooltip: 'Device ID',						width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	devicepage:							{title: "Page",			headerTooltip: 'Device Page',					width: 50,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLinkDevice,	formatterParams: undefined,		tooltip: false},
+	devicepage:							{title: "Page",			headerTooltip: 'Device Page',					width: 40,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: FormatterLinkDevice,	formatterParams: undefined,		tooltip: false},
 	devicetype:							{title: "Device Type",	headerTooltip: 'Device Type',					width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
 	ethernet100mports:					{title: "Eth 100",		headerTooltip: 'Ethernet 100M ports',			width: 55,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanEmpty,	formatterParams: undefined,		...colFilterMin},
 	ethernet1gports:					{title: "Eth 1G",		headerTooltip: 'Ethernet 1G ports',				width: 50,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanEmpty,	formatterParams: undefined,		...colFilterMin},
@@ -516,8 +542,12 @@ let columnStyles = {
 	wlan600ghz:							{title: "60Ghz",		headerTooltip: 'WLAN 60 Ghz',					width: 60,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	wlanhardware:						{title: "WLAN Hardware",headerTooltip: 'WLAN Hardware',					width: 120,	hozAlign: 'left',	sorter: 'array',	frozen: false,	formatter: FormatterArray,		formatterParams: undefined},
 	wlancomments:						{title: "WLAN Comments",headerTooltip: 'WLAN Comments',					width: 100,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	wikideviurl:						{title: "Wiki",			headerTooltip: 'Wiki Page',						width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'Wiki'}}
+	wikideviurl:						{title: "Wiki",			headerTooltip: 'Wiki Page',						width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'Wiki'}},
+
+	VIRT_hwdata:						{title: "HwData",		headerTooltip: 'HwData Page',					width: 55,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: FormatterLinkHwData,	formatterParams: undefined,		tooltip: false},
+	VIRT_edit:							{title: "Edit",				headerTooltip: 'Edit HwData Page',				width: 10,	hozAlign: 'center',	sorter: undefined,	frozen: true,	formatter: FormatterEditHwData,	formatterParams: undefined,		tooltip: false, headerSort: false, headerFilter: false},
 };
+
 
 
 // Columns Groups ###############################################################################################################
@@ -526,6 +556,7 @@ let colViewGroups={
 	base:{
 		name: 'Main',
 		fields:[
+			'VIRT_edit',
 			'brand',
 			'model',
 		]
@@ -627,6 +658,7 @@ let colViewGroups={
 		name: 'Links',
 		fields:[
 			'devicepage',
+			'VIRT_hwdata',
 			'firmwareopenwrtinstallurl',
 			'firmwareopenwrtupgradeurl',
 			'firmwareopenwrtsnapshotinstallurl',

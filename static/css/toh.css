@@ -359,11 +359,17 @@ A.toh-but:hover{
 	z-index: 1000;
 }
 
-/* Header filter */
+/* Header filter ------------------------------------------------- */
 #toh-table .tabulator-header-filter INPUT:focus {
   left: 0;
   z-index: 9999;
   background-color: #ddf;
+}
+
+
+/* VIRT_edit column  ---------------------------------------------------------- */
+.tabulator-col[tabulator-field="VIRT_edit"] .tabulator-col-title{
+	display: none;
 }
 
 /* Cell Popup Details ------------------------------------------- */  

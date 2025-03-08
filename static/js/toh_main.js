@@ -384,6 +384,9 @@ function buildViewsColumns(){
 	if(columns.length > 0){
 		view +=htmlColumnGroup('Unsorted','unsorted');
 		$.each(columns,function(key,arr){
+			// if(arr.field === undefined){
+			// 	return;
+			// }
 			col=tabuTable.getColumn(arr.field);
 			var def=col.getDefinition();
 			def.headerTooltip +=' ('+arr.field+')'; //auto column dont have a tootil (only 'true')
@@ -1033,7 +1036,15 @@ function createIndexedObject(arrayOfObjects, key) {
 }
 */
 
-
+function getVirtualColumns() {
+	return Object.entries(columnStyles)
+		.filter(([key]) => key.startsWith("VIRT_"))
+		.map(([f, value]) => ({
+			field: f,			// needed to allow col.getDefinition() to work
+			visible: false,     // Hodden by default
+			...value            // Spread existing properties
+		}));
+}
 
 
 
@@ -1131,6 +1142,10 @@ $(document).ready(function () {
 			visible: false,
 			...columnStyles[value]
 		}));
+
+		// add vitual (not linked to existing fields) columns 
+		var virtualColumns = getVirtualColumns();
+		columns=[...columns, ...virtualColumns];
 
 		//init table with data
 		showLoading();

@@ -12,9 +12,12 @@ The resulting web page also makes it easy for users to search the table for inte
 
 <!--
 ## Unreleased
-
+## Version 1.71 - 2025-03-xx
+* Adds HwData column
+* Adds row edit icon link
 
 -->
+
 ## Version 1.70 - 2025-03-07
 
 * Removes bottom feedback box
