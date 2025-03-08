@@ -654,16 +654,22 @@ let colViewGroups={
 		]
 	},
 
-	links:{
-		name: 'Links',
+	downloads:{
+		name: 'Downloads',
 		fields:[
-			'devicepage',
-			'VIRT_hwdata',
 			'firmwareopenwrtinstallurl',
 			'firmwareopenwrtupgradeurl',
 			'firmwareopenwrtsnapshotinstallurl',
 			'firmwareopenwrtsnapshotupgradeurl',
 			'firmwareoemstockurl',
+		]
+	},
+
+	links:{
+		name: 'Links',
+		fields:[
+			'devicepage',
+			'VIRT_hwdata',
 			'oemdevicehomepageurl',
 			'wikideviurl',
 			'owrt_forum_topic_url',
@@ -693,6 +699,8 @@ let colViews={
 		...colViewGroups.hardware_main.fields,
 		...colViewGroups.network.fields,
 		...colViewGroups.wifi.fields,
+		'firmwareopenwrtinstallurl',
+		'firmwareopenwrtupgradeurl',
 		...colViewGroups.links.fields,
 		'picture',
 	],
@@ -732,6 +740,7 @@ let colViews={
 	links:	[
 		...colViewGroups.base.fields,
 		...colViewGroups.links.fields,
+		...colViewGroups.downloads.fields,
 	],
 	misc:	[
 		...colViewGroups.base.fields,
