@@ -16,6 +16,7 @@ The resulting web page also makes it easy for users to search the table for inte
 * Adds HwData column
 * Adds row edit icon link
 * Removes useless column filters (links & downloads) 
+* Changes Table header & footer colors
 
 -->
 
@@ -28,7 +29,6 @@ The resulting web page also makes it easy for users to search the table for inte
 * Moves www files to the root folder (for easy deployment)
 * Prepares migration to https://github.com/openwrt/toh-openwrt-org/
 * Fine-tunes some columns width
-
 
 
 ## Version 1.69 - 2025-03-05
