@@ -2,6 +2,15 @@
 	http://src.dev.lo.lo/OpenWrtTOH/src/www/static/css/toh.css */
 
 /* ---------------------------------------------------------- */
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+} 
+
+/* ---------------------------------------------------------- */
 #toh-loading{
 	font-size: 2em;
 	top: 10px;
