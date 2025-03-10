@@ -56,11 +56,11 @@ let tabulatorOptions={
 		headerSortTristate:true,
 	},
 
-	initialSort:[
-		{column:"brand", dir:"asc"}, 	//sort by this first
-		{column:"model", dir:"desc"}, //then sort by this second
-	],
-	
+	// initialSort:[
+	// 	{column:"brand", dir:"asc"}, 	//sort by this first
+	// 	{column:"model", dir:"desc"}, //then sort by this second
+	// ],
+
 	//debugEventsInternal:['data-filtered'], 
 
 };
