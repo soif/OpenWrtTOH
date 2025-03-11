@@ -31,6 +31,7 @@ let prefs={
 	cook_max_chars: 	12,				// max number of character allowed in the cookie name
 
 	tooltip_upreset:"User Presets: Click to Load, Shit-click to save, Alt-click to delete",
+	preload: 		true,				// Preload images (in background)
 
 };
 
@@ -178,9 +179,13 @@ function FormatterImages(cell, formatterParams, onRendered) {
 			}
 			out +='<a href="' + url + '" target="_blank" class="cell-image">'+label+'</a> ';
 
-			// preload images
-			const img = new Image();
-			img.src = url;
+			// preload images --------
+			//const img = new Image();
+			//img.src = url;
+
+			if (!toh_img_urls.includes(url)) {
+				toh_img_urls.push(url);
+			}
 
 		});
 		return out;

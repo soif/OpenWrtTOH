@@ -17,7 +17,7 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.71b5",	// Version
+	version:	"1.71b5-a",	// Version
 	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
 }
 
@@ -28,6 +28,8 @@ const toh_app={
 // 3=verbose
 // 4=more verbose
 var toh_debug_level=1; 
+
+const toh_img_urls=[];	// holds all images urls
 
 // Functions for Cell Model Popup Formatter ##################################################################################
 
@@ -327,6 +329,19 @@ function getFilterSet(type, key){
 	// myLogObj(set,'Filter Set');
 	return set;
 }
+
+// preload DB images -----------------------------------------------
+function PreLoadImagesCache(){
+	if(!prefs.preload){
+		return;
+	}
+	toh_img_urls.forEach(url => {
+		const img = new Image();
+		img.src = url;
+	});
+}
+
+
 
 
 // Views functions #########################################################################################################################
@@ -1257,6 +1272,7 @@ $(document).ready(function () {
 
 		}).then(function(){
 			$('#toh-load-overlay').slideUp(500);
+			PreLoadImagesCache();
 		});   
 	});
 
