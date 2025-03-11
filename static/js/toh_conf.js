@@ -1040,9 +1040,21 @@ let colFilterFeatures={
 		],
 	},
 
+	wifi_n:{
+		title:		"Wifi: N",
+		description:"with 802.11n (Wifi4)",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"wlan24ghz", 	type:"like",	value:'n'},
+				{field:	"wlan50ghz", 	type:"like",	value:'n'},
+			],
+		],
+	},
+
 	wifi_ac:{
 		title:		"Wifi: AC",
-		description:"with 802.11ac Wifi",
+		description:"with 802.11ac (Wifi5)",
 		type:		"normal",
 		filters:[
 			{field:	"wlan50ghz", 	type:"like",	value:'ac'},
@@ -1051,7 +1063,7 @@ let colFilterFeatures={
 
 	wifi_ax:{
 		title:		"Wifi: AX",
-		description:"with 802.11ax Wifi",
+		description:"with 802.11ax (Wifi6)",
 		type:		"normal",
 		filters:[
 			[
@@ -1062,17 +1074,6 @@ let colFilterFeatures={
 		],
 	},
 
-	wifi_n:{
-		title:		"Wifi: N",
-		description:"with 802.11n Wifi",
-		type:		"normal",
-		filters:[
-			[
-				{field:	"wlan24ghz", 	type:"like",	value:'n'},
-				{field:	"wlan50ghz", 	type:"like",	value:'n'},
-			],
-		],
-	},
 
 	// admin features --------------------------------
 
