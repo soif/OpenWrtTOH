@@ -24,9 +24,39 @@
 		<script src="static/js/snarkdown.umd.js"></script>
 
 		<!-- Internal Includes -------------------------------------------------------->
+		<!-- 
 		<link rel="stylesheet" href="static/css/toh.css" >
 		<script src="static/js/toh_conf.js"></script>
-		<script src="static/js/toh_main.js"></script>
+		<script src="static/js/toh_main.js"></script> 
+		-->
+
+		<!-- Internal Includes (using today date cache) ------------------------------>
+		<script>
+			// force cache update each day ----------------------
+			let cache = new Date().toISOString().slice(0, 10);
+			//allow to use ?cache= to force reload assets
+			const urlCache = new URLSearchParams(window.location.search).get('cache');
+			cache  += urlCache ? '-' + urlCache : '';
+		
+			let filesToUpdate = [
+				{ type: 'link', href: 'static/css/toh.css' },
+				{ type: 'script', src: 'static/js/toh_conf.js' },
+				{ type: 'script', src: 'static/js/toh_main.js' }
+			];
+		
+			filesToUpdate.forEach(file => {
+				const element = document.createElement(file.type);				
+				if (file.type === 'link') {
+					element.rel = 'stylesheet';
+					element.href = file.href + '?c=' + cache;
+				}
+				else if (file.type === 'script') {
+					element.src = file.src + '?c=' + cache;
+					element.async=false;
+				}
+				document.head.appendChild(element);
+			});
+		</script>
 
 	</head>
 	<body>
@@ -229,7 +259,3 @@
 		</div>
 	</body>
 </html>
-
-
-
-
