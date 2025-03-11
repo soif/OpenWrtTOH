@@ -1074,6 +1074,18 @@ let colFilterFeatures={
 		],
 	},
 
+	wifi_be:{
+		title:		"Wifi: BE",
+		description:"with 802.11be (Wifi7)",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"wlan24ghz", 	type:"like",	value:'be'},
+				{field:	"wlan50ghz", 	type:"like",	value:'be'},
+				{field:	"wlan60ghz", 	type:"like",	value:'be'},
+			],
+		],
+	},
 
 	// admin features --------------------------------
 

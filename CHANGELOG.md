@@ -3,6 +3,7 @@
 
 ## Version 1.71 - 2025-03-xx
 
+* Adds BE Wifi (wifi 7) filter
 * Show changelog in dev mode (GH page only)
 * Diplays Develop branch & version (GH page only)
 * Adds HwData column
