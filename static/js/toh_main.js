@@ -17,7 +17,7 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.71b1",	// Version
+	version:	"1.71b2",	// Version
 	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
 }
 

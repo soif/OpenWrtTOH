@@ -9,6 +9,7 @@
 * Fine-tunes some columns width
 * Changes Table header & footer colors
 * Develop branch & version are displayed (at GH)
+* Merge & remove demo.css
 
 
 ## Version 1.70 - 2025-03-07
