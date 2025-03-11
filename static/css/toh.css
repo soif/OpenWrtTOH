@@ -14,7 +14,7 @@ html, body {
 #toh-loading{
 	font-size: 2em;
 	top: 10px;
-	right: 20px;
+	right: 30px;
 	color: yellow;
 	position: absolute;
 }
@@ -304,7 +304,6 @@ A.toh-but{
 A.toh-but:hover{
 	/* background-color: #555;	
 	color: #fff; */
-
 }
 
 /* Cells Formatters ------------------------------------------- */
