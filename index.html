@@ -22,6 +22,7 @@
 
 		<script src="static/js/jquery_v1.12.4.min.js"></script>
 		<script src="static/lib/tabulator-6.3.0/js/tabulator.min.js"></script>
+		<script src="static/js/snarkdown.umd.js"></script>
 
 		<!-- Internal Includes -------------------------------------------------------->
 		<link rel="stylesheet" href="static/css/toh.css" >
@@ -40,7 +41,7 @@
 					<div id="toh-header-logo"><a href="https://openwrt.org"><img src="static/img/logo.svg" alt="Logo" /></a></div>
 					<div id="toh-header-count"><span id="toh-count"></span> devices</div>
 					<div id="toh-loading"><i class="fa-solid fa-arrows-rotate fa-spin"></i></div>
-					<div id="toh-header-title"><h1><a href="#">Table Of Hardware</a> <span class="js-toh-app badge toh-hidden" data-prop="branch"></span></h1></div>
+					<div id="toh-header-title"><h1><a href="#">Table Of Hardware</a> <span class="badge toh-hidden"><span class="js-toh-app " data-prop="branch"></span> v<b class="js-toh-app" data-prop="version">-</b></span></h1></div>
 				</div>
 
 
@@ -134,7 +135,7 @@
 
 				<div id="toh-info" class="row">
 					<div class="col-sm-12">
-						<div id="toh-tips" class="toh-box">			
+						<div id="toh-tips" class="toh-box">
 							<h4><i class="fa-regular fa-lightbulb"></i> Tips</h4>
 							<ul>
 								<li>Access detailed information by clicking items in the Brand or Model column</li>
@@ -148,7 +149,20 @@
 								<li>This table uses live data from the <a href="https://openwrt.org" target="_blank">OpenWrt</a> site</li>
 							</ul>
 						</div>
+
 					</div>
+					<div class="col-sm-12">
+						<div id="toh-changelog" class="toh-box toh-hidden">
+							<div id="toh-changelog-desc">(This is only shown in Develop mode)</div>	
+							<h4><i class="fa-solid fa-list"></i> ChangeLog since latest release  <a href="https://github.com/openwrt/toh-openwrt-org/blob/develop/CHANGELOG.md" target="_blank"><i class="fa-solid fa-up-right-from-square"></i></a> </h4>
+							<div id="toh-changelog-latest" class="toh-changelog-list"></div>	
+							<hr>				
+							<h4><i class="fa-regular fa-clock"></i> Previous Releases</h4>
+							<div id="toh-changelog-previous" class="toh-changelog-list"></div>					
+						</div>
+	
+					</div>
+
 				</div>
 
 			</div>

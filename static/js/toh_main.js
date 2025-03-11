@@ -17,7 +17,7 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.71b2",	// Version
+	version:	"1.71b3",	// Version
 	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
 }
 
@@ -28,8 +28,6 @@ const toh_app={
 // 3=verbose
 // 4=more verbose
 var toh_debug_level=1; 
-
-
 
 // Functions for Cell Model Popup Formatter ##################################################################################
 
@@ -1041,7 +1039,7 @@ function createIndexedObject(arrayOfObjects, key) {
 	}, {});
 }
 */
-
+// get Vitual Columns ------------------------------------------------------
 function getVirtualColumns() {
 	return Object.entries(columnStyles)
 		.filter(([key]) => key.startsWith("VIRT_"))
@@ -1052,6 +1050,57 @@ function getVirtualColumns() {
 		}));
 }
 
+// --Fetch and Display the Changelog ----------------------------------------------------------------
+function FetchAndPrintChangelog(){
+	fetch('CHANGELOG.md')
+    .then(response => response.text())
+    .then(data => {
+        const lines = data.split('\n');
+        const result = [];
+        let currentObject = null;
+        
+        // Process each line
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            
+            // Check for subtitle
+            if (line.startsWith('##')) {
+                if (currentObject) {
+                    result.push(currentObject);
+                }
+                currentObject = {
+                    title: line.substring(2).trim(), // Remove '##' and trim
+                    list: ''
+                };
+            }
+            // Check for bullet points if we have a current object
+            else if (currentObject && line.startsWith('*')) {
+                currentObject.list += (currentObject.list ? '\n' : '') + line;
+            }
+        }
+        
+        // Push the last object if it exists
+        if (currentObject) {
+            result.push(currentObject);
+        }
+        
+        if (result.length > 0) {
+    	    // Insert the first result 
+			$('#toh-changelog-latest').html('<div class="toh-changelog-release"><h5>' + result[0].title + ' <span class="badge">v'+ toh_app.version +'</span></h5>' + snarkdown(result[0].list)) +'</div>';
+
+			// then the others results
+			var html='';
+			for (let i = 1; i < result.length; i++) {
+				html +='<div class="toh-changelog-release"><h5>' + result[i].title + '</h5>' + snarkdown(result[i].list) +'</div>';
+            }
+			$('#toh-changelog-previous').html(html);
+
+			$("#toh-changelog").show();
+
+        }
+    })
+    .catch(error => myLogStr('Cannot load CHANGELOG! Error: '+ error));
+}
 
 
 
@@ -1086,6 +1135,7 @@ $(document).ready(function () {
 	// Add branch-dev class to body if branch is 'dev'
 	if (toh_app.branch === 'dev') {
 		$('body').addClass('branch-dev');
+		FetchAndPrintChangelog();
 	}
 
 	//set title Link URL ----------------------------------------------------
@@ -1206,7 +1256,6 @@ $(document).ready(function () {
 
 		});   
 	});
-
 
 
 	// User Presets ##########################################################################################

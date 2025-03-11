@@ -1,14 +1,15 @@
 # CHANGELOG
 
 
-## (DEV) Version 1.71 - 2025-03-xx
+## Version 1.71 - 2025-03-xx
 
+* Show changelog in dev mode (GH page only)
+* Diplays Develop branch & version (GH page only)
 * Adds HwData column
 * Adds row edit icon link
 * Removes useless column live filters (links & downloads) 
 * Fine-tunes some columns width
 * Changes Table header & footer colors
-* Develop branch & version are displayed (at GH)
 * Merge & remove demo.css
 
 

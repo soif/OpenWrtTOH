@@ -119,27 +119,69 @@ body,
 	padding: 1px 10px 10px 10px;
 	font-size: 13px;
 }
-
-#toh-tips UL{
+#toh-tips{
+	margin-top: 10px;
+}
+#toh-tips UL,
+#toh-changelog-latest UL,
+#toh-changelog-previous{
 	column-count: 3;
-	column-gap: 2em;  
+	column-gap: 2em; 
 
 }
 @media screen and (max-width: 1600px) {
-	#toh-tips UL {
+	#toh-tips UL,
+	#toh-changelog-latest UL {
 		column-count: 2;
 	}
 }
 @media screen and (max-width: 900px) {
-	#toh-tips UL {
+	#toh-tips UL,
+	#toh-changelog-latest UL {
 		column-count: 1;
 	}
 }
 
+#toh-changelog{
+	margin-top: 20px;
+	background-color: rgb(255, 248, 210);
+}
+#toh-changelog HR{
+	border-color: #CCC;
+}
+#toh-changelog H4 A{
+	font-size: 50%;
+	vertical-align: middle;
+	margin-left: 2px;
+}
 
+#toh-changelog H5 {
+	margin-top: 0;
+	margin-bottom: 2px;
+	padding-left: 25px;
+	color: rgb(241, 121, 0);
+}
+#toh-changelog H5 .badge{
+	background-color: #E00;
+	margin-left: 8px;
+}
+#toh-changelog UL{
+	padding-left: 50px;
+}
 
-
-
+#toh-changelog-latest{
+	margin-bottom: 20px;
+}
+.toh-changelog-release{
+	break-inside: avoid-column;
+	margin-bottom: 15px;
+}
+#toh-changelog-desc{
+	float: right;
+	padding-top: 10px;
+	font-size: 11px;
+	color: #f00;
+}
 
 
 
@@ -671,7 +713,7 @@ BODY.branch-dev #toh-footer{
 }
 BODY.branch-dev #toh-header .badge{
 	display: inline-block;
-	background-color: #000;
+	background-color: #F00;
 }
 
 
