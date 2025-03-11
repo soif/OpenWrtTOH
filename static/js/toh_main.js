@@ -13,7 +13,13 @@
 	If not, see <https://www.gnu.org/licenses/>. 
  */
 
+// variables ##################################################################################################################
 
+// global app constants ----------
+const toh_app={
+	version:	"1.71b1",	// Version
+	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
+}
 
 // set the log level displayed in the console :
 // 0=none
@@ -1049,6 +1055,16 @@ function getVirtualColumns() {
 
 
 
+
+
+
+
+
+
+
+
+
+
 // ############################################################################################################
 // ## MAIN ####################################################################################################
 // ############################################################################################################
@@ -1062,6 +1078,15 @@ var toh_cookies={};
 // };
 
 $(document).ready(function () {
+	// update html variables placeholders -----------------------------------
+	$('.js-toh-app').each(function() {
+		var prop = $(this).data('prop');	// Get the property name from data-prop attribute
+		$(this).text(toh_app[prop]);		// Set the text content to the corresponding value from toh_app
+	});
+	// Add branch-dev class to body if branch is 'dev'
+	if (toh_app.branch === 'dev') {
+		$('body').addClass('branch-dev');
+	}
 
 	//set title Link URL ----------------------------------------------------
 	$('#toh-header-title H1 A').attr('href',window.location.pathname);

@@ -11,15 +11,18 @@ ultimately which (of the 2600+) devices are shown.
 The resulting web page also makes it easy for users to search the table for interesting devices.
 
 <!--
-## Unreleased
-## Version 1.71 - 2025-03-xx
+
+-->
+
+## (DEV) Version 1.71 - 2025-03-xx
+
 * Adds HwData column
 * Adds row edit icon link
 * Removes useless column live filters (links & downloads) 
 * Fine-tunes some columns width
 * Changes Table header & footer colors
+* Develop branch & version are displayed (at GH)
 
--->
 
 ## Version 1.70 - 2025-03-07
 
