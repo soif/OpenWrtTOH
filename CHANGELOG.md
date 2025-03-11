@@ -3,6 +3,7 @@
 
 ## Version 1.71 - 2025-03-xx
 
+* Don't wait for images before loading the table
 * Displays a loading overlay, until TOH data is loaded
 * Invalidates CSS & JS cache everyday
 * Allows to force cache reload with "?cache=xxx" in the URL
