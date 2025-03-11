@@ -1209,6 +1209,7 @@ $(document).ready(function () {
 
 
 	// Fetch content and build table ----------------------------------
+	$('#toh-load-text').html('Fetching TOH devices...');
 	$.getJSON( owrtUrls.toh_json, function( data ){ 
 		//Makes columns
 		var columns = data.columns.map((value, index) => ({
@@ -1254,6 +1255,8 @@ $(document).ready(function () {
 				{column:"brand", dir:"asc"} //sort by this first
 			]);
 
+		}).then(function(){
+			$('#toh-load-overlay').slideUp(500);
 		});   
 	});
 

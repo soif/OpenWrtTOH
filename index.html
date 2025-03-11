@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="">
 	<head>
@@ -26,12 +25,64 @@
 
 		<!-- Internal Includes -------------------------------------------------------->
 		<link rel="stylesheet" href="static/css/toh.css" >
-
 		<script src="static/js/toh_conf.js"></script>
 		<script src="static/js/toh_main.js"></script>
 
 	</head>
 	<body>
+
+		<style>
+		#toh-load-overlay {
+			background-color: #eee;
+			background: rgb(0, 163, 225);
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			opacity: 1;
+			animation: fade 5.0s ease forwards;
+		}
+		@keyframes fade {
+			0%     { opacity: 1; }
+		    50% 	{ opacity: 1; }
+    		100%   { opacity: 0.8; }
+		}
+		#toh-load-span {
+			margin-top: 30px;
+			font-size: 16px;
+			color: #000;
+			display: inline-block;
+			text-align: center;
+			background-color: #fff;
+			padding: 15px 30px;
+			border-radius: 10px;
+			border: 1px solid rgba(0,0,0, 0.3);
+			min-width: 230px;
+		}
+		#toh-load-logo,
+		#toh-load-logo IMG{
+			width: 400px;
+		}
+		#toh-load-icon{
+			margin-bottom: 20px;
+		}
+		</style>
+		<div id="toh-load-overlay">
+			<div id="toh-load-logo"><img src="static/img/logo.svg" alt="Logo" /></div>
+			<span id="toh-load-span">
+				<div id="toh-load-icon"><i class="fa-solid fa-arrows-rotate fa-spin fa-2x"></i></div>
+				<div id="toh-load-text">Loading page...</div>
+			</span>
+		</div>
+
+
+
 		<div id="toh-page">
 			
 			<div class="container-fluid">

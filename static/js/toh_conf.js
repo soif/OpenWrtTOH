@@ -46,6 +46,7 @@ let tabulatorOptions={
 	paginationSizeSelector:true,
 	paginationSizeSelector:[10, 20, 30, 40, 50, 75, 100, 200, 300], //enable page size select element with these options
 
+	dataLoader: false,				// dont show the table loading overlay
 	columns:[],
 	movableColumns:true,      		//allow column order to be changed
 	columnDefaults:{

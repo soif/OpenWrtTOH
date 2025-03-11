@@ -3,6 +3,7 @@
 
 ## Version 1.71 - 2025-03-xx
 
+* Displays a loading overlay, until TOH data is loaded
 * Adds BE Wifi (wifi 7) filter
 * Show changelog in dev mode (GH page only)
 * Diplays Develop branch & version (GH page only)
