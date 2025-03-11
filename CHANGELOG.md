@@ -1,18 +1,5 @@
 # CHANGELOG
 
-OpenWrtTOH enhances the user experience of the
-OpenWrt Table of Hardware (ToH) by providing a
-much faster user interface and
-offering straightforward options for controlling which
-(of the seventy or so) columns are shown,
-which models are shown, and
-ultimately which (of the 2600+) devices are shown.
-
-The resulting web page also makes it easy for users to search the table for interesting devices.
-
-<!--
-
--->
 
 ## (DEV) Version 1.71 - 2025-03-xx
 
