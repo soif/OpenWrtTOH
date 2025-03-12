@@ -374,7 +374,7 @@ function buildViewsPresets(){
 	tmp_html+=htmlFilterPresetButton('toh-view toh-view-custom','custom');
 	tmp_html+=htmlFilterPresetButton('toh-view','all');
 	tmp_html+=htmlFilterPresetButton('toh-view','none');
-	for (const key in colViews){
+	for (const key in colViewPresets){
 		tmp_html+=htmlFilterPresetButton('toh-view',key);
 	}
 	$('#toh-cols-presets').html(tmp_html);
@@ -502,7 +502,7 @@ function getColumnSet(key){
 	myLogFunc();
 	set=[];
 	if(key=='all'){
-		$.each(colViews,function(k,col){
+		$.each(colViewPresets,function(k,col){
 			if(!set.includes(col)){
 				set.push(col);
 			}
@@ -511,8 +511,8 @@ function getColumnSet(key){
 	else if (key=='none'){
 		set=[];
 	}
-	else if(typeof(colViews[key]) !='undefined'){
-		set=colViews[key];
+	else if(typeof(colViewPresets[key]) !='undefined'){
+		set=colViewPresets[key];
 	}
 	return set;
 }
