@@ -764,6 +764,96 @@ let colViewPresets={
 // Filters ##################################################################################################################################################
 // ##########################################################################################################################################################
 
+// Filter Groups ---------------------------------------------------------------------------------------------
+let colFilterGroups={
+	network:{
+		title:"Network",
+		members:[
+			'eth_1g',
+			'eth_2d5g',
+			'eth_10g',
+			'port_sfp',
+			'vlan',
+		],
+	},
+
+	wifi:{
+		title:"Wifi",
+		members:[
+			'antennas',
+			'wifi_n',
+			'wifi_ac',
+			'wifi_ax',
+			'wifi_be',
+		],
+	},
+
+	memory:{
+		title:"Memory",
+		members:[
+			'memory_minimum',
+			'memory_more',
+		],
+	},
+
+	port:{
+		title:"Ports",
+		members:[
+			'port_audio',
+			'port_phone',
+			'port_usb',
+			'port_video',
+		],
+	},
+
+	type:{
+		title:"Types",
+		members:[
+			'type_board',
+			'type_modem',
+			'type_switch',
+			'type_travel',
+			'type_wifiap',
+			'type_wifirouter',
+		],
+	},
+
+	power:{
+		title:"Power",
+		members:[
+			'power_bat',
+			'power_mains',
+			'power_poe',
+			'power_usb',
+		],
+	},
+	
+	features:{
+		title:"Features",
+		members:[
+			'available',
+			'modem_cellular',
+			'modem_dsl',
+			'outdoor',
+			'pci',
+		],
+	},
+
+	admin:{
+		title:"Administration",
+		members:[
+			'miss_commit',
+			'miss_devpage',
+			'miss_picture',
+			'miss_pkg',
+			'miss_wiki',
+			'miss_all',
+		],
+	},
+
+
+};
+
 // Filter Features -------------------------------------------------------------------------------------------
 let colFilterFeatures={
 
@@ -802,7 +892,7 @@ let colFilterFeatures={
 				{field:	"ethernet10gports",		type:">=",	value:1},
 			],
 		],
-		group: "eth",
+		only: "eth",
 	},
 
 	eth_2d5g:{
@@ -816,7 +906,7 @@ let colFilterFeatures={
 				{field:	"ethernet10gports",		type:">=",	value:1},
 			],
 		],
-		group: "eth",
+		only: "eth",
 	},
 
 	eth_10g:{
@@ -826,29 +916,29 @@ let colFilterFeatures={
 		filters:[
 			{field:	"ethernet10gports",		type:">=",	value:1},
 		],
-		group: "eth",
+		only: "eth",
 	},
 
 	memory_minimum:{
-		title:		"Memory: Mini",
+		title:		"Mini",
 		description:"at least 16MB Flash & 64MB RAM",
 		type:		"normal",
 		filters:[
 			{field:	"rammb", 		type:">=",		value:64},
 			{field:	"flashmb", 		type:"flash>=",		value:16},
 		],
-		group: "memory",
+		only: "memory",
 	},
 
 	memory_more:{
-		title:		"Memory: More",
+		title:		"More",
 		description:"at least 64MB Flash & 128MB RAM",
 		type:		"normal",
 		filters:[
 			{field:	"rammb", 		type:">=",		value:128},
 			{field:	"flashmb", 		type:"flash>=",		value:64},
 		],
-		group: "memory",
+		only: "memory",
 	},
 
 	modem_dsl:{
@@ -859,7 +949,7 @@ let colFilterFeatures={
 			{field:	"modem", 	type:"like",	value:'DSL'},
 			{field:	"unsupported_functions", 	type:"regex",	value:'^((?!DSL).)*$'},
 		],
-		group: "modem",
+		only: "modem",
 	},
 
 	modem_cellular:{
@@ -872,7 +962,7 @@ let colFilterFeatures={
 				{field:	"modem", 	type:"like",	value:'Cellular'},
 			],
 		],
-		group: "modem",
+		only: "modem",
 	},
 
 	outdoor:{
@@ -894,7 +984,7 @@ let colFilterFeatures={
 	},
 
 	port_audio:{
-		title:		"Port: Audio",
+		title:		"Audio",
 		description:"with audio port",
 		type:		"normal",
 		filters:[
@@ -904,7 +994,7 @@ let colFilterFeatures={
 	},
 
 	port_phone:{
-		title:		"Port: Phone",
+		title:		"Phone",
 		description:"with phone port",
 		type:		"normal",
 		filters:[
@@ -914,7 +1004,7 @@ let colFilterFeatures={
 	},
 
 	port_sfp:{
-		title:		"Port: SFP",
+		title:		"SFP",
 		description:"with SFP port",
 		type:		"normal",
 		filters:[
@@ -927,7 +1017,7 @@ let colFilterFeatures={
 	},
 
 	port_usb:{
-		title:		"Port: USB",
+		title:		"USB",
 		description:"with USB port",
 		type:		"normal",
 		filters:[
@@ -936,7 +1026,7 @@ let colFilterFeatures={
 	},
 
 	port_video:{
-		title:		"Port: Video",
+		title:		"Video",
 		description:"with video port",
 		type:		"normal",
 		filters:[
@@ -946,7 +1036,7 @@ let colFilterFeatures={
 	},
 
 	power_bat:{
-		title:		"Power: Battery",
+		title:		"Battery",
 		description:"battery powered",
 		type:		"normal",
 		filters:[
@@ -955,7 +1045,7 @@ let colFilterFeatures={
 	},
 
 	power_mains:{
-		title:		"Power: Mains",
+		title:		"Mains",
 		description:"mains powered",
 		type:		"normal",
 		filters:[
@@ -967,7 +1057,7 @@ let colFilterFeatures={
 	},
 
 	power_poe:{
-		title:		"Power: PoE",
+		title:		"PoE",
 		description:"PoE capable",
 		type:		"normal",
 		filters:[
@@ -976,7 +1066,7 @@ let colFilterFeatures={
 	},
 
 	power_usb:{
-		title:		"Power: USB",
+		title:		"USB",
 		description:"USB powered",
 		type:		"normal",
 		filters:[
@@ -985,63 +1075,63 @@ let colFilterFeatures={
 	},
 
 	type_board:{
-		title:		"Type: Board",
+		title:		"Board",
 		description:"Single board computer",
 		type:		"normal",
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Single Board Computer'},
 		],
-		group: "type",
+		only: "type",
 	},
 
 	type_modem:{
-		title:		"Type: Modem",
+		title:		"Modem",
 		description:"with modem",
 		type:		"normal",
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Modem'},
 		],
-		group: "type",
+		only: "type",
 	},
 
 	type_switch:{
-		title:		"Type: Switch",
+		title:		"Switch",
 		description:"Switch oriented",
 		type:		"normal",
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Switch'},
 		],
-		group: "type",
+		only: "type",
 	},
 
 	type_travel:{
-		title:		"Type: Travel",
+		title:		"Travel",
 		description:"Portable device",
 		type:		"normal",
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Travel'},
 		],
-		group: "type",
+		only: "type",
 	},
 
 	type_wifiap:{
-		title:		"Type: Wifi AP",
+		title:		"Wifi AP",
 		description:"Wifi AP",
 		type:		"normal",
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Wifi AP'},
 		],
-		group: "type",
+		only: "type",
 	},
 
 	type_wifirouter:{
-		title:		"Type: Wifi Router",
+		title:		"Wifi Router",
 		description:"Wifi Router",
 		type:		"normal",
 		filters:[
 			{field:	"devicetype", 	type:"like",	value:'Wifi Router'},
 		],
-		group: "type",
+		only: "type",
 	},
 
 
@@ -1151,7 +1241,7 @@ let colFilterFeatures={
 		],
 	},
 
-	miss:{
+	miss_all:{
 		title:		"Miss Something",
 		description:"miss anything above",
 		type:		"admin",
@@ -1176,7 +1266,7 @@ let colFilterPresets={
 	
 	minimum_1664_ac_avail: {
 		title:"Mini, AC, Avail.",
-		description:"At least 16MB Flash and 64MB RAM + AC Wifi + Available",
+		description:"At least 16MB Flash & 64MB RAM + AC Wifi + Available",
 		orig_url:"",
 		filters:[],
 		features:[

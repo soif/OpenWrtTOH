@@ -93,11 +93,11 @@ function htmlFilterDiv(filt,key,is_feature=false){
 	html +='<div class="toh-filter toh-filter-'+myclass+'">';
 	html +='<span class="toh-filter-title">';
 	if(is_feature){
-		var dgroup=''
-		if(typeof filt.group =='string'){
-			dgroup=filt.group;
+		var only=''
+		if(typeof filt.only =='string'){
+			only=filt.only;
 		}
-		html +='<input type="checkbox" data-key="'+key+'" data-group="'+dgroup+'">';
+		html +='<input type="checkbox" data-key="'+key+'" data-only="'+only+'">';
 	}
 	html +='<a href="#" class="toh-filter-button" data-key="'+key+'" title="';
 	if(is_feature){
@@ -121,8 +121,12 @@ function buildFiltersPresets(){
 // display Filters Features ------------------------------------------------
 function buildFiltersFeatures(){
 	tmp_html='';
-	for (const key in colFilterFeatures){
-		tmp_html+=htmlFilterDiv(colFilterFeatures[key],key,true);
+	for (const group in colFilterGroups){
+		tmp_html +=htmlGroup(colFilterGroups[group].title,group,'filt');
+		colFilterGroups[group].members.forEach(filt => {
+			tmp_html +=htmlFilterDiv(colFilterFeatures[filt],filt,true);
+		});
+		tmp_html +="</ul>\n</div>\n";
 	}
 	$('#toh-filters-features-content').html(tmp_html);
 }
@@ -171,10 +175,10 @@ function checkAllFeatures(state=true){
 // Check on/off a feature checkbox ------------------------------
 function checkFeature(key,state=true){
 	if(state){
-		var group=$(".toh-filter-feature INPUT[data-key="+key+"]").attr('data-group');
+		var group=$(".toh-filter-feature INPUT[data-key="+key+"]").attr('data-only');
 		//myLogStr(group,1);
 		if(group.length > 0){
-			$(".toh-filter-feature INPUT[data-group="+group+"]").prop('checked',false);
+			$(".toh-filter-feature INPUT[data-only="+group+"]").prop('checked',false);
 		}
 	}
 	$(".toh-filter-feature INPUT[data-key="+key+"]").prop('checked',state);
@@ -361,9 +365,21 @@ function htmlColumnLine(field,col,checked){
 }
 
 // Make a column Group  ------------------------------------------
-function htmlColumnGroup(title,group){
+function htmlGroup(title,group,type){
 	let html='';
-	html +='<div class="toh-colgroup" data-group="'+group+'">'+"\n"+'<div class="toh-colgroup-title"><a href="#" class="view-link" title="Toggle group visibility"><i class="fa-solid fa-square"></i> '+title+'</a></div>'+"\n";
+	let names={
+		view: 'toh-viewgroup',
+		filt: 'toh-filtgroup',
+	};
+	let icons={
+		view: 'fa-solid fa-square',
+		filt: 'fa-solid fa-filter',
+	};
+	let ttip={
+		view: 'Toggle group visibility',
+		filt: '',
+	};
+	html +='<div class="toh-group '+names[type]+'" data-group="'+group+'">'+"\n"+'<div class="toh-group-title '+names[type]+'-title"><a href="#" class="view-link" title="'+ttip[type]+'"><i class="'+icons[type]+'"></i> '+title+'</a></div>'+"\n";
 	html +='<ul>'+"\n";
 	return html;
 }
@@ -388,7 +404,7 @@ function buildViewsColumns(){
 
 	// display known (on Prefs) fields
 	$.each(colViewGroups,function(key,arr){
-		view +=htmlColumnGroup(arr.name,key);
+		view +=htmlGroup(arr.name,key,'view');
 		$.each(arr.fields,function(k,field){
 			col=tabuTable.getColumn(field);
 			view +=htmlColumnLine(field, col.getDefinition(), col.isVisible())
@@ -401,7 +417,7 @@ function buildViewsColumns(){
 
 	// handle remaining unsorted fields (not defined in Prefs)
 	if(columns.length > 0){
-		view +=htmlColumnGroup('Unsorted','unsorted');
+		view +=htmlGroup('Unsorted','unsorted','view');
 		$.each(columns,function(key,arr){
 			// if(arr.field === undefined){
 			// 	return;
@@ -548,7 +564,7 @@ function applyColumnsFromFilters(){
 // Update group Icons in the columns block ------------------
 function updateColGroupIcons(){
 	myLogFunc();
-	$('.toh-colgroup').each(function(i){
+	$('.toh-viewgroup').each(function(i){
 		var total=$(this).find('.toh-col-column').length;
 		var checked=$(this).find('.toh-col-column INPUT:checked').length;
 		var icon ="";
@@ -561,7 +577,7 @@ function updateColGroupIcons(){
 		else{
 			icon='fa-regular fa-square-minus';
 		}
-		$(this).find('.toh-colgroup-title I').removeClass().addClass(icon);
+		$(this).find('.toh-viewgroup-title I').removeClass().addClass(icon);
 	});
 }
 
@@ -1459,13 +1475,13 @@ $(document).ready(function () {
 	});
 
 	//  Click: View Group ---------------------------------------------------
-	$('#toh-cols-columns-content').on('click','.toh-colgroup-title A',function(e){
+	$('#toh-cols-columns-content').on('click','.toh-viewgroup-title A',function(e){
 		myLogFunc('on Click Column Preset');
 		e.preventDefault();
 		//e.stopPropagation();
 		showLoading();
-		var checked	=$(this).parents('.toh-colgroup').find('.toh-col-column INPUT:checked').length;
-		var inputs	=$(this).parents('.toh-colgroup').find('.toh-col-column INPUT');
+		var checked	=$(this).parents('.toh-viewgroup').find('.toh-col-column INPUT:checked').length;
+		var inputs	=$(this).parents('.toh-viewgroup').find('.toh-col-column INPUT');
 		if(checked==0){
 			inputs.prop('checked', true).trigger('viewchanged');
 		}

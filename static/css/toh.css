@@ -331,8 +331,10 @@ body,
 	margin-bottom: 5px;
 }
 .toh-filters-list{
-	padding-left: 10px;
 	margin-bottom: 10px;
+}
+.toh-filters-list UL{
+	padding-left: 15px;
 }
 .toh-filters-list-multi {
   column-count: 4;
@@ -385,12 +387,11 @@ body,
 	font-weight: bold;
 }
 
-#toh-filters-features A{
-	color: #000;
-	text-decoration: none;
+.toh-filtgroup[data-group=admin] UL A{
+	color: red;
 }
 #toh-filters-features .toh-filter-admin A{
-	color: red;
+	/* color: red; */
 }
 
 #toh-filters-presets .toh-filter-title{
@@ -444,11 +445,17 @@ body,
 		column-count: 2;
 	}
 }
-.toh-cols-list A{
+.toh-group{
+	break-inside: avoid-column;
+}
+
+.toh-cols-list A,
+.toh-filters-list A{
 	color: #000;
 	text-decoration: none;
 }
-.toh-cols-list .toh-colgroup-title A{
+.toh-viewgroup-title A,
+.toh-filtgroup-title A{
 	font-size: 12px;
 	font-weight: bold;	
 	color: #888;
