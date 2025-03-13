@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Version 1.71 - 2025-03-xx
+## Version 1.71 - 2025-03-13
 
 * Don't wait for images before loading the table
 * Displays a loading overlay, until TOH data is loaded
