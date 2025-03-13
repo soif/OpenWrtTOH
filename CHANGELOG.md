@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 1.72 - 2025-xx-xx
+
+* Always shows Edit Column
+
 
 ## Version 1.71 - 2025-03-13
 

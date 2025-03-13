@@ -17,8 +17,8 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.71",	// Version
-	branch:		"prod", 		// Branch, either: 'prod' | 'dev'	
+	version:	"1.72b1",	// Version
+	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
 };
 
 // set the log level displayed in the console :
@@ -443,6 +443,13 @@ function showAndCheckColumn(col,state=true){
 	checkColumn(col,state);
 }
 
+//  Show and Check Persistent Columns ------------------------------
+function showAndCheckPersistentColumns(){
+	showAndCheckColumn('VIRT_edit');
+	showAndCheckColumn('brand');
+	showAndCheckColumn('model');
+}
+
 // Show or Hide ALL columns --------------------------------------
 function showAllColumns(bool) {
 	myLogFunc();
@@ -529,8 +536,7 @@ function applyColumnsFromFilters(){
 			$.each(fields,function(i,col){
 				showAndCheckColumn(col);
 			});
-			showAndCheckColumn('brand');
-			showAndCheckColumn('model');
+			showAndCheckPersistentColumns();
 		}
 		else if(opt=='repl'){
 			setPresetSelectedClass('columns','custom');
@@ -539,8 +545,7 @@ function applyColumnsFromFilters(){
 			$.each(fields,function(i,col){
 				showAndCheckColumn(col);
 			});
-			showAndCheckColumn('brand');
-			showAndCheckColumn('model');
+			showAndCheckPersistentColumns();
 		}
 	},0);
 }
