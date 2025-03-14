@@ -712,11 +712,16 @@ A.toh-but:hover,
 
 /* Overrides for "branch-dev" BODY class ############################################################# */
 BODY.branch-dev #toh-header,
-BODY.branch-dev #toh-footer{
-	background-color: #555;
+BODY.branch-dev #toh-footer,
+BODY.branch-dev #toh-load-overlay{
 	background: rgb(150, 0, 255);
-
-	color: #fff;
+	background: repeating-linear-gradient(
+		-45deg,
+		rgb(0, 163, 225) 0px,
+		rgb(0, 163, 225) 15px,
+		rgb(2, 169, 236) 15px,
+		rgb(2, 169, 236) 30px
+	);
 }
 BODY.branch-dev #toh-header .badge{
 	display: inline-block;
