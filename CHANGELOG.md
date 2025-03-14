@@ -3,7 +3,7 @@
 ## Version 1.72 - 2025-xx-xx
 
 * Displays Features Filters by Groups
-* Always shows Edit Column #25
+* Always shows Edit Column
 
 
 ## Version 1.71 - 2025-03-13
