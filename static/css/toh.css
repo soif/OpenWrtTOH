@@ -526,7 +526,7 @@ A.toh-but:hover{
 /* Table ------------------------------------------------------ */
 
 #toh-table-container{
-	/* height: 867px; */
+	height: 860px;
 }
 
 #toh-table.tabulator {

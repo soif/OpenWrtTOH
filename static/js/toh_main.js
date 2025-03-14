@@ -17,7 +17,7 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.72b2",	// Version
+	version:	"1.72b3",	// Version
 	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
 };
 
@@ -1666,11 +1666,26 @@ $(document).ready(function () {
 		}
 	});
 
+
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
 	tabuTable.on("dataSorted", function(sorters, rows){
 		toggleSortClearButVisibility();
 	});
 	
+
+	// change table container size depending on pageSize ---------------------------------
+	tabuTable.on("pageSizeChanged", function(size){
+        const h_head=53;
+		const h_scroll=21;
+		const h_foot=37;
+		const h_line=25;
+		const height= h_head + h_scroll + h_foot + (h_line * size);
+		myLogStr('Page Size: '+size+' , Height: '+height);
+		if(toh_table_inited){
+			myLogStr('Resize table height to: '+height);
+			$('#toh-table-container').height(height);
+		}
+	});
 
 
 });
