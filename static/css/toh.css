@@ -1,6 +1,3 @@
-/* @override 
-	http://src.dev.lo.lo/OpenWrtTOH/src/www/static/css/toh.css */
-
 /* #####################################################################################################
 ##### Enclosing Page ###################################################################################
 ######################################################################################################## */
@@ -16,13 +13,15 @@ html, body {
 } 
 
 
+/* Layout --------------------------------------------------- */
 
-/* Layout ------------------------------ */
 #toh-page{
 	background-color: rgb(245, 245, 245);
 }
 
-/* Header ------------------------------  */
+
+/* Header --------------------------------------------------  */
+
 #toh-header{
 	height: 64px;
 	background: rgb(0, 163, 225);
@@ -69,7 +68,8 @@ html, body {
 	font-style: normal;
 }
 
-/* Footer ----------------------------------------  */
+
+/* Footer --------------------------------------------------  */
 
 #toh-footer{
 	border-top: 1px solid #777;
@@ -87,7 +87,7 @@ body,
 }
 
 
-/* Page content -----------------------------------  */
+/* Page content --------------------------------------------  */
 
 .toh-box{
 	border-color: #ccc;
@@ -113,6 +113,10 @@ body,
 	padding: 1px 10px 10px 10px;
 	font-size: 13px;
 }
+
+
+/* Tips ------------------------------------------------------*/
+
 #toh-tips{
 	margin-top: 10px;
 }
@@ -135,6 +139,9 @@ body,
 		column-count: 1;
 	}
 }
+
+
+/* ChangeLog -------------------------------------------------*/
 
 #toh-changelog{
 	margin-top: 20px;
@@ -184,7 +191,8 @@ body,
 ######################################################################################################## */
 
 
-/* ---------------------------------------------------------- */
+/* Global --------------------------------------------------- */
+
 #toh-loading{
 	font-size: 2em;
 	top: 10px;
@@ -197,7 +205,9 @@ body,
 	display: none;
 }
 
+
 /* Top sections ------------------------------------------------*/
+
 #toh-top{
     margin-bottom: 10px;
 }
@@ -230,7 +240,8 @@ body,
 	margin-right: 5px;
 }
 
-/* Top Menus ---------------------------- */
+
+/* Top Menus ------------------------------------------------ */
 
 .toh-top-title-presets A{
 	display: inline-block;
@@ -271,7 +282,9 @@ body,
 	color: #000;
 }
 
-/* upreset popup -------------------------*/
+
+/* User Preset Popup -----------------------------------------*/
+
 #toh-upreset-popup-save{
 	position: absolute;
 	background-color: #f9f9ff;
@@ -286,12 +299,13 @@ body,
 	margin-top: 2px;
 	margin-bottom: 5px;
 }
-}
+
 #toh-upreset-popup-save BUTTON{
 	background-color: #fff;
 }
 
-/* Top Filters ---------------------------- */
+
+/* Top Filters ---------------------------------------------- */
 
 #toh-filters-options{
 	float: right;
@@ -399,10 +413,12 @@ body,
 
 
 
-/* Top Views ---------------------------- */
+/* Top Views ------------------------------------------------ */
+
 /* #toh-views{
 	margin-bottom: 10px;
 } */
+
 #toh-cols-title .toh-title{
 	border-right: 1px solid #ddd;
 }
@@ -456,7 +472,9 @@ body,
 	text-decoration: none;
 }
 
-/* Top Buttons ---------------------------- */
+
+/* Top Buttons ---------------------------------------------- */
+
 #toh-top-buttons{
 	min-height: 22px;
 	/* overflow: hidden; */
@@ -490,12 +508,12 @@ A.toh-but:hover{
 
 
 
-
 /* #####################################################################################################
 ##### Tabulator TABLE ##################################################################################
 ######################################################################################################## */
 
-/* Cells Formatters ------------------------------------------- */
+/* Cells Formatters ----------------------------------------- */
+
 #toh-table .tabulator-cell .fa-question.dash{
 	opacity: 0.5;
 }
@@ -510,7 +528,8 @@ A.toh-but:hover{
 	opacity: 0.5;
 }
 
-/* Image Preview ---------------------------------------------- */
+/* Image Preview -------------------------------------------- */
+
 #toh-image-preview {
 	position: absolute;
     display: none;
@@ -525,7 +544,8 @@ A.toh-but:hover{
     display: block;
 }
 
-/* Table ------------------------------------------------------ */
+
+/* Table ---------------------------------------------------- */
 
 #toh-table{
 	border: 0;
@@ -551,8 +571,8 @@ A.toh-but:hover{
 }
 
 
+/* Table column headers ------------------------------------- */
 
-/* Table column headers --------------------------------------- */
 #toh-table .tabulator-header{
 	background-color: #f5f5f5;
 }
@@ -565,7 +585,8 @@ A.toh-but:hover{
 	), #e0e0e0;
 }
 
-/* Header filter ------------------------------------------------- */
+
+/* Header filter -------------------------------------------- */
 
 #toh-table .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title {	
 	text-overflow: clip ;
@@ -595,7 +616,8 @@ A.toh-but:hover{
 }
 
 
-/* Footer ------------------------------------------------- */
+/* Footer --------------------------------------------------- */
+
 #toh-table.tabulator .tabulator-footer{
 	background-color: #fff;
 }
@@ -614,13 +636,15 @@ A.toh-but:hover{
 }
 
 
+/* VIRT_edit column  ---------------------------------------- */
 
-/* VIRT_edit column  ---------------------------------------------------------- */
 .tabulator-col[tabulator-field="VIRT_edit"] .tabulator-col-title{
 	display: none;
 }
 
-/* Cell Popup Details ------------------------------------------- */  
+
+/* Cell Popup Details --------------------------------------- */  
+
 .tabulator-popup-container{
 	border-color: #ccc ;
 	padding: 0;
@@ -652,7 +676,11 @@ A.toh-but:hover{
 	word-break: break-all;
 }
 
-/* Colors ------------------------------------------- */  
+
+
+
+/* Colors ################################################################################################ */  
+
 .toh-top-title-presets A{
 	color: #888;
 }
@@ -743,6 +771,7 @@ A.toh-but:hover,
 
 
 /* Overrides for "branch-dev" BODY class ############################################################# */
+
 BODY.branch-dev #toh-header,
 BODY.branch-dev #toh-footer,
 BODY.branch-dev #toh-load-overlay{
@@ -760,7 +789,10 @@ BODY.branch-dev #toh-header .badge{
 	background-color: #F00;
 }
 
-/* Mobile Fixes ############################################################# */
+
+
+/* Mobile Fixes ####################################################################################### */
+
 @media screen and (max-width: 760px) {
 	#toh-header{
 		height: 38px;
