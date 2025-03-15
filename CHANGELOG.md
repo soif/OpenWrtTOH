@@ -2,6 +2,7 @@
 
 ## Version 1.72 - 2025-xx-xx
 
+* Shows spinner icon when changing pagination
 * Highlights current page (in pagination)
 * Prevents page scroll when using pagination
 * Displays Features Filters by Groups

@@ -17,7 +17,7 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.72b4",	// Version
+	version:	"1.72b5",	// Version
 	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
 };
 
@@ -1217,7 +1217,9 @@ $(document).ready(function () {
 
 	// Bind to the custom event
 	$(document).on('table-change-complete', function() {
+		myLogStr('EVENT: table-change-complete');
 		hideLoading();
+		tableLoadingHide();
 	});
 	
 
@@ -1656,21 +1658,21 @@ $(document).ready(function () {
 
 	// Update the counter when 'dataFiltered' event is REALLY finished --------------------
 	tabuTable.on("renderComplete", function(){
+		myLogStr('EVENT: table-change-complete', 4);
 		UpdateCount();
-
 	});
-	
 
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
 	tabuTable.on("columnVisibilityChanged", function(column, visible){
+		myLogStr('EVENT: columnVisibilityChanged', 4);
 		if(toh_table_inited){
 			buildBrowserUrl();
 		}
 	});
 
-
 	// Resfresh column color on header-filter INPUT' blur ---------------------------------
 	tabuTable.on("dataSorted", function(sorters, rows){
+		myLogStr('EVENT: dataSorted', 4);
 		toggleSortClearButVisibility();
 	});
 	
@@ -1680,9 +1682,10 @@ $(document).ready(function () {
 	document.addEventListener("change", function (e) {
 		if (e.target.matches(".tabulator-page-size")) {
 			e.preventDefault();
-			e.stopPropagation(); // Fixed typo
+			e.stopPropagation();
 
 			myLogStr('EVENT: pageSizeChange');
+			tableLoadingShow();
 			const size = e.target.value; // Get the selected value from the <select> element
 			const h_head = 53;
 			const h_scroll = 16;
@@ -1697,13 +1700,14 @@ $(document).ready(function () {
 
 			if (toh_table_inited) { // we dont need it when page loads
 				showLoading();
-				myLogStr('Table Set height: ' + height_c,2);
-				$('#toh-table-container').height(height_c);
-
-				//myLogStr('Tabulator Set pagesize ' + size);
-				tabuTable.setPageSize(size == "true" ? true : size);
-				tabuTable.setPage(1);
-
+	
+				setTimeout(() => {
+					myLogStr('Table Set height: ' + height_c,2);
+					$('#toh-table-container').height(height_c);
+					//myLogStr('Tabulator Set pagesize ' + size);
+					tabuTable.setPageSize(size == "true" ? true : size);
+					tabuTable.setPage(1);
+				}, 50);
 			}
 		}
 	}, { capture: true });
@@ -1721,6 +1725,54 @@ $(document).ready(function () {
 			tabuTable.redraw();
 		}
 	});
+
+
+	// handles Loading icon when changing pages, pageSize -------------------------------------------------------------------
+	var toh_loading_class="toh-table-loading";
+	// insert spinner icon div
+	tabuTable.on("tableBuilt", function(){
+		myLogStr('EVENT: tableBuilt',1);
+		$('.tabulator-paginator LABEL').before('<span class="'+toh_loading_class+'" toh-hidden"><i class="fa-solid fa-arrows-rotate fa-spin"></i> </span>');
+	});	
+
+	// Intercept click in capture phase
+	document.addEventListener("click", function(e) {
+		if ($(e.target).hasClass("tabulator-page")) {
+			e.preventDefault();
+			e.stopPropagation();
+			var pageNumber = $(e.target).attr("data-page");
+			myLogStr('EVENT: Page button clicked: ' + pageNumber);
+
+			tableLoadingShow();
+
+			// Defer setPage to allow repaint
+			setTimeout(() => {
+				myLogStr('Set page: ' + pageNumber);
+				tabuTable.setPage(pageNumber);
+			}, 50);
+		}
+	}, { capture: true });
+
+	function tableLoadingShow(){
+		const el = $('.'+toh_loading_class);
+		if (el.length === 0) {
+			return;
+		}
+		el.css({
+			'display': 'inline-block',
+			'visibility': 'visible'
+		});
+		el[0].offsetHeight; // Force immediate repaint
+		//myLogStr('->tableLoadingShow');
+	}
+
+	function tableLoadingHide(){
+		const el = $('.'+toh_loading_class);
+		if (el.length === 0) {
+			return;
+		}
+		el.css('display', 'none');
+	}
 
 
 });

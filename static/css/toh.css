@@ -605,6 +605,14 @@ A.toh-but:hover{
 	background-color: #f0f0f5;
 }
 
+.toh-table-loading {
+	position: relative;
+	margin-right: 10px;
+	vertical-align: middle;
+	color: #000;
+	font-size: 14px;
+}
+
 
 
 /* VIRT_edit column  ---------------------------------------------------------- */
