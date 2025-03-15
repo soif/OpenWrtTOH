@@ -35,10 +35,10 @@ html, body {
 
 #toh-header-logo{
 	float: left;
-	margin: 6px 30px 0 26px;
 }
 #toh-header-logo IMG{
 	height:48px;
+	margin: 6px 30px 0 26px;
 }
 #toh-header-title{
 	height: 64px;
@@ -760,4 +760,35 @@ BODY.branch-dev #toh-header .badge{
 	background-color: #F00;
 }
 
-
+/* Mobile Fixes ############################################################# */
+@media screen and (max-width: 760px) {
+	#toh-header{
+		height: 38px;
+		overflow: hidden;
+	}
+	#toh-header-title,
+	#toh-header h1,
+	#toh-header-count{
+		line-height: 38px;
+	}
+	#toh-header-logo{
+		width: 29px;
+		overflow: hidden;
+	}
+	#toh-header-logo IMG {
+		height: 26px;
+		margin: 5px 10px 0 7px ;
+	}
+	#toh-header h1 {
+		/* margin-top: 2px; */
+		padding-left: 40px;
+		font-size: 1em;
+	}
+	#toh-header-title .badge{
+		font-size: 9px;
+		padding: 2px 5px;
+	}
+	#toh-header-count{
+		font-size: 0.7em;
+	}
+}
