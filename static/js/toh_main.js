@@ -17,7 +17,7 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.72b3",	// Version
+	version:	"1.72b4",	// Version
 	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
 };
 
@@ -27,7 +27,7 @@ const toh_app={
 // 2=debug
 // 3=verbose
 // 4=more verbose
-var toh_debug_level=1; 
+var toh_debug_level=2; 
 
 const toh_img_urls=[];	// holds all images urls
 
@@ -891,7 +891,7 @@ function loadCookiesAndBuildUserPresets(){
 // Log functions ###################################################################################
 
 // custom log String -----------------------------------------------------
-function myLogStr(line=null, level=3, is_title=false) { // levels: 1=info, 2=debug, 3=verbose, 4=full
+function myLogStr(line=null, level=2, is_title=false) { // levels: 1=info, 2=debug, 3=verbose, 4=full
 
 	if(level > toh_debug_level){
 		return;
@@ -1650,12 +1650,14 @@ $(document).ready(function () {
 		if(toh_table_inited){
 			buildBrowserUrl();
 		}
+
 	});
 
 
 	// Update the counter when 'dataFiltered' event is REALLY finished --------------------
 	tabuTable.on("renderComplete", function(){
 		UpdateCount();
+
 	});
 	
 
@@ -1672,18 +1674,51 @@ $(document).ready(function () {
 		toggleSortClearButVisibility();
 	});
 	
+	// Overrides Tabulator pageSizeChange ----------------------------------------------------
+	var last_table_height=tabulatorOptions.rowHeight * tabulatorOptions.paginationSize;
 
-	// change table container size depending on pageSize ---------------------------------
-	tabuTable.on("pageSizeChanged", function(size){
-        const h_head=53;
-		const h_scroll=21;
-		const h_foot=37;
-		const h_line=25;
-		const height= h_head + h_scroll + h_foot + (h_line * size);
-		myLogStr('Page Size: '+size+' , Height: '+height);
-		if(toh_table_inited){
-			myLogStr('Resize table height to: '+height);
-			$('#toh-table-container').height(height);
+	document.addEventListener("change", function (e) {
+		if (e.target.matches(".tabulator-page-size")) {
+			e.preventDefault();
+			e.stopPropagation(); // Fixed typo
+
+			myLogStr('EVENT: pageSizeChange');
+			const size = e.target.value; // Get the selected value from the <select> element
+			const h_head = 53;
+			const h_scroll = 16;
+			const h_foot = 37;
+			const h_line = tabulatorOptions.rowHeight;
+			const height_t = h_head + h_scroll + h_foot + (h_line * size);
+			const height_c = height_t + 0; //(1  for border)
+			last_table_height = tabulatorOptions.rowHeight * size;
+			myLogStr('Page Size: ' + size + ' -> Height: ' + height_t,4);
+			myLogStr('Wanted Table Height: '+ last_table_height,4);
+
+
+			if (toh_table_inited) { // we dont need it when page loads
+				showLoading();
+				myLogStr('Table Set height: ' + height_c,2);
+				$('#toh-table-container').height(height_c);
+
+				//myLogStr('Tabulator Set pagesize ' + size);
+				tabuTable.setPageSize(size == "true" ? true : size);
+				tabuTable.setPage(1);
+
+			}
+		}
+	}, { capture: true });
+
+	// tabulator bugfix -----
+	tabuTable.on("pageLoaded", function(pageno){
+		myLogStr('EVENT: pageLoaded: '+pageno);
+		//this is needed to prevent border (rows height) being smaller (because the row height are NOT corrects)
+		//ie : change page size to 100, click page2, click page1 (bug)
+		const cur_table_height=$('.tabulator-table').height();
+		//myLogStr('Cur Table Height: '+cur_table_height);
+
+		if(toh_table_inited && cur_table_height < last_table_height -1 ){
+			myLogStr('Tabulator REDRAW HACK - Changing Height from: '+cur_table_height+' to: '+last_table_height,1);
+			tabuTable.redraw();
 		}
 	});
 

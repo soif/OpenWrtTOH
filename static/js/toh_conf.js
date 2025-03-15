@@ -39,6 +39,8 @@ let prefs={
 // options for tabulator table (tabuTable) ---------------------
 let tabulatorOptions={
 	importFormat:"array",
+	rowHeight:26,
+	maxHeight:'100%',
 	height: "100%",
 
 	pagination: true,
