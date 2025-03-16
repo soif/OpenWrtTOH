@@ -20,10 +20,12 @@ let prefs={
 	def_features: 	'',					// default Features (list ',' separated)
 	def_view: 		'normal',			// default Columns View Preset
 	def_columns: 	'',					// default Columns (list ',' separated)
+	def_show_filters: true,				// default show filters
+	def_show_views: false,				// default show columns views
 
 	p_filter:		'filter',			//name of the filter preset URL parameter
-	p_features:		'features',			//name of the features URL parameter
-	p_view:			'view',				//name of the view URL parameter
+	p_features:		'features',			//name of the filter features URL parameter
+	p_view:			'view',				//name of the columns  preset URL parameter
 	p_columns:		'columns',			//name of the columns URL parameter
 
 	cook_prefix:	'toh_',				// the cookie's prefix,

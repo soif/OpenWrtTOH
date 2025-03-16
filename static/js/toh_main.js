@@ -1031,9 +1031,17 @@ function hideLoading(){
 // Set default Filters & View -------------------------------------------
 function SetDefaults(){
 	myLogFunc();
+
 	//show presets
-	$(".toh-filters-but-toggle").trigger('click');
-	
+	if(prefs.def_show_filters){
+		$(".toh-filters-but-toggle").trigger('click');
+	}
+
+	//show views
+	if(prefs.def_show_views){
+		$(".toh-cols-but-toggle").trigger('click');
+	}
+
 	var tmp_value;
 	var tmp_arr;
 		
