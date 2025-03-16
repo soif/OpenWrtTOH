@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 1.73 - 2025-xx-xx
+
+* Smaller 'normal' (default) columns preset
+
 ## Version 1.72 - 2025-03-16
 
 * Fixes Header CSS for mobile view

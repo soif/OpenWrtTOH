@@ -759,6 +759,19 @@ let colViewPresets={
 };
 
 
+// removes some columns in the normal (groups based) preset ----
+const normal_to_remove=[
+	'switch',
+	'wlanhardware',
+	'sfp_ports',
+	'sfp_plus_ports',
+	'vlan',
+	'wlancomments',
+	'commentsnetworkports',
+	'forumsearch',
+	'fccid',
+];
+colViewPresets.normal = colViewPresets.normal.filter(item => !normal_to_remove.includes(item));
 
 
 
