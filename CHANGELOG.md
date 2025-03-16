@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 1.72 - 2025-xx-xx
+## Version 1.72 - 2025-03-16
 
 * Fixes Header CSS for mobile view
 * Shows spinner icon when changing pagination

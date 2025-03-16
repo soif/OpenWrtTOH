@@ -1,15 +1,15 @@
 /*
 	Copyright (c) 2024 Francois Dechery
 
-     This program is free software: you can redistribute it and/or modify it under the 
-	 terms of the GNU General Public License as published by the Free Software Foundation, 
-	 either version 2 of the License, or (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify it under the 
+	terms of the GNU General Public License as published by the Free Software Foundation, 
+	either version 2 of the License, or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
 	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 	See the GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License along with this program. 
+	You should have received a copy of the GNU General Public License along with this program. 
 	If not, see <https://www.gnu.org/licenses/>. 
  */
 
@@ -17,8 +17,8 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.72b6",	// Version
-	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
+	version:	"1.72",	// Version
+	branch:		"prod", 		// Branch, either: 'prod' | 'dev'	
 };
 
 // set the log level displayed in the console :
@@ -27,7 +27,7 @@ const toh_app={
 // 2=debug
 // 3=verbose
 // 4=more verbose
-var toh_debug_level=2; 
+var toh_debug_level=1; 
 
 const toh_img_urls=[];	// holds all images urls
 
@@ -1731,7 +1731,7 @@ $(document).ready(function () {
 	var toh_loading_class="toh-table-loading";
 	// insert spinner icon div
 	tabuTable.on("tableBuilt", function(){
-		myLogStr('EVENT: tableBuilt',1);
+		myLogStr('EVENT: tableBuilt');
 		$('.tabulator-paginator LABEL').before('<span class="'+toh_loading_class+'" toh-hidden"><i class="fa-solid fa-arrows-rotate fa-spin"></i> </span>');
 	});	
 
