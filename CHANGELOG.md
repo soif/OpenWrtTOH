@@ -2,6 +2,7 @@
 
 ## Version 1.73 - 2025-xx-xx
 
+* Adds Firmware Selector column
 * Smaller 'normal' (default) columns preset
 
 ## Version 1.72 - 2025-03-16

@@ -17,8 +17,8 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.72",	// Version
-	branch:		"prod", 		// Branch, either: 'prod' | 'dev'	
+	version:	"1.73b1",	// Version
+	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
 };
 
 // set the log level displayed in the console :
@@ -30,6 +30,9 @@ const toh_app={
 var toh_debug_level=1; 
 
 const toh_img_urls=[];	// holds all images urls
+
+let toh_firmwares=[]; 				// holds all releases
+let toh_firmwares_fetched=false;	// confirm if releases have been fetched
 
 // Functions for Cell Model Popup Formatter ##################################################################################
 
@@ -700,7 +703,8 @@ function buildBrowserUrl(and_update=true){
 }
 
 
-// Cookie functions ###################################################################################
+
+// Cookie functions ###################################################################################################
 
 // save a cookie ---------------------------------------------------
 function saveCookie(c_name, content, do_delete=false, type='json'){
@@ -888,7 +892,7 @@ function loadCookiesAndBuildUserPresets(){
 
 
 
-// Log functions ###################################################################################
+// Log functions ######################################################################################################
 
 // custom log String -----------------------------------------------------
 function myLogStr(line=null, level=2, is_title=false) { // levels: 1=info, 2=debug, 3=verbose, 4=full
@@ -947,7 +951,38 @@ function getCallerName() {
   }
 
 
-// Misc functions ###################################################################################
+// Misc functions #####################################################################################################
+
+async function FetchReleases() {
+	try {
+		const versionData = await $.ajax({
+			url: owrtUrls.firm_versions,
+			method: 'GET'
+		});
+		const cur_url = owrtUrls.firm_releases.replace('VERSION', versionData.stable_version);
+
+		const releaseData = await $.ajax({
+			url: cur_url,
+			method: 'GET'
+		});
+
+		toh_firmwares = releaseData.profiles;
+		toh_firmwares_fetched =true;
+	} 
+	catch (error) {
+		myLogObj(error,'Error fetching releases', 1);
+		throw error;
+	}
+}
+
+
+function GetFirmwareSelectUrl(id, target) {
+	const found= toh_firmwares.some(item => item.id == id && item.target == target);
+	if(found){
+		return owrtUrls.firm_select + '?target='+ target + "&id=" + id;
+	}
+	return false;
+}
 
 // Position the Image Preview div -------------------------------
 function positionPreview($link, $container) {
@@ -1248,56 +1283,59 @@ $(document).ready(function () {
 
 	// Fetch content and build table ----------------------------------
 	$('#toh-load-text').html('Fetching TOH devices...');
-	$.getJSON( owrtUrls.toh_json, function( data ){ 
-		//Makes columns
-		var columns = data.columns.map((value, index) => ({
-			field: value,
-			title: data.captions[index],
-			visible: false,
-			...columnStyles[value]
-		}));
+	FetchReleases().then(() => {
+		$.getJSON( owrtUrls.toh_json, function( data ){ 
+			//Makes columns
+			var columns = data.columns.map((value, index) => ({
+				field: value,
+				title: data.captions[index],
+				visible: false,
+				...columnStyles[value]
+			}));
 
-		// add vitual (not linked to existing fields) columns 
-		var virtualColumns = getVirtualColumns();
-		columns=[...columns, ...virtualColumns];
+			// add vitual (not linked to existing fields) columns 
+			var virtualColumns = getVirtualColumns();
+			columns=[...columns, ...virtualColumns];
 
-		//init table with data
-		showLoading();
-		tabuTable.setColumns(columns);
-		tabuTable.setData(data.entries).then(function(){
-			// order columns			
-			columns.sort((a, b) => {
-				const indexA = columnOrder.indexOf(a.field);
-				const indexB = columnOrder.indexOf(b.field);
-				if (indexA === -1 && indexB === -1) return 0; // Both names not in order, keep original order
-				if (indexA === -1) return 1; // a's name not in order, move to end
-				if (indexB === -1) return -1; // b's name not in order, move to end
-				return indexA - indexB;
-			});
+			//init table with data
+			showLoading();
 			tabuTable.setColumns(columns);
-	
-			// display Filters & views 
-			buildFiltersPresets();
-			buildFiltersFeatures();
-			buildViewsColumns();
-			buildViewsPresets();
-				
-			//set default views
-			SetDefaults();
+			tabuTable.setData(data.entries).then(() =>{
+				// order columns			
+				columns.sort((a, b) => {
+					const indexA = columnOrder.indexOf(a.field);
+					const indexB = columnOrder.indexOf(b.field);
+					if (indexA === -1 && indexB === -1) return 0; // Both names not in order, keep original order
+					if (indexA === -1) return 1; // a's name not in order, move to end
+					if (indexB === -1) return -1; // b's name not in order, move to end
+					return indexA - indexB;
+				});
+				tabuTable.setColumns(columns);
+		
+				// display Filters & views 
+				buildFiltersPresets();
+				buildFiltersFeatures();
+				buildViewsColumns();
+				buildViewsPresets();
+					
+				//set default views
+				SetDefaults();
 
-			loadCookiesAndBuildUserPresets();
+				loadCookiesAndBuildUserPresets();
 
-			// sort columns						
-			tabuTable.setSort([
-				{column:"model", dir:"asc"}, //then sort by this second
-				{column:"brand", dir:"asc"} //sort by this first
-			]);
+				// sort columns						
+				tabuTable.setSort([
+					{column:"model", dir:"asc"}, //then sort by this second
+					{column:"brand", dir:"asc"} //sort by this first
+				]);
 
-		}).then(function(){
-			$('#toh-load-overlay').slideUp(500);
-			PreLoadImagesCache();
-		});   
+			}).then(() =>{
+				$('#toh-load-overlay').slideUp(500);
+				PreLoadImagesCache();
+			});   
+		});
 	});
+
 
 
 	// User Presets ##########################################################################################

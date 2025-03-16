@@ -6,6 +6,9 @@
 let owrtUrls={
 	www: 			"https://openwrt.org/",
 	hwdata: 		"https://openwrt.org/toh/hwdata/",
+	firm_select: 	"https://firmware-selector.openwrt.org/",
+	firm_versions: 	"https://downloads.openwrt.org/.versions.json",
+	firm_releases: 	"https://downloads.openwrt.org/releases/VERSION/.overview.json",
 	toh_json:		"https://openwrt.org/toh.json",
 	media:			"https://openwrt.org/_media/",
 	github_commit:	"https://github.com/openwrt/openwrt/commit/",
@@ -135,6 +138,7 @@ function FormatterLinkDevice(cell, formatterParams, onRendered) {
 	} 
 	return value;
 }
+
 // --------------------------------------------------------
 function _formatHwDataUrl(deviceid){
 	const [brand, model] = deviceid.split(":");
@@ -156,6 +160,24 @@ function FormatterEditHwData(cell, formatterParams, onRendered) {
 		return '<a href="' + _formatHwDataUrl(value)  + '" target="_blank" title="'+title+'"><i class="fa-solid fa-pencil"></i></a>';
 	} 
 	return value;
+}
+
+
+// --------------------------------------------------------
+function FormatterFirmSelect(cell, formatterParams, onRendered){
+	const row		= cell.getRow().getData();
+	let [brand, id]	= row.deviceid.split(":");
+	id 				= brand + '_' + id.split('_').slice(1).join('-');
+	const target	= row.target + '/' + row.subtarget;
+	if(!toh_firmwares_fetched){
+		return '<a href="#" title="Failed to fetch firmwares"><i class="fa-solid fa-question dlerror"></i></a>';
+	}
+	const url 		= GetFirmwareSelectUrl(id, target);
+	if(url){
+		const title	= "Firmware selector page for " + row.model;
+		return '<a href="' + url  + '" target="_blank" title="'+title+'"><i class="fa-solid fa-download"></i></a>';
+	}
+	return '';
 }
 
 
@@ -549,6 +571,7 @@ let columnStyles = {
 	wlancomments:						{title: "WLAN Comments",headerTooltip: 'WLAN Comments',					width: 100,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
 	wikideviurl:						{title: "Wiki",			headerTooltip: 'Wiki Page',						width: 40,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {label: 'Wiki'}, headerFilter: false},
 
+	VIRT_firm:							{title: "Firmware",		headerTooltip: 'Firmware Selector Page',		width: 5,	hozAlign: 'center',	sorter: undefined,	frozen: false,	formatter: FormatterFirmSelect,	formatterParams: undefined,		tooltip: false, headerFilter: false, headerSort: false},
 	VIRT_hwdata:						{title: "HwData",		headerTooltip: 'HwData Page',					width: 55,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: FormatterLinkHwData,	formatterParams: undefined,		tooltip: false, headerFilter: false},
 	VIRT_edit:							{title: "Edit",			headerTooltip: 'Edit HwData Page',				width: 10,	hozAlign: 'center',	sorter: undefined,	frozen: true,	formatter: FormatterEditHwData,	formatterParams: undefined,		tooltip: false, headerFilter: false, headerSort: false},
 };
@@ -667,6 +690,7 @@ let colViewGroups={
 	downloads:{
 		name: 'Downloads',
 		fields:[
+			'VIRT_firm',
 			'firmwareopenwrtinstallurl',
 			'firmwareopenwrtupgradeurl',
 			'firmwareopenwrtsnapshotinstallurl',
@@ -709,6 +733,7 @@ let colViewPresets={
 		...colViewGroups.hardware_main.fields,
 		...colViewGroups.network.fields,
 		...colViewGroups.wifi.fields,
+		'VIRT_firm',
 		'firmwareopenwrtinstallurl',
 		'firmwareopenwrtupgradeurl',
 		...colViewGroups.links.fields,
@@ -772,6 +797,7 @@ const normal_to_remove=[
 	'fccid',
 ];
 colViewPresets.normal = colViewPresets.normal.filter(item => !normal_to_remove.includes(item));
+
 
 
 
