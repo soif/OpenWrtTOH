@@ -532,7 +532,7 @@ let columnStyles = {
 	flashmb:							{title: "Flash",		headerTooltip: 'Flash Memory (Mb)',				width: 90,	hozAlign: 'right',	sorter: SorterFlash,frozen: false,	formatter: FormatterArray,		formatterParams: undefined, headerFilter:HeaderFilterFlash, headerFilterFunc:HeaderFilterFuncFlash, headerFilterLiveFilter:false },	// , cellClick:cellDebug  , headerFilterEmptyCheck:HeaderFilterEmpty
 	forumsearch:						{title: "Forum Search",	headerTooltip: 'Forum Search',					width: 90,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined, 			headerFilter: false},	
 	gitsearch:							{title: "Git Search",	headerTooltip: 'Git Search',					width: 90,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	gpios:								{title: "GPIOs",		headerTooltip: 'GPIOs',							width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanWords,	formatterParams: undefined,		...colFilterMin},
+	gpios:								{title: "GPIOs",		headerTooltip: 'GPIOs',							width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterCleanWords,	formatterParams: undefined,		...colFilterMin},
 	installationmethods:				{title: "Inst.Method",	headerTooltip: 'Installation method(s)',		width: 90,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
 	jtag:								{title: "JTAG",			headerTooltip: 'has JTAG?',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterYesNo,		formatterParams: undefined},	
 	ledcount:							{title: "Leds",			headerTooltip: 'LED count',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanEmpty,	formatterParams: undefined,		...colFilterMin},
@@ -611,38 +611,50 @@ let colViewGroups={
 		]
 	},
 
-	hardware_ports:{
-		name: 'Hardware Ports',
+	ports:{
+		name: 'Ports',
 		fields:[
-			'bluetooth',
-			'buttoncount',
-			'detachableantennas',
-			'gpios',
-			'jtag',
-			'ledcount',
-			'modem',
-			'outdoor',
+			'audioports',
 			'phoneports',
-			'powersupply',
 			'sataports',
 			'usbports',
 			'commentsusbsataports',
-			'serial',
-			'serialconnectionvoltage',
-			'audioports',
 			'videoports',
 			'commentsavports',
+			'gpios',
+			'jtag',
+			'serial',
+			'serialconnectionvoltage',
 		]
 	},
 
-	network:{
-		name: 'Network',
+
+	features:{
+		name: 'Features',
+		fields:[
+			'bluetooth',
+			'buttoncount',
+			'ledcount',
+			'modem',
+			'outdoor',
+			'powersupply',
+		]
+	},
+
+	ethernet:{
+		name: 'Ethernet',
 		fields:[
 			'ethernet100mports',
 			'ethernet1gports',
 			'ethernet2_5gports',
 			'ethernet5gports',
 			'ethernet10gports',
+		]
+	},
+
+	network:{
+		name: 'Network',
+		fields:[
 			'sfp_ports',
 			'sfp_plus_ports',
 			'vlan',
@@ -657,7 +669,33 @@ let colViewGroups={
 			'wlan50ghz',
 			'wlan60ghz',
 			'wlan600ghz',
+			'detachableantennas',
 			'wlancomments',
+		]
+	},
+
+	downloads:{
+		name: 'Downloads',
+		fields:[
+			'VIRT_firm',
+			'firmwareopenwrtinstallurl',
+			'firmwareopenwrtupgradeurl',
+			'firmwareopenwrtsnapshotinstallurl',
+			'firmwareopenwrtsnapshotupgradeurl',
+			'firmwareoemstockurl',
+		]
+	},
+
+	links:{
+		name: 'Links',
+		fields:[
+			'devicepage',
+			'VIRT_hwdata',
+			'oemdevicehomepageurl',
+			'wikideviurl',
+			'owrt_forum_topic_url',
+			'forumsearch',
+			'fccid',
 		]
 	},
 
@@ -686,31 +724,6 @@ let colViewGroups={
 			'recoverymethods',
 			'commentrecovery',
 			'serialconnectionparameters',
-		]
-	},
-
-	downloads:{
-		name: 'Downloads',
-		fields:[
-			'VIRT_firm',
-			'firmwareopenwrtinstallurl',
-			'firmwareopenwrtupgradeurl',
-			'firmwareopenwrtsnapshotinstallurl',
-			'firmwareopenwrtsnapshotupgradeurl',
-			'firmwareoemstockurl',
-		]
-	},
-
-	links:{
-		name: 'Links',
-		fields:[
-			'devicepage',
-			'VIRT_hwdata',
-			'oemdevicehomepageurl',
-			'wikideviurl',
-			'owrt_forum_topic_url',
-			'forumsearch',
-			'fccid',
 		]
 	},
 
@@ -753,6 +766,8 @@ let colViewPresets={
 		'wlan50ghz',
 		'ethernet1gports',
 		'ethernet100mports',
+		'VIRT_firm',
+		'VIRT_hwdata',
 		'devicepage',
 		'wikideviurl',
 		'owrt_forum_topic_url',
@@ -762,22 +777,24 @@ let colViewPresets={
 	hardware:	[
 		...colViewGroups.base.fields,
 		...colViewGroups.hardware_main.fields,
-		...colViewGroups.hardware_ports.fields,
+		...colViewGroups.ports.fields,
+		...colViewGroups.features.fields,
 	],
 	network:	[
 		...colViewGroups.base.fields,
+		...colViewGroups.ethernet.fields,
 		...colViewGroups.network.fields,
 		...colViewGroups.wifi.fields,
-	],
-	software:	[
-		...colViewGroups.base.fields,
-		...colViewGroups.openwrt.fields,
-		...colViewGroups.software.fields,
 	],
 	links:	[
 		...colViewGroups.base.fields,
 		...colViewGroups.links.fields,
 		...colViewGroups.downloads.fields,
+	],
+	software:	[
+		...colViewGroups.base.fields,
+		...colViewGroups.openwrt.fields,
+		...colViewGroups.software.fields,
 	],
 	misc:	[
 		...colViewGroups.base.fields,
@@ -824,6 +841,8 @@ let colFilterGroups={
 		title:"Wifi",
 		members:[
 			'antennas',
+			'wifi_b',
+			'wifi_g',
 			'wifi_n',
 			'wifi_ac',
 			'wifi_ax',
@@ -836,6 +855,7 @@ let colFilterGroups={
 		members:[
 			'memory_minimum',
 			'memory_more',
+			'memory_confort',
 		],
 	},
 
@@ -843,9 +863,22 @@ let colFilterGroups={
 		title:"Ports",
 		members:[
 			'port_audio',
+			'gpio',
 			'port_phone',
+			'port_sata',
 			'port_usb',
 			'port_video',
+		],
+	},
+
+	features:{
+		title:"Features",
+		members:[
+			'bluetooth',
+			'modem_cellular',
+			'modem_dsl',
+			'outdoor',
+			'pci',		
 		],
 	},
 
@@ -871,14 +904,11 @@ let colFilterGroups={
 		],
 	},
 	
-	features:{
-		title:"Features",
+	misc:{
+		title:"Misc",
 		members:[
 			'available',
-			'modem_cellular',
-			'modem_dsl',
-			'outdoor',
-			'pci',
+
 		],
 	},
 
@@ -923,6 +953,16 @@ let colFilterFeatures={
 		],
 	},
 
+	bluetooth:{
+		title:		"Bluetooth",
+		description:"with bluetooth",
+		type:		"normal",
+		filters:[
+			{field:	"bluetooth", 	type:"!=",	value: null},
+			{field:	"bluetooth", 	type:"!=",	value:'-'},
+		],
+	},
+
 	eth_1g:{
 		title:		"Ethernet 1G",
 		description:"at least 1G Ethernet",
@@ -962,6 +1002,16 @@ let colFilterFeatures={
 		only: "eth",
 	},
 
+	gpio:{
+		title:		"GPIOs",
+		description:"with GPIOs",
+		type:		"normal",
+		filters:[
+			{field:	"gpios", 	type:"!=",	value: null},
+			{field:	"gpios", 	type:"!=",	value:'-'},
+		],
+	},
+
 	memory_minimum:{
 		title:		"Mini",
 		description:"at least 16MB Flash & 64MB RAM",
@@ -980,6 +1030,17 @@ let colFilterFeatures={
 		filters:[
 			{field:	"rammb", 		type:">=",		value:128},
 			{field:	"flashmb", 		type:"flash>=",		value:64},
+		],
+		only: "memory",
+	},
+
+	memory_confort:{
+		title:		"Confort",
+		description:"at least 128MB Flash & 128MB RAM",
+		type:		"normal",
+		filters:[
+			{field:	"rammb", 		type:">=",		value:128},
+			{field:	"flashmb", 		type:"flash>=",		value:128},
 		],
 		only: "memory",
 	},
@@ -1059,6 +1120,14 @@ let colFilterFeatures={
 		],
 	},
 
+	port_sata:{
+		title:		"SATA",
+		description:"with STATA port",
+		type:		"normal",
+		filters:[
+			{field:	"sataports", 	type:">=",	value:'1'},
+		],
+	},
 	port_usb:{
 		title:		"USB",
 		description:"with USB port",
@@ -1186,6 +1255,30 @@ let colFilterFeatures={
 			{field:	"vlan", 	type:"=",	value:'Yes'},
 		],
 	},
+
+
+	wifi_b:{
+		title:		"Wifi: B",
+		description:"with 802.11b (Wifi1)",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"wlan24ghz", 	type:"like",	value:'b'},
+			],
+		],
+	},
+
+	wifi_g:{
+		title:		"Wifi: G",
+		description:"with 802.11g (Wifi3)",
+		type:		"normal",
+		filters:[
+			[
+				{field:	"wlan24ghz", 	type:"like",	value:'g'},
+			],
+		],
+	},
+
 
 	wifi_n:{
 		title:		"Wifi: N",

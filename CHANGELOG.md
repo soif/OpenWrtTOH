@@ -2,6 +2,8 @@
 
 ## Version 1.73 - 2025-xx-xx
 
+* New Filters: Memory Confort, WifiB, WifiG, Bluetooth, GPIOs, SATA
+* Reorders filter groups and column views
 * Adds Firmware Selector column
 * Smaller 'normal' (default) columns preset
 
