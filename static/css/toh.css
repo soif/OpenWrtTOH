@@ -645,6 +645,43 @@ A.toh-but:hover{
 }
 
 
+/* Cells --------------------------------------- */
+#toh-table .tabulator-cell .tlink{
+	font-size: 15px;
+}
+
+.toh-spacer{
+	display: inline-block;
+	height: 1px;
+}
+
+#toh-table .tabulator-cell .toh-spacer{
+	width: 1px;
+}
+
+A.tlink I{
+	margin-right: 1px;
+}
+
+A.tlink.firmwareopenwrtinstallurl,
+A.tlink.firmwareopenwrtsnapshotinstallurl{
+	color: rgb(217, 0, 0);
+}
+
+A.tlink.firmwareopenwrtupgradeurl,
+A.tlink.firmwareopenwrtsnapshotupgradeurl{
+	color: rgb(0, 154, 0);
+}
+
+A.tlink.firmwareoemstockurl{
+	color: rgb(243, 0, 223);
+}
+
+A.tlink.VIRT_firm{
+	color:rgb(0, 163, 225);
+}
+
+
 /* Cell Popup Details --------------------------------------- */  
 
 .tabulator-row.popup-active{
@@ -723,13 +760,13 @@ TABLE.toh-details-table{
 	padding: 1px 5px;
 	font-size: 12px;
 }
-.toh-details-table .toh-details-group-tr TD{
+.toh-details-group-tr TD{
 	color: #999;
 	font-size: 11px;
 	height: 22px;
 	vertical-align: bottom;
 }
-.toh-details-table .toh-details-key{
+.toh-details-key{
 	vertical-align: top;
 	font-weight: bold;
 	background-color: #f0f0f0;
@@ -739,11 +776,17 @@ TABLE.toh-details-table{
 	/* text-wrap: nowrap; */
 	width: 110px;
 }
-.toh-details-table .toh-details-value{
+.toh-details-value{
 	word-break: break-all;
 }
-
-
+.toh-details-value I{
+	font-size: 14px;
+}
+.toh-details-value .toh-spacer{
+	width: 14px;
+	height: 3px;
+	display: block;
+}
 
 
 /* Colors ################################################################################################ */  
