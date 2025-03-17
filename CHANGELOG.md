@@ -2,6 +2,7 @@
 
 ## Version 1.73 - 2025-xx-xx
 
+* Better Details View Popup: use formatters + close button + fixes bugs + Enhanced CSS
 * New Filters: Memory Confort, WifiB, WifiG, Bluetooth, GPIOs, SATA
 * Reorders filter groups and column views
 * Adds Firmware Selector column

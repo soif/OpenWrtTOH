@@ -82,35 +82,108 @@ let tabulatorOptions={
 // Because these functions are referenced in the next colums definitions, we have to declare them first ###################################
 // ########################################################################################################################################
 
-
 // Cell Model Popup Formatter ###########################################################################################
-var cellModelPopupFormatter = function(e, cell, onRendered){
-	var data 	= cell.getData();
-	var col={};
-	var value='';
-	var done=false;
-	var contents = "<table class='toh-popup-details-table'>";
+var cellModelPopupFormatter = function(e, cell, onRendered) {
+	// Build initial popup HTML structure with brand and model title
+	var data = cell.getData();
+	var contents = "<div class='toh-details-border'>" +
+		"<div class='toh-details-head'>" +
+			"<b class='toth-details-title'>" + data.brand + " - " + data.model + "</b>" +
+			"<div class='toh-details-close'><i class='fa fa-solid fa-circle-xmark'></i></div>" +
+		"</div>" +
+		"<div class='toh-details-content'>";
 
-	$.each(colViewGroups,function(key,obj){
-		$.each(obj.fields,function(f,field){
-			col		= getMyColumnDefinition(field);
-			value	=data[field];
-			if(value == null || value == '-' || value == ''){
-				//value='';
-				return true; // continue
+	// Map column fields to their definitions for quick lookup
+	var columns = cell.getTable().getColumns();
+	var columnMap = {};
+	columns.forEach(col => columnMap[col.getField()] = col);
+
+	// Iterate through column groups, excluding 'base'
+	const { base, ...myColGroups } = colViewGroups;
+	$.each(myColGroups, function(key, obj) {
+		var done = false;
+		$.each(obj.fields, function(f, field) {
+			// Get column definition and raw value
+			var col = getMyColumnDefinition(field);
+			var value = data[field];
+			var formatter = (columnMap[field] || { getDefinition: () => col }).getDefinition().formatter || ((cell) => cell.getValue());
+
+			// Apply formatter (assumes custom formatters; built-ins need lookupFormatter)
+			var formattedValue = typeof formatter === "function" ?
+				formatter({
+					getValue: () => value,
+					getField: () => field,
+					getRow: () => cell.getRow(),
+					getColumn: () => columnMap[field],
+					getElement: () => document.createElement("div")
+				}, col.formatterParams) :
+				value;
+
+			// Convert to string, skip if empty or null
+			formattedValue = formattedValue instanceof Node ? formattedValue.outerHTML : String(formattedValue);
+			
+			// exclude empty fields
+			if (!formattedValue || formattedValue === 'null' || formattedValue === '-') return true;
+
+			if (!done) {
+				contents += "<table class='toh-details-table'><tr class='toh-details-group-tr'><td colspan=2>" + obj.name + "</td></tr>";
+				done = true;
 			}
-			if(!done){
-				contents +='<tr class="toh-popup-group-tr"><td colspan=2>'+obj.name+'</td></tr>';
-				done=true;
-			}
-			contents +='<tr><td class="toh-popup-key">'+col.f_title+'</td><td class="toh-popup-value">'+formatLinkToHtml(value)+'</td></tr>';
+			contents += "<tr><td class='toh-details-key'>" + col.title + "</td><td class='toh-details-value'>" + formattedValue + "</td></tr>";
 		});
-		done=false;
+		if (done) contents += "</table>";
 	});
 
-	contents += "</table>";
-	return contents;
+	contents += "</div></div><div class='toh-details-bottom'></div>";
+
+	// Create popup element
+	var popup = document.createElement("div");
+	popup.className = "toh-details-container";
+	popup.innerHTML = contents;
+	popup.style.opacity = 0;
+
+
+	// Get the row element to manage its class
+	var row = cell.getRow();
+	var rowElement = row.getElement();
+
+	// Manage body overflow during popup display
+	var originalOverflowY = document.body.style.overflowY || getComputedStyle(document.body).overflowY;
+	document.body.style.overflowY = "hidden";
+
+	// Position popup after rendering
+	onRendered(() => {
+		setTimeout(() => {
+			//Add class to the row when popup is shown
+			rowElement.classList.add("popup-active");
+	
+			var leftPosition = Math.min(46, window.innerWidth - popup.offsetWidth - 10);
+			popup.style.left = leftPosition + "px";
+			popup.style.right = "auto";
+			popup.style.top = e.clientY + "px";
+			popup.style.opacity = 1;
+
+			// Close button handler
+			popup.querySelector(".toh-details-close").addEventListener("click", () => {
+				if (popup.parentNode) popup.parentNode.removeChild(popup);
+				document.body.style.overflowY = originalOverflowY;
+				rowElement.classList.remove("popup-active");			});
+		}, 0);
+	});
+
+	// Restore overflow when popup is removed
+	var observer = new MutationObserver((mutations) => {
+		if (!document.body.contains(popup)) {
+			document.body.style.overflowY = originalOverflowY;
+			rowElement.classList.remove("popup-active");
+			observer.disconnect();
+		}
+	});
+	observer.observe(document.body, { childList: true, subtree: true });
+
+	return popup;
 };
+
 
 // Columns Formatters ###############################################################################################################
 // --------------------------------------------------------
