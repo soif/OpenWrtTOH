@@ -84,510 +84,54 @@ let tabulatorOptions={
 // Because these functions are referenced in the next colums definitions, we have to declare them first ###################################
 // ########################################################################################################################################
 
-// Cell Model Popup Formatter ###########################################################################################
-var cellModelPopupFormatter = function(e, cell, onRendered) {
-	// Build initial popup HTML structure with brand and model title
-	var data = cell.getData();
-	var contents = "<div class='toh-details-border'>" +
-		"<div class='toh-details-head'>" +
-			"<b class='toth-details-title'>" + data.brand + " - " + data.model + "</b>" +
-			"<div class='toh-details-close'><i class='fa fa-solid fa-circle-xmark'></i></div>" +
-		"</div>" +
-		"<div class='toh-details-content'>";
-
-	// Map column fields to their definitions for quick lookup
-	var columns = cell.getTable().getColumns();
-	var columnMap = {};
-	columns.forEach(col => columnMap[col.getField()] = col);
-
-	// Iterate through column groups, excluding 'base'
-	const { base, ...myColGroups } = colViewGroups;
-	$.each(myColGroups, function(key, obj) {
-		var done = false;
-		$.each(obj.fields, function(f, field) {
-			// Get column definition and raw value
-			var col = getMyColumnDefinition(field);
-			var value = data[field];
-			var formatter = (columnMap[field] || { getDefinition: () => col }).getDefinition().formatter || ((cell) => cell.getValue());
-
-			if(col.formatterParams){
-				col.formatterParams.label = col.formatterParams.ttip;
-				col.formatterParams.short =true;
-			}	
-
-			// Apply formatter (assumes custom formatters; built-ins need lookupFormatter)
-			var formattedValue = typeof formatter === "function" ?
-				formatter({
-					getValue: () => value,
-					getField: () => field,
-					getRow: () => cell.getRow(),
-					getColumn: () => columnMap[field],
-					getElement: () => document.createElement("div")
-				}, col.formatterParams) :
-				value;
-
-			// Convert to string, skip if empty or null
-			formattedValue = formattedValue instanceof Node ? formattedValue.outerHTML : String(formattedValue);
-			
-			// exclude empty fields
-			if (!formattedValue || formattedValue === 'null' || formattedValue === '-') return true;
-
-			if (!done) {
-				contents += "<table class='toh-details-table'><tr class='toh-details-group-tr'><td colspan=2>" + obj.name + "</td></tr>";
-				done = true;
-			}
-			contents += "<tr><td class='toh-details-key'>" + col.title + "</td><td class='toh-details-value'>" + formattedValue + "</td></tr>";
-		});
-		if (done) contents += "</table>";
-	});
-
-	contents += "</div></div><div class='toh-details-bottom'></div>";
-
-	// Create popup element
-	var popup = document.createElement("div");
-	popup.className = "toh-details-container";
-	popup.innerHTML = contents;
-	popup.style.opacity = 0;
-
-
-	// Get the row element to manage its class
-	var row = cell.getRow();
-	var rowElement = row.getElement();
-
-	// Manage body overflow during popup display
-	var originalOverflowY = document.body.style.overflowY || getComputedStyle(document.body).overflowY;
-	document.body.style.overflowY = "hidden";
-
-	// Position popup after rendering
-	onRendered(() => {
-		setTimeout(() => {
-			//Add class to the row when popup is shown
-			rowElement.classList.add("popup-active");
-	
-			var leftPosition = Math.min(46, window.innerWidth - popup.offsetWidth - 10);
-			popup.style.left = leftPosition + "px";
-			popup.style.right = "auto";
-			popup.style.top = e.clientY + "px";
-			popup.style.opacity = 1;
-
-			// Close button handler
-			popup.querySelector(".toh-details-close").addEventListener("click", () => {
-				if (popup.parentNode) popup.parentNode.removeChild(popup);
-				document.body.style.overflowY = originalOverflowY;
-				rowElement.classList.remove("popup-active");			});
-		}, 0);
-	});
-
-	// Restore overflow when popup is removed
-	var observer = new MutationObserver((mutations) => {
-		if (!document.body.contains(popup)) {
-			document.body.style.overflowY = originalOverflowY;
-			rowElement.classList.remove("popup-active");
-			observer.disconnect();
-		}
-	});
-	observer.observe(document.body, { childList: true, subtree: true });
-
-	return popup;
-};
-
-
-// Columns Formatters ###############################################################################################################
-
-// --------------------------------------------------------
-function FormatterLink(cell, params, onRendered) {
-	let		url		= params.url !=null ? params.url : cell.getValue();
-	const	field	= cell.getField();
-	const	row		= cell.getRow().getData();
-	
-	let 	device	=' ('+row.brand+' '+row.model+')';
-	if(params.short){
-		device='';
-	}
-
-	//specific Links
-	if(field=='devicepage'){
-		url= url ? owrtUrls.www + url.replace(/:/g,'/') : '';
-	}
-	else if(field=='VIRT_hwdata'){
-		const devid=cell.getRow().getData().deviceid;
-		url= devid ? _maketHwDataUrl(devid) : '';
-	}
-	else if(field=='VIRT_firm'){
-		let [brand, id]	= row.deviceid.split(":");
-		id 				= brand + '_' + id.split('_').slice(1).join('-');
-		const target	= row.target + '/' + row.subtarget;
-		if(!toh_firmwares_fetched){
-			return '<a href="#" title="Failed to fetch firmwares"><i class="fa-solid fa-question dlerror"></i></a>';
-		}
-		url 		= GetFirmwareSelectUrl(id, target);
-	}
-
-
-	if (url && url.length > 0) {
-		const prefix= params.prefix !=null ? params.prefix : '';
-		const ttip = params.ttip !=null ? params.ttip+device : '';
-		const label= params.label !=null ? params.label : '';
-		const icon = params.icon !=null ? '<i class="fa-fw '+params.icon+'"></i> ' : '';
-		return '<a href="' + prefix+url + '" target="_blank" title="'+ttip+'" class="tlink '+field+'">' + icon + label + '</a>'
-	} 
-	return '';
-}
-
-// --------------------------------------------------------
-function FormatterLinkCommit(cell, params={}, onRendered) {
-	const value = cell.getValue();
-	if (value && value.length > 0) {
-		var html ='';
-		const label=params.label;
-		const commit=value.replace(/.*?;h=/g,'');
-
-		params.icon='fa-solid fa-code-commit';
-		params.ttip='Origin Commit';
-		if(label){params.label=params.ttip;}
-		params.ttip +=" "+commit;
-		params.url=value;
-		html +=FormatterLink(cell, params, onRendered);
-
-		html +="<span class='toh-spacer'></span>";
-
-		params.icon='fa-brands fa-github';
-		params.ttip='Github Commit';
-		if(label){params.label=params.ttip;}
-		params.ttip +=" "+commit;
-		params.url=owrtUrls.github_commit + commit;
-		html +=FormatterLink(cell, params, onRendered);
-
-		return html;
-	} 
-	return '';
-}
-
-// --------------------------------------------------------
-function _maketHwDataUrl(deviceid){
-	const [brand, model] = deviceid.split(":");
-	return owrtUrls.hwdata + brand + '/' + model;
-}
-
-// --------------------------------------------------------
-function FormatterEditHwData(cell, formatterParams, onRendered) {
-	var value = cell.getRow().getData().deviceid;
-	var title = "Edit " + cell.getRow().getData().model;
-	if (value && value.length > 0) {
-		return '<a href="' + _maketHwDataUrl(value)  + '" target="_blank" title="'+title+'"><i class="fa-solid fa-pencil"></i></a>';
-	} 
-	return value;
-}
-
-// --------------------------------------------------------
-function FormatterImages(cell, formatterParams, onRendered) {
-	var arr = cell.getValue();
-	var url='';
-	var out='';
-	var label='';
-	if (Array.isArray(arr) && arr.length > 0) {
-		arr.forEach((value, index) => {
-			if(value.match(/^http/)){
-				url=value;
-			}
-			else{
-				value=value.replace(/:/g,'/');
-				url=owrtUrls.media + value;
-			}
-			if(value.match(/genericrouter1.png$/)){
-				label='<i class="fa-regular fa-image generic"></i>';
-			}
-			else{
-				label='<i class="fa-solid fa-image"></i>';
-			}
-			out +='<a href="' + url + '" target="_blank" class="cell-image">'+label+'</a> ';
-
-			// preload images --------
-			//const img = new Image();
-			//img.src = url;
-
-			if (!toh_img_urls.includes(url)) {
-				toh_img_urls.push(url);
-			}
-
-		});
-		return out;
-	} 
-	return arr;
-}
-
-// --------------------------------------------------------
-function FormatterCleanEmpty(cell, formatterParams, onRendered) {
-	var value = cell.getValue();
-	if (value && value.length > 0) {
-		value=value.replace(/-/g,'');
-		return value;
-	} 
-	return "";
-}
-
-// --------------------------------------------------------
-function FormatterCleanWords(cell, formatterParams, onRendered) {
-	var value = cell.getValue();
-	if (value && value.length > 0) {
-		value=value.replace(/more than/g,'&gt;'); // for GPIOs
-		value=value.replace(/Qualcomm Atheros/g,'Atheros'); //  for CPU
-		return value;
-	} 
-	return "";
-}
-
-// --------------------------------------------------------
-function FormatterArray(cell, formatterParams, onRendered) {
-	var arr = cell.getValue();
-	var out='';
-	var done=false;
-	if (Array.isArray(arr) && arr.length > 0) {
-		arr.forEach((value, index) => {
-			value=value.replace(/NAND/g,' NAND'); // for Flash
-			value=value.replace(/Qualcomm Atheros/g,'Atheros'); // for WLAN Hardware
-			if(done){
-				out +=" + ";
-			}
-			out +=value;
-			done=true;
-		});
-		return out;
-	}
-	return arr;
-}
-// --------------------------------------------------------
-function FormatterYesNo(cell, formatterParams, onRendered) {
-	var value = cell.getValue();
-	var icon='';
-	if (typeof value === "string") {
-		value=value.toLowerCase().trim();
-	}
-	if(value=='yes'){
-		icon='fa-solid fa-check';
-	}
-	else if(value=='no'){
-		icon='fa-solid fa-xmark';
-	}
-	else if(value=='-'){
-		icon='fa-solid fa-question dash';
-	}
-	else if(value==''){
-		icon='fa-solid fa-question empty';		
-	}
-	else{
-		icon='fa-solid fa-question unknown';
-	}
-	return '<i class="'+icon+'"></i>';
-}
-
-// ---------------------------------------------------------------------------------------
-function cellDebug(e, cell){
-	console.log(cell);
-	console.log(cell._cell.value);
-}
-
-// get the best value to use in sort/filter of the 'flashmb' column ----------------------
-function _getFlashArrayBestValue(arr){
-	// ignore these, just in case (because JS is SOOOOOOO sensitive)
-	if(arr == null){
-		return '';
-	}
-	if( typeof(arr) !="object" ){
-		return arr;
-	}
-
-	var target=0;	
-	// now we can walk into the array of values, without throwing a fatal error (did I ever said I love JS ?) .....
-	arr.forEach((v) => {
-		// 'microSD' or 'SD' means(?) we have Gigas available, so we rank as 128G
-		if(v.match(/microsd/i) || v.match(/^SD$/)){
-			//console.log('SD found in :'+v);
-			v=128*1024;
-		}
-		// eMMC size is unknown, but if it is alone, it maybe(?) means at least 1M(?)
-		else if(v.match(/eMMC/i) && arr.length==1){
-			v=1;
-		}
-		// else we bet on the higher array.member value. (We only keep the number, ignoring letters)
-		else{
-			v=v.replace(/[^\d]+/g,'');
-			v=Number(v);
-		}
-		// target is the highest found value
-		if(v > target){
-			target=v;
-		}
-	});
-	return target;
-}
-
-// create the 'flash>=' filter operator ----------------------------------------------
-Tabulator.extendModule("filter", "filters", {
-	"flash>=":function(filtValue, rowValue, rowData, filterParams){
-		//console.log('-----');
-		//console.log('filtValue='+filtValue+'	| rowValue='+rowValue);
-		return _getFlashArrayBestValue(rowValue) >= filtValue ? true : false;
-	}
-});
-
-// custom sorter for the 'flashmb' column----------------------------------------------
-function SorterFlash(a, b, aRow, bRow, column, dir, sorterParams){
-	var aa=_getFlashArrayBestValue(a);
-	var bb=_getFlashArrayBestValue(b);
-	//console.log(a);
-	//console.log(aa);
-	return aa - bb;
-}
-
-// Defines the custom HeaderFilter for the "flashmb" column ----------------------------
-function HeaderFilterFlash(cell, onRendered, success, cancel, editorParams){
-	var container = document.createElement("span");
-
-	//create and style inputs
-	var minimum = document.createElement("input");
-	minimum.setAttribute("type", "text");
-	minimum.style.padding	= "4px";
-	minimum.style.width		= "50%";
-	minimum.style.boxSizing = "border-box";
-	var search=minimum.cloneNode();
-	
-	minimum.setAttribute("placeholder", "Minimum");
-	search.setAttribute("placeholder", "Search");
-
-	minimum.value = cell.getValue();
-	search.value = cell.getValue();
-
-	function buildValues(){
-		success({
-			minimum:	minimum.value,
-			search:		search.value,
-		});
-		if(minimum.value=='' && search.value==''){
-			console.log('gotcha')
-			// this fixes the Tabulator Bug, who never fires the 'dataFiltered' event when emptying the field
-			tabuTable.setHeaderFilterValue('flashmb',null);
-		}	
-	}
-
-	// events ---
-	minimum.addEventListener("change",	buildValues);
-	minimum.addEventListener("blur", 	buildValues);
-	minimum.addEventListener("keyup",	buildValues); // for empty
-	//minimum.addEventListener("input",	buildValues); // for empty
-	search.addEventListener("change",	buildValues);
-	search.addEventListener("blur",		buildValues);
-	search.addEventListener("keyup",	buildValues); // for empty
-
-	container.appendChild(minimum);
-	container.appendChild(search);
-	
-	return container;
- }
-
-// Handle custom HeaderFilter's logic for the 'flashmb' colum ---------------------------------------------
-function HeaderFilterFuncFlash(headerValue, rowValue, rowData, filterParams){
-	var b_minimum=true;
-	var b_search=true;
-	//console.log('val='+rowValue);
-	var m;
-	if(headerValue =='' || headerValue==null || headerValue == undefined){
-		return true;
-	}
-	
-	if(headerValue.minimum != ""){
-		b_minimum =  _getFlashArrayBestValue(rowValue) >= headerValue.minimum;
-	}
-	if(headerValue.search != ""){
-		//console.log('---row='+rowValue);
-		b_search=false;
-		if(Array.isArray(rowValue)){
-			var reg		= new RegExp(headerValue.search,'i');
-			for (const v of rowValue) {
-				if(v !=null){
-					//console.log('v='+v);
-					m=reg.test(v);
-					console.log(m);
-					if(m){
-						b_search=true;
-						break;	
-					}
-				}
-			};
-		}
-	}
-	return b_minimum && b_search; //must return a boolean, true if it passes the filter.
-}
-
-// get a clean number from a string column----------------------------------------------
-function _getCleanNumber(rowValue,type=''){
-	if(rowValue ==null){
-		return '';
-	}
-	rowValue=rowValue.trim();
-	if(rowValue==''){
-		return '';
-	}
-
-	// if we have a sring like "64, 128, 256",  we keep the max
-	if(rowValue.match(/,/i)){
-		rowValue= rowValue.replace(/ /g,'');
-		const numbers = rowValue.split(',').map(Number);
-  		rowValue= Math.max(...numbers);
-	}
-
-	// specific to Ram column
-	if(type=='ram'){
-		if(String(rowValue).match(/[^\d]+/g)){
-			//remove letter at start
-			rowValue=rowValue.replace(/.*?(\d+)/g,'$1');
-			// do we have GB ?
-			if(rowValue.match(/[\d]+\s*GB/i)){
-				rowValue=rowValue.replace(/[^\d]+/g,'');
-				rowValue=Number(rowValue) * 1024 +1; //we add 1 to be sorted , ie for 4GB, just after 4096
-			}
-		}
-	}
-
-	// if we have letters, dont cast to number
-	if(String(rowValue).match(/[^\d]+/g)){
-		return rowValue;
-	}
-	else{
-		return Number(rowValue);
-	}
-}
-
-// custom sorter for the 'RamMb' column----------------------------------------------
-function SorterRam(a, b, aRow, bRow, column, dir, sorterParams){
-	var aa=_getCleanNumber(a,'ram');
-	var bb=_getCleanNumber(b,'ram');
-	//console.log(a);
-	//console.log(aa);
-	return Number(aa) - Number(bb);
-}
-
-// Handle custom HeaderFilter's logic for the 'RamMb' colum ---------------------------------------------
-function HeaderFilterFuncRamMb(headerValue, rowValue, rowData, filterParams){
-	//console.log(typeof(rowValue) + rowValue);
-	if(headerValue =='' || headerValue==null || headerValue == undefined){
-		return true;
-	}
-	var val=_getCleanNumber(rowValue,'ram');
-	if(val ==''){
-		return true;
-	}
-
-	// if we have something else than number, consider true;
-	if(String(val).match(/[^\d]+/g)){
-		return true;
-	}
-
-	return Number(val) >= Number(headerValue);
+function _cPopupModel(e, cell, onRendered) {
+	return CellPopupModel(e, cell, onRendered)
 }
 
 
+function _hFilterFlash(cell, onRendered, success, cancel, editorParams){
+	return HeaderFilterFlash(cell, onRendered, success, cancel, editorParams);
+}
+function _hFilFuncFlash(headerValue, rowValue, rowData, filterParams){
+	return HeaderFilterFuncFlash(headerValue, rowValue, rowData, filterParams);
+}
+function _hFilFuncRamMb(headerValue, rowValue, rowData, filterParams){
+	return HeaderFilterFuncRamMb(headerValue, rowValue, rowData, filterParams);
+}
 
+
+function _sorterFlash(a, b, aRow, bRow, column, dir, sorterParams){
+	return SorterFlash(a, b, aRow, bRow, column, dir, sorterParams);
+}
+function _sorterRam(a, b, aRow, bRow, column, dir, sorterParams){
+	return SorterRam(a, b, aRow, bRow, column, dir, sorterParams);
+}
+
+
+function _formatLink(cell, params, onRendered) {
+	return FormatterLink(cell, params, onRendered);
+}
+function _formatLinkCommit(cell, params, onRendered) {
+	return FormatterLinkCommit(cell, params, onRendered);
+}
+function _formatEditHwData(cell, formatterParams, onRendered) {
+	return FormatterEditHwData(cell, formatterParams, onRendered);
+}
+function _formatImages(cell, formatterParams, onRendered) {
+	return FormatterImages(cell, formatterParams, onRendered);
+}
+function _formatCleanEmpty(cell, formatterParams, onRendered) {
+	return FormatterCleanEmpty(cell, formatterParams, onRendered);
+}
+function _formatCleanWords(cell, formatterParams, onRendered) {
+	return FormatterCleanWords(cell, formatterParams, onRendered);
+}
+function _formatArray(cell, formatterParams, onRendered) {
+	return FormatterArray(cell, formatterParams, onRendered);
+}
+function _formatYesNo(cell, formatterParams, onRendered) {
+	return FormatterYesNo(cell, formatterParams, onRendered);
+}
 
 
 // ##########################################################################################################################################################
@@ -597,87 +141,86 @@ let colFilterMin={headerFilterPlaceholder:"Minimum", headerFilterFunc:">="};
 
 let columnStyles = {
 //	|toh field,							|Col Name				|Full Name										|width		|Horinzontal Align	|sorter type		|stay left		|formatter						|formatterParams				|misc options
-	brand:								{title: "Brand",		headerTooltip: 'Brand',							width: 100,	hozAlign: 'left',	sorter: undefined,	frozen: true,	formatter: undefined,			formatterParams: undefined,		clickPopup: cellModelPopupFormatter},
-	model:								{title: "Model",		headerTooltip: 'Model',							width: 100,	hozAlign: 'left',	sorter: undefined,	frozen: true,	formatter: undefined,			formatterParams: undefined,		clickPopup: cellModelPopupFormatter},
+    brand:								{title: "Brand",		headerTooltip: 'Brand',							width: 100,	hozAlign: 'left',	sorter: undefined,	frozen: true,	formatter: undefined,			formatterParams: undefined,		clickPopup: _cPopupModel},
+    model:								{title: "Model",		headerTooltip: 'Model',							width: 100,	hozAlign: 'left',	sorter: undefined,	frozen: true,	formatter: undefined,			formatterParams: undefined,		clickPopup: _cPopupModel},
 
-	audioports:							{title: "Audio",		headerTooltip: 'Audio Ports',					width: 80,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	availability:						{title: "Availability",	headerTooltip: 'Availability',					width: 110,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	bluetooth:							{title: "BT",			headerTooltip: 'Bluetooth version',				width: 40,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	bootloader:							{title: "Boot",			headerTooltip: 'BootLoader',					width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	buttoncount:						{title: "Butt.",		headerTooltip: 'Button count',					width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
-	cpu:								{title: "CPU",			headerTooltip: 'CPU',							width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: FormatterCleanWords,	formatterParams: undefined},
-	comments:							{title: "Comments",		headerTooltip: 'Comments',						width: 200,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	commentsavports:					{title: "AV Comments",	headerTooltip: 'AV ports Comments',				width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	commentinstallation:				{title: "Inst.Comments",headerTooltip: 'Installation Comments',			width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	commentsnetworkports:				{title: "Net Comments",	headerTooltip: 'Network ports Comments',		width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	commentrecovery:					{title: "Rec.Comments",	headerTooltip: 'Recovery Comments',				width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	commentsusbsataports:				{title: "US Comments",	headerTooltip: 'USB SATA ports Comments',		width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	cpucores:							{title: "Cores",		headerTooltip: 'CPU number of Cores',			width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
-	cpumhz:								{title: "Mhz",			headerTooltip: 'CPU Speed (MHz)',				width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
-	detachableantennas:					{title: "D.Ant.",		headerTooltip: 'Detachable Antennas',			width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	deviceid:							{title: "Device ID",	headerTooltip: 'Device ID',						width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	devicepage:							{title: "Page",			headerTooltip: 'Device Information Page',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-circle-info', ttip:'Information Page'},		headerFilter: false, tooltip: false},
-	devicetype:							{title: "Device Type",	headerTooltip: 'Device Type',					width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	ethernet100mports:					{title: "Eth 100",		headerTooltip: 'Ethernet 100M ports',			width: 52,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanEmpty,	formatterParams: undefined,		...colFilterMin},
-	ethernet1gports:					{title: "Eth 1G",		headerTooltip: 'Ethernet 1G ports',				width: 50,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanEmpty,	formatterParams: undefined,		...colFilterMin},
-	ethernet2_5gports:					{title: "Eth 2.5G",		headerTooltip: 'Ethernet 2.5G ports',			width: 60,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanEmpty,	formatterParams: undefined,		...colFilterMin},
-	ethernet5gports:					{title: "Eth 5G",		headerTooltip: 'Ethernet 5G ports',				width: 50,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanEmpty,	formatterParams: undefined,		...colFilterMin},
-	ethernet10gports:					{title: "Eth 10G",		headerTooltip: 'Ethernet 10G ports',			width: 55,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanEmpty,	formatterParams: undefined,		...colFilterMin},
-	fccid:								{title: "FCC",			headerTooltip: 'FCC ID',						width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams:  {icon: 'fa-solid fa-landmark', ttip:'FCC Search Page'},					headerFilter: false, tooltip: false},
-	firmwareoemstockurl:				{title: "Stock",		headerTooltip: 'OEM Stock Firmware',			width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-file-arrow-down', ttip:'Download Stock Firmware'},		headerFilter: false, tooltip: false},
-	firmwareopenwrtinstallurl:			{title: "Install",		headerTooltip: 'OpenWrt Firmware Install',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-download', ttip:'Download Installation Firmware'},		headerFilter: false, tooltip: false},
-	firmwareopenwrtupgradeurl:			{title: "Upgrade",		headerTooltip: 'OpenWrt Firmware Upgrade',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-download', ttip:'Download Upgrade Firmware'}, 		headerFilter: false, tooltip: false},
-	firmwareopenwrtsnapshotinstallurl:	{title: "S.Install",	headerTooltip: 'OpenWrt Snapshot Install',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-camera', ttip:'Download Installation Snapshot'},	headerFilter: false, tooltip: false},
-	firmwareopenwrtsnapshotupgradeurl:	{title: "S.Upgrade",	headerTooltip: 'OpenWrt Snapshot Upgrade',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-camera', ttip:'Download Upgrade Snapshot'},	headerFilter: false, tooltip: false},
-	flashmb:							{title: "Flash",		headerTooltip: 'Flash Memory (Mb)',				width: 90,	hozAlign: 'right',	sorter: SorterFlash,frozen: false,	formatter: FormatterArray,		formatterParams: undefined, headerFilter:HeaderFilterFlash, headerFilterFunc:HeaderFilterFuncFlash, headerFilterLiveFilter:false },	// , cellClick:cellDebug  , headerFilterEmptyCheck:HeaderFilterEmpty
-	forumsearch:						{title: "S.Forum",		headerTooltip: 'Search in Forums',				width: 40,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-regular fa-user', ttip:'Forum Search Page', prefix:owrtUrls.forum_search},	headerFilter: false, tooltip: false},	
-	gitsearch:							{title: "Git Search",	headerTooltip: 'Git Search',					width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-code', ttip:'Github Search Page', prefix:owrtUrls.git_search},	headerFilter: false, tooltip: false},	
-	gpios:								{title: "GPIOs",		headerTooltip: 'GPIOs',							width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterCleanWords,	formatterParams: undefined,		...colFilterMin},
-	installationmethods:				{title: "Inst.Method",	headerTooltip: 'Installation method(s)',		width: 90,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	jtag:								{title: "JTAG",			headerTooltip: 'has JTAG?',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterYesNo,		formatterParams: undefined},	
-	ledcount:							{title: "Leds",			headerTooltip: 'LED count',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterCleanEmpty,	formatterParams: undefined,		...colFilterMin},
-	modem:								{title: "Modem",		headerTooltip: 'Modem Type',					width: 55,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	oemdevicehomepageurl:				{title: "OEM",			headerTooltip: 'OEM Page',						width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-industry', ttip:'Manufacturer Page'}, 		headerFilter: false, tooltip: false},
-	outdoor:							{title: "OutDoor",		headerTooltip: 'OutDoor',						width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: FormatterYesNo,		formatterParams: undefined},
-	owrt_forum_topic_url:				{title: "Forum",		headerTooltip: 'Forum Topic',					width: 40,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-user', ttip:'Forum Topic Page'}, 		headerFilter: false, tooltip: false},
-	packagearchitecture:				{title: "Pkg Arch",		headerTooltip: 'Package Architecture',			width: 90,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	phoneports:							{title: "Phone",		headerTooltip: 'Phone Ports',					width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	powersupply:						{title: "Power",		headerTooltip: 'Power Supply',					width: 70,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	picture:							{title: "Image",		headerTooltip: 'Device Picture',				width: 45,	hozAlign: "center",	sorter: 'array',	frozen: false,	formatter: FormatterImages,		formatterParams: undefined,		tooltip: false},
-	rammb:								{title: "RAM",			headerTooltip: 'RAM (Mb)',						width: 40,	hozAlign: 'right',	sorter: SorterRam,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin,headerFilterFunc:HeaderFilterFuncRamMb},
-	recoverymethods:					{title: "Recovery",		headerTooltip: 'Recovery Methods',				width: 80,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	sataports:							{title: "SATA",			headerTooltip: 'SATA Ports',					width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
-	serial:								{title: "Serial",		headerTooltip: 'Serial port',					width: 45,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterYesNo,		formatterParams: undefined},	
-	serialconnectionparameters:			{title: "Serial Params.",headerTooltip: 'Serial connection parameters',	width: 90,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	serialconnectionvoltage:			{title: "S.Volt.",		headerTooltip: 'Serial connection voltage',		width: 45,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	sfp_ports:							{title: "SFP",			headerTooltip: 'SFP Ports',						width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
-	sfp_plus_ports:						{title: "SFP+",			headerTooltip: 'SFP+ Ports',					width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
-	subtarget:							{title: "S.Target",		headerTooltip: 'Sub Target',					width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	supportedcurrentrel:				{title: "C.Release",	headerTooltip: 'Supported Current Release',		width: 60,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	supportedsincecommit:				{title: "Commit",		headerTooltip: 'Supported Since Commit',		width: 54,	hozAlign: 'center',	sorter: undefined,	frozen: false,	formatter: FormatterLinkCommit,	formatterParams: {},			tooltip: false},
-	supportedsincerel:					{title: "S.Release",	headerTooltip: 'Supported Since Release',		width: 60,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	switch:								{title: "Switch",		headerTooltip: 'Switch',						width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	target:								{title: "Target",		headerTooltip: 'Target',						width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	unsupported_functions:				{title: "Unsupported",	headerTooltip: 'Unsupported Functions',			width: 85,	hozAlign: 'left',	sorter: 'array',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
-	usbports:							{title: "USB",			headerTooltip: 'USB Ports',						width: 60,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
-	version:							{title: "Version",		headerTooltip: 'Hardware Version',				width: 55,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	videoports:							{title: "Video",		headerTooltip: 'Video Ports',					width: 80,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	vlan:								{title: "VLAN",			headerTooltip: 'has VLAN?',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: FormatterYesNo,		formatterParams: undefined},
-	whereavailable:						{title: "Where to Buy",	headerTooltip: 'Where to Buy',					width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	wlandriver:							{title: "WLAN Driver",	headerTooltip: 'WLAN Driver',					width: 80,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	wlan24ghz:							{title: "2.4Ghz",		headerTooltip: 'WLAN 2.4 Ghz',					width: 55,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	wlan50ghz:							{title: "5.0Ghz",		headerTooltip: 'WLAN 5.0 Ghz',					width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	wlan60ghz:							{title: "6.0Ghz",		headerTooltip: 'WLAN 6.0 Ghz',					width: 55,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	wlan600ghz:							{title: "60Ghz",		headerTooltip: 'WLAN 60 Ghz',					width: 55,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	wlanhardware:						{title: "WLAN Hardware",headerTooltip: 'WLAN Hardware',					width: 120,	hozAlign: 'left',	sorter: 'array',	frozen: false,	formatter: FormatterArray,		formatterParams: undefined},
-	wlancomments:						{title: "WLAN Comments",headerTooltip: 'WLAN Comments',					width: 100,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
-	wikideviurl:						{title: "Wiki",			headerTooltip: 'Wiki Page',						width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-book', ttip:'Wiki Page'}, 		headerFilter: false, tooltip: false},
+    audioports:							{title: "Audio",		headerTooltip: 'Audio Ports',					width: 80,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    availability:						{title: "Availability",	headerTooltip: 'Availability',					width: 110,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    bluetooth:							{title: "BT",			headerTooltip: 'Bluetooth version',				width: 40,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    bootloader:							{title: "Boot",			headerTooltip: 'BootLoader',					width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    buttoncount:						{title: "Butt.",		headerTooltip: 'Button count',					width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
+    cpu:								{title: "CPU",			headerTooltip: 'CPU',							width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: _formatCleanWords,	formatterParams: undefined},
+    comments:							{title: "Comments",		headerTooltip: 'Comments',						width: 200,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    commentsavports:					{title: "AV Comments",	headerTooltip: 'AV ports Comments',				width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    commentinstallation:				{title: "Inst.Comments",headerTooltip: 'Installation Comments',			width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    commentsnetworkports:				{title: "Net Comments",	headerTooltip: 'Network ports Comments',		width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    commentrecovery:					{title: "Rec.Comments",	headerTooltip: 'Recovery Comments',				width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    commentsusbsataports:				{title: "US Comments",	headerTooltip: 'USB SATA ports Comments',		width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    cpucores:							{title: "Cores",		headerTooltip: 'CPU number of Cores',			width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
+    cpumhz:								{title: "Mhz",			headerTooltip: 'CPU Speed (MHz)',				width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
+    detachableantennas:					{title: "D.Ant.",		headerTooltip: 'Detachable Antennas',			width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    deviceid:							{title: "Device ID",	headerTooltip: 'Device ID',						width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    devicepage:							{title: "Page",			headerTooltip: 'Device Information Page',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-circle-info', ttip:'Information Page'},		headerFilter: false, tooltip: false},
+    devicetype:							{title: "Device Type",	headerTooltip: 'Device Type',					width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
+    ethernet100mports:					{title: "Eth 100",		headerTooltip: 'Ethernet 100M ports',			width: 52,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: _formatCleanEmpty,	formatterParams: undefined,		...colFilterMin},
+    ethernet1gports:					{title: "Eth 1G",		headerTooltip: 'Ethernet 1G ports',				width: 50,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: _formatCleanEmpty,	formatterParams: undefined,		...colFilterMin},
+    ethernet2_5gports:					{title: "Eth 2.5G",		headerTooltip: 'Ethernet 2.5G ports',			width: 60,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: _formatCleanEmpty,	formatterParams: undefined,		...colFilterMin},
+    ethernet5gports:					{title: "Eth 5G",		headerTooltip: 'Ethernet 5G ports',				width: 50,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: _formatCleanEmpty,	formatterParams: undefined,		...colFilterMin},
+    ethernet10gports:					{title: "Eth 10G",		headerTooltip: 'Ethernet 10G ports',			width: 55,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: _formatCleanEmpty,	formatterParams: undefined,		...colFilterMin},
+    fccid:								{title: "FCC",			headerTooltip: 'FCC ID',						width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams:  {icon: 'fa-solid fa-landmark', ttip:'FCC Search Page'},					headerFilter: false, tooltip: false},
+    firmwareoemstockurl:				{title: "Stock",		headerTooltip: 'OEM Stock Firmware',			width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-file-arrow-down', ttip:'Download Stock Firmware'},		headerFilter: false, tooltip: false},
+    firmwareopenwrtinstallurl:			{title: "Install",		headerTooltip: 'OpenWrt Firmware Install',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-download', ttip:'Download Installation Firmware'},		headerFilter: false, tooltip: false},
+    firmwareopenwrtupgradeurl:			{title: "Upgrade",		headerTooltip: 'OpenWrt Firmware Upgrade',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-download', ttip:'Download Upgrade Firmware'}, 		headerFilter: false, tooltip: false},
+    firmwareopenwrtsnapshotinstallurl:	{title: "S.Install",	headerTooltip: 'OpenWrt Snapshot Install',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-camera', ttip:'Download Installation Snapshot'},	headerFilter: false, tooltip: false},
+    firmwareopenwrtsnapshotupgradeurl:	{title: "S.Upgrade",	headerTooltip: 'OpenWrt Snapshot Upgrade',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-camera', ttip:'Download Upgrade Snapshot'},	headerFilter: false, tooltip: false},
+    flashmb:							{title: "Flash",		headerTooltip: 'Flash Memory (Mb)',				width: 90,	hozAlign: 'right',	sorter: _sorterFlash,frozen: false,	formatter: _formatArray,		formatterParams: undefined, headerFilter:_hFilterFlash, headerFilterFunc:_hFilFuncFlash, headerFilterLiveFilter:false },	// , cellClick:cellDebug  , headerFilterEmptyCheck:HeaderFilterEmpty
+    forumsearch:						{title: "S.Forum",		headerTooltip: 'Search in Forums',				width: 40,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-regular fa-user', ttip:'Forum Search Page', prefix:owrtUrls.forum_search},	headerFilter: false, tooltip: false},	
+    gitsearch:							{title: "Git Search",	headerTooltip: 'Git Search',					width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-code', ttip:'Github Search Page', prefix:owrtUrls.git_search},	headerFilter: false, tooltip: false},	
+    gpios:								{title: "GPIOs",		headerTooltip: 'GPIOs',							width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: _formatCleanWords,	formatterParams: undefined,		...colFilterMin},
+    installationmethods:				{title: "Inst.Method",	headerTooltip: 'Installation method(s)',		width: 90,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
+    jtag:								{title: "JTAG",			headerTooltip: 'has JTAG?',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: _formatYesNo,		formatterParams: undefined},	
+    ledcount:							{title: "Leds",			headerTooltip: 'LED count',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: _formatCleanEmpty,	formatterParams: undefined,		...colFilterMin},
+    modem:								{title: "Modem",		headerTooltip: 'Modem Type',					width: 55,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    oemdevicehomepageurl:				{title: "OEM",			headerTooltip: 'OEM Page',						width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-industry', ttip:'Manufacturer Page'}, 		headerFilter: false, tooltip: false},
+    outdoor:							{title: "OutDoor",		headerTooltip: 'OutDoor',						width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: _formatYesNo,		formatterParams: undefined},
+    owrt_forum_topic_url:				{title: "Forum",		headerTooltip: 'Forum Topic',					width: 40,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-user', ttip:'Forum Topic Page'}, 		headerFilter: false, tooltip: false},
+    packagearchitecture:				{title: "Pkg Arch",		headerTooltip: 'Package Architecture',			width: 90,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    phoneports:							{title: "Phone",		headerTooltip: 'Phone Ports',					width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    powersupply:						{title: "Power",		headerTooltip: 'Power Supply',					width: 70,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    picture:							{title: "Image",		headerTooltip: 'Device Picture',				width: 45,	hozAlign: "center",	sorter: 'array',	frozen: false,	formatter: _formatImages,		formatterParams: undefined,		tooltip: false},
+    rammb:								{title: "RAM",			headerTooltip: 'RAM (Mb)',						width: 40,	hozAlign: 'right',	sorter: _sorterRam,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin,headerFilterFunc:_hFilFuncRamMb},
+    recoverymethods:					{title: "Recovery",		headerTooltip: 'Recovery Methods',				width: 80,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
+    sataports:							{title: "SATA",			headerTooltip: 'SATA Ports',					width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
+    serial:								{title: "Serial",		headerTooltip: 'Serial port',					width: 45,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: _formatYesNo,		formatterParams: undefined},	
+    serialconnectionparameters:			{title: "Serial Params.",headerTooltip: 'Serial connection parameters',	width: 90,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
+    serialconnectionvoltage:			{title: "S.Volt.",		headerTooltip: 'Serial connection voltage',		width: 45,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
+    sfp_ports:							{title: "SFP",			headerTooltip: 'SFP Ports',						width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
+    sfp_plus_ports:						{title: "SFP+",			headerTooltip: 'SFP+ Ports',					width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
+    subtarget:							{title: "S.Target",		headerTooltip: 'Sub Target',					width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
+    supportedcurrentrel:				{title: "C.Release",	headerTooltip: 'Supported Current Release',		width: 60,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
+    supportedsincecommit:				{title: "Commit",		headerTooltip: 'Supported Since Commit',		width: 54,	hozAlign: 'center',	sorter: undefined,	frozen: false,	formatter: _formatLinkCommit,	formatterParams: {},			tooltip: false},
+    supportedsincerel:					{title: "S.Release",	headerTooltip: 'Supported Since Release',		width: 60,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
+    switch:								{title: "Switch",		headerTooltip: 'Switch',						width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
+    target:								{title: "Target",		headerTooltip: 'Target',						width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},	
+    unsupported_functions:				{title: "Unsupported",	headerTooltip: 'Unsupported Functions',			width: 85,	hozAlign: 'left',	sorter: 'array',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
+    usbports:							{title: "USB",			headerTooltip: 'USB Ports',						width: 60,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined,		...colFilterMin},
+    version:							{title: "Version",		headerTooltip: 'Hardware Version',				width: 55,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    videoports:							{title: "Video",		headerTooltip: 'Video Ports',					width: 80,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    vlan:								{title: "VLAN",			headerTooltip: 'has VLAN?',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: _formatYesNo,		formatterParams: undefined},
+    whereavailable:						{title: "Where to Buy",	headerTooltip: 'Where to Buy',					width: 120,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    wlandriver:							{title: "WLAN Driver",	headerTooltip: 'WLAN Driver',					width: 80,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    wlan24ghz:							{title: "2.4Ghz",		headerTooltip: 'WLAN 2.4 Ghz',					width: 55,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    wlan50ghz:							{title: "5.0Ghz",		headerTooltip: 'WLAN 5.0 Ghz',					width: 60,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    wlan60ghz:							{title: "6.0Ghz",		headerTooltip: 'WLAN 6.0 Ghz',					width: 55,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    wlan600ghz:							{title: "60Ghz",		headerTooltip: 'WLAN 60 Ghz',					width: 55,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    wlanhardware:						{title: "WLAN Hardware",headerTooltip: 'WLAN Hardware',					width: 120,	hozAlign: 'left',	sorter: 'array',	frozen: false,	formatter: _formatArray,		formatterParams: undefined},
+    wlancomments:						{title: "WLAN Comments",headerTooltip: 'WLAN Comments',					width: 100,	hozAlign: 'left',	sorter: undefined,	frozen: false,	formatter: undefined,			formatterParams: undefined},
+    wikideviurl:						{title: "Wiki",			headerTooltip: 'Wiki Page',						width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,			formatterParams: {icon: 'fa-solid fa-book', ttip:'Wiki Page'}, 		headerFilter: false, tooltip: false},
 
-	VIRT_firm:							{title: "Firmware",		headerTooltip: 'Firmware Selector Page',		width: 5,	hozAlign: 'center',	sorter: undefined,	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-cloud-arrow-down', ttip:'Firmware Selector Page'}, 		headerFilter: false, tooltip: false},
-	VIRT_hwdata:						{title: "HwData",		headerTooltip: 'Hardware Data Page',			width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: FormatterLink,		formatterParams: {icon: 'fa-solid fa-database', ttip:'Hardware Data Page'}, 		headerFilter: false, tooltip: false},
-	VIRT_edit:							{title: "Edit",			headerTooltip: 'Edit HwData Page',				width: 10,	hozAlign: 'center',	sorter: undefined,	frozen: true,	formatter: FormatterEditHwData,	formatterParams: undefined,		tooltip: false, headerFilter: false, headerSort: false},
+    VIRT_firm:							{title: "Firmware",		headerTooltip: 'Firmware Selector Page',		width: 5,	hozAlign: 'center',	sorter: undefined,	frozen: false,	formatter: _formatLink,			formatterParams: {icon: 'fa-solid fa-cloud-arrow-down', ttip:'Firmware Selector Page'}, 		headerFilter: false, tooltip: false},
+    VIRT_hwdata:						{title: "HwData",		headerTooltip: 'Hardware Data Page',			width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,			formatterParams: {icon: 'fa-solid fa-database', ttip:'Hardware Data Page'}, 		headerFilter: false, tooltip: false},
+    VIRT_edit:							{title: "Edit",			headerTooltip: 'Edit HwData Page',				width: 10,	hozAlign: 'center',	sorter: undefined,	frozen: true,	formatter: _formatEditHwData,	formatterParams: undefined,		tooltip: false, headerFilter: false, headerSort: false},
 };
-
 
 
 

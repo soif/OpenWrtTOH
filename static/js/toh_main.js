@@ -1822,3 +1822,531 @@ $(document).ready(function () {
 
 
 });
+
+
+
+
+
+
+
+// ########################################################################################################################
+// Tabulator Callbacks function ###########################################################################################
+// ########################################################################################################################
+
+
+
+// Tabulator: Cell Popup Formatters ##################################################################################
+function CellPopupModel(e, cell, onRendered) {
+	// Build initial popup HTML structure with brand and model title
+	var data = cell.getData();
+	var contents = "<div class='toh-details-border'>" +
+		"<div class='toh-details-head'>" +
+			"<b class='toth-details-title'>" + data.brand + " - " + data.model + "</b>" +
+			"<div class='toh-details-close'><i class='fa fa-solid fa-circle-xmark'></i></div>" +
+		"</div>" +
+		"<div class='toh-details-content'>";
+
+	// Map column fields to their definitions for quick lookup
+	var columns = cell.getTable().getColumns();
+	var columnMap = {};
+	columns.forEach(col => columnMap[col.getField()] = col);
+
+	// Iterate through column groups, excluding 'base'
+	const { base, ...myColGroups } = colViewGroups;
+	$.each(myColGroups, function(key, obj) {
+		var done = false;
+		$.each(obj.fields, function(f, field) {
+			// Get column definition and raw value
+			var col = getMyColumnDefinition(field);
+			var value = data[field];
+			var formatter = (columnMap[field] || { getDefinition: () => col }).getDefinition().formatter || ((cell) => cell.getValue());
+
+			if(col.formatterParams){
+				col.formatterParams.label = col.formatterParams.ttip;
+				col.formatterParams.short =true;
+			}	
+
+			// Apply formatter (assumes custom formatters; built-ins need lookupFormatter)
+			var formattedValue = typeof formatter === "function" ?
+				formatter({
+					getValue: () => value,
+					getField: () => field,
+					getRow: () => cell.getRow(),
+					getColumn: () => columnMap[field],
+					getElement: () => document.createElement("div")
+				}, col.formatterParams) :
+				value;
+
+			// Convert to string, skip if empty or null
+			formattedValue = formattedValue instanceof Node ? formattedValue.outerHTML : String(formattedValue);
+			
+			// exclude empty fields
+			if (!formattedValue || formattedValue === 'null' || formattedValue === '-') return true;
+
+			if (!done) {
+				contents += "<table class='toh-details-table'><tr class='toh-details-group-tr'><td colspan=2>" + obj.name + "</td></tr>";
+				done = true;
+			}
+			contents += "<tr><td class='toh-details-key'>" + col.title + "</td><td class='toh-details-value'>" + formattedValue + "</td></tr>";
+		});
+		if (done) contents += "</table>";
+	});
+
+	contents += "</div></div><div class='toh-details-bottom'></div>";
+
+	// Create popup element
+	var popup = document.createElement("div");
+	popup.className = "toh-details-container";
+	popup.innerHTML = contents;
+	popup.style.opacity = 0;
+
+
+	// Get the row element to manage its class
+	var row = cell.getRow();
+	var rowElement = row.getElement();
+
+	// Manage body overflow during popup display
+	var originalOverflowY = document.body.style.overflowY || getComputedStyle(document.body).overflowY;
+	document.body.style.overflowY = "hidden";
+
+	// Position popup after rendering
+	onRendered(() => {
+		setTimeout(() => {
+			//Add class to the row when popup is shown
+			rowElement.classList.add("popup-active");
+	
+			var leftPosition = Math.min(46, window.innerWidth - popup.offsetWidth - 10);
+			popup.style.left = leftPosition + "px";
+			popup.style.right = "auto";
+			popup.style.top = e.clientY + "px";
+			popup.style.opacity = 1;
+
+			// Close button handler
+			popup.querySelector(".toh-details-close").addEventListener("click", () => {
+				if (popup.parentNode) popup.parentNode.removeChild(popup);
+				document.body.style.overflowY = originalOverflowY;
+				rowElement.classList.remove("popup-active");			});
+		}, 0);
+	});
+
+	// Restore overflow when popup is removed
+	var observer = new MutationObserver((mutations) => {
+		if (!document.body.contains(popup)) {
+			document.body.style.overflowY = originalOverflowY;
+			rowElement.classList.remove("popup-active");
+			observer.disconnect();
+		}
+	});
+	observer.observe(document.body, { childList: true, subtree: true });
+
+	return popup;
+};
+
+
+
+// Tabulator: Columns Formatters ###############################################################################################################
+
+// --------------------------------------------------------
+function FormatterLink(cell, params, onRendered) {
+	let		url		= params.url !=null ? params.url : cell.getValue();
+	const	field	= cell.getField();
+	const	row		= cell.getRow().getData();
+	
+	let 	device	=' ('+row.brand+' '+row.model+')';
+	if(params.short){
+		device='';
+	}
+
+	//specific Links
+	if(field=='devicepage'){
+		url= url ? owrtUrls.www + url.replace(/:/g,'/') : '';
+	}
+	else if(field=='VIRT_hwdata'){
+		const devid=cell.getRow().getData().deviceid;
+		url= devid ? _maketHwDataUrl(devid) : '';
+	}
+	else if(field=='VIRT_firm'){
+		let [brand, id]	= row.deviceid.split(":");
+		id 				= brand + '_' + id.split('_').slice(1).join('-');
+		const target	= row.target + '/' + row.subtarget;
+		if(!toh_firmwares_fetched){
+			return '<a href="#" title="Failed to fetch firmwares"><i class="fa-solid fa-question dlerror"></i></a>';
+		}
+		url 		= GetFirmwareSelectUrl(id, target);
+	}
+
+
+	if (url && url.length > 0) {
+		const prefix= params.prefix !=null ? params.prefix : '';
+		const ttip = params.ttip !=null ? params.ttip+device : '';
+		const label= params.label !=null ? params.label : '';
+		const icon = params.icon !=null ? '<i class="fa-fw '+params.icon+'"></i> ' : '';
+		return '<a href="' + prefix+url + '" target="_blank" title="'+ttip+'" class="tlink '+field+'">' + icon + label + '</a>'
+	} 
+	return '';
+}
+
+// --------------------------------------------------------
+function FormatterLinkCommit(cell, params={}, onRendered) {
+	const value = cell.getValue();
+	if (value && value.length > 0) {
+		var html ='';
+		const label=params.label;
+		const commit=value.replace(/.*?;h=/g,'');
+
+		params.icon='fa-solid fa-code-commit';
+		params.ttip='Origin Commit';
+		if(label){params.label=params.ttip;}
+		params.ttip +=" "+commit;
+		params.url=value;
+		html +=FormatterLink(cell, params, onRendered);
+
+		html +="<span class='toh-spacer'></span>";
+
+		params.icon='fa-brands fa-github';
+		params.ttip='Github Commit';
+		if(label){params.label=params.ttip;}
+		params.ttip +=" "+commit;
+		params.url=owrtUrls.github_commit + commit;
+		html +=FormatterLink(cell, params, onRendered);
+
+		return html;
+	} 
+	return '';
+}
+
+
+// --------------------------------------------------------
+function FormatterEditHwData(cell, formatterParams, onRendered) {
+	var value = cell.getRow().getData().deviceid;
+	var title = "Edit " + cell.getRow().getData().model;
+	if (value && value.length > 0) {
+		return '<a href="' + _maketHwDataUrl(value)  + '" target="_blank" title="'+title+'"><i class="fa-solid fa-pencil"></i></a>';
+	} 
+	return value;
+}
+
+// --------------------------------------------------------
+function FormatterImages(cell, formatterParams, onRendered) {
+	var arr = cell.getValue();
+	var url='';
+	var out='';
+	var label='';
+	if (Array.isArray(arr) && arr.length > 0) {
+		arr.forEach((value, index) => {
+			if(value.match(/^http/)){
+				url=value;
+			}
+			else{
+				value=value.replace(/:/g,'/');
+				url=owrtUrls.media + value;
+			}
+			if(value.match(/genericrouter1.png$/)){
+				label='<i class="fa-regular fa-image generic"></i>';
+			}
+			else{
+				label='<i class="fa-solid fa-image"></i>';
+			}
+			out +='<a href="' + url + '" target="_blank" class="cell-image">'+label+'</a> ';
+
+			// preload images --------
+			//const img = new Image();
+			//img.src = url;
+
+			if (!toh_img_urls.includes(url)) {
+				toh_img_urls.push(url);
+			}
+
+		});
+		return out;
+	} 
+	return arr;
+}
+
+// --------------------------------------------------------
+function FormatterCleanEmpty(cell, formatterParams, onRendered) {
+	var value = cell.getValue();
+	if (value && value.length > 0) {
+		value=value.replace(/-/g,'');
+		return value;
+	} 
+	return "";
+}
+
+// --------------------------------------------------------
+function FormatterCleanWords(cell, formatterParams, onRendered) {
+	var value = cell.getValue();
+	if (value && value.length > 0) {
+		value=value.replace(/more than/g,'&gt;'); // for GPIOs
+		value=value.replace(/Qualcomm Atheros/g,'Atheros'); //  for CPU
+		return value;
+	} 
+	return "";
+}
+
+// --------------------------------------------------------
+function FormatterArray(cell, formatterParams, onRendered) {
+	var arr = cell.getValue();
+	var out='';
+	var done=false;
+	if (Array.isArray(arr) && arr.length > 0) {
+		arr.forEach((value, index) => {
+			value=value.replace(/NAND/g,' NAND'); // for Flash
+			value=value.replace(/Qualcomm Atheros/g,'Atheros'); // for WLAN Hardware
+			if(done){
+				out +=" + ";
+			}
+			out +=value;
+			done=true;
+		});
+		return out;
+	}
+	return arr;
+}
+// --------------------------------------------------------
+function FormatterYesNo(cell, formatterParams, onRendered) {
+	var value = cell.getValue();
+	var icon='';
+	if (typeof value === "string") {
+		value=value.toLowerCase().trim();
+	}
+	if(value=='yes'){
+		icon='fa-solid fa-check';
+	}
+	else if(value=='no'){
+		icon='fa-solid fa-xmark';
+	}
+	else if(value=='-'){
+		icon='fa-solid fa-question dash';
+	}
+	else if(value==''){
+		icon='fa-solid fa-question empty';		
+	}
+	else{
+		icon='fa-solid fa-question unknown';
+	}
+	return '<i class="'+icon+'"></i>';
+}
+
+
+
+
+// Tabulator: header Filters ###############################################################################################################
+
+// Defines the custom HeaderFilter for the "flashmb" column ----------------------------
+function HeaderFilterFlash(cell, onRendered, success, cancel, editorParams){
+	var container = document.createElement("span");
+
+	//create and style inputs
+	var minimum = document.createElement("input");
+	minimum.setAttribute("type", "text");
+	minimum.style.padding	= "4px";
+	minimum.style.width		= "50%";
+	minimum.style.boxSizing = "border-box";
+	var search=minimum.cloneNode();
+	
+	minimum.setAttribute("placeholder", "Minimum");
+	search.setAttribute("placeholder", "Search");
+
+	minimum.value = cell.getValue();
+	search.value = cell.getValue();
+
+	function buildValues(){
+		success({
+			minimum:	minimum.value,
+			search:		search.value,
+		});
+		if(minimum.value=='' && search.value==''){
+			console.log('gotcha')
+			// this fixes the Tabulator Bug, who never fires the 'dataFiltered' event when emptying the field
+			tabuTable.setHeaderFilterValue('flashmb',null);
+		}	
+	}
+
+	// events ---
+	minimum.addEventListener("change",	buildValues);
+	minimum.addEventListener("blur", 	buildValues);
+	minimum.addEventListener("keyup",	buildValues); // for empty
+	//minimum.addEventListener("input",	buildValues); // for empty
+	search.addEventListener("change",	buildValues);
+	search.addEventListener("blur",		buildValues);
+	search.addEventListener("keyup",	buildValues); // for empty
+
+	container.appendChild(minimum);
+	container.appendChild(search);
+	
+	return container;
+ }
+
+// Handle custom HeaderFilter's logic for the 'flashmb' colum ---------------------------------------------
+function HeaderFilterFuncFlash(headerValue, rowValue, rowData, filterParams){
+	var b_minimum=true;
+	var b_search=true;
+	//console.log('val='+rowValue);
+	var m;
+	if(headerValue =='' || headerValue==null || headerValue == undefined){
+		return true;
+	}
+	
+	if(headerValue.minimum != ""){
+		b_minimum =  _getFlashArrayBestValue(rowValue) >= headerValue.minimum;
+	}
+	if(headerValue.search != ""){
+		//console.log('---row='+rowValue);
+		b_search=false;
+		if(Array.isArray(rowValue)){
+			var reg		= new RegExp(headerValue.search,'i');
+			for (const v of rowValue) {
+				if(v !=null){
+					//console.log('v='+v);
+					m=reg.test(v);
+					console.log(m);
+					if(m){
+						b_search=true;
+						break;	
+					}
+				}
+			};
+		}
+	}
+	return b_minimum && b_search; //must return a boolean, true if it passes the filter.
+}
+
+// Handle custom HeaderFilter's logic for the 'RamMb' colum ---------------------------------------------
+function HeaderFilterFuncRamMb(headerValue, rowValue, rowData, filterParams){
+	//console.log(typeof(rowValue) + rowValue);
+	if(headerValue =='' || headerValue==null || headerValue == undefined){
+		return true;
+	}
+	var val=_getCleanNumber(rowValue,'ram');
+	if(val ==''){
+		return true;
+	}
+
+	// if we have something else than number, consider true;
+	if(String(val).match(/[^\d]+/g)){
+		return true;
+	}
+
+	return Number(val) >= Number(headerValue);
+}
+
+
+
+// Tabulator: sorts ###############################################################################################################
+
+// custom sorter for the 'flashmb' column----------------------------------------------
+function SorterFlash(a, b, aRow, bRow, column, dir, sorterParams){
+	var aa=_getFlashArrayBestValue(a);
+	var bb=_getFlashArrayBestValue(b);
+	return aa - bb;
+}
+
+// custom sorter for the 'RamMb' column----------------------------------------------
+function SorterRam(a, b, aRow, bRow, column, dir, sorterParams){
+	var aa=_getCleanNumber(a,'ram');
+	var bb=_getCleanNumber(b,'ram');
+	return Number(aa) - Number(bb);
+}
+
+
+
+// Tabulator: helpers ###############################################################################################################
+
+// ---------------------------------------------------------------------------------------
+// function cellDebug(e, cell){
+// 	console.log(cell);
+// 	console.log(cell._cell.value);
+// }
+
+// --------------------------------------------------------
+function _maketHwDataUrl(deviceid){
+	const [brand, model] = deviceid.split(":");
+	return owrtUrls.hwdata + brand + '/' + model;
+}
+
+// get the best value to use in sort/filter of the 'flashmb' column ----------------------
+function _getFlashArrayBestValue(arr){
+	// ignore these, just in case (because JS is SOOOOOOO sensitive)
+	if(arr == null){
+		return '';
+	}
+	if( typeof(arr) !="object" ){
+		return arr;
+	}
+
+	var target=0;	
+	// now we can walk into the array of values, without throwing a fatal error (did I ever said I love JS ?) .....
+	arr.forEach((v) => {
+		// 'microSD' or 'SD' means(?) we have Gigas available, so we rank as 128G
+		if(v.match(/microsd/i) || v.match(/^SD$/)){
+			//console.log('SD found in :'+v);
+			v=128*1024;
+		}
+		// eMMC size is unknown, but if it is alone, it maybe(?) means at least 1M(?)
+		else if(v.match(/eMMC/i) && arr.length==1){
+			v=1;
+		}
+		// else we bet on the higher array.member value. (We only keep the number, ignoring letters)
+		else{
+			v=v.replace(/[^\d]+/g,'');
+			v=Number(v);
+		}
+		// target is the highest found value
+		if(v > target){
+			target=v;
+		}
+	});
+	return target;
+}
+
+// create the 'flash>=' filter operator ----------------------------------------------
+Tabulator.extendModule("filter", "filters", {
+	"flash>=":function(filtValue, rowValue, rowData, filterParams){
+		//console.log('-----');
+		//console.log('filtValue='+filtValue+'	| rowValue='+rowValue);
+		return _getFlashArrayBestValue(rowValue) >= filtValue ? true : false;
+	}
+});
+
+
+// get a clean number from a string column----------------------------------------------
+function _getCleanNumber(rowValue,type=''){
+	if(rowValue ==null){
+		return '';
+	}
+	rowValue=rowValue.trim();
+	if(rowValue==''){
+		return '';
+	}
+
+	// if we have a sring like "64, 128, 256",  we keep the max
+	if(rowValue.match(/,/i)){
+		rowValue= rowValue.replace(/ /g,'');
+		const numbers = rowValue.split(',').map(Number);
+  		rowValue= Math.max(...numbers);
+	}
+
+	// specific to Ram column
+	if(type=='ram'){
+		if(String(rowValue).match(/[^\d]+/g)){
+			//remove letter at start
+			rowValue=rowValue.replace(/.*?(\d+)/g,'$1');
+			// do we have GB ?
+			if(rowValue.match(/[\d]+\s*GB/i)){
+				rowValue=rowValue.replace(/[^\d]+/g,'');
+				rowValue=Number(rowValue) * 1024 +1; //we add 1 to be sorted , ie for 4GB, just after 4096
+			}
+		}
+	}
+
+	// if we have letters, dont cast to number
+	if(String(rowValue).match(/[^\d]+/g)){
+		return rowValue;
+	}
+	else{
+		return Number(rowValue);
+	}
+}
+
+
