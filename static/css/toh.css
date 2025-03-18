@@ -22,6 +22,7 @@ html, body {
 /* Header --------------------------------------------------  */
 
 #toh-header{
+	position: relative;
 	height: 64px;
 	background: rgb(0, 163, 225);
 	border-bottom: 1px solid #999;
@@ -572,6 +573,13 @@ A.toh-but:hover{
 	border-top: #ccc 1px solid;
 }
 
+#toh-table .tabulator-table{
+	border-bottom: #ccc 1px solid;
+}
+/* .tabulator-row .tabulator-cell:not([style*="display: none"]):last-of-type {
+	border-right: none;
+	background: red;
+} */
 
 /* Table column headers ------------------------------------- */
 
