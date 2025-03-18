@@ -709,17 +709,28 @@ column-gap: 2em;
 A.toh-but{
 	display: inline-block;
 	margin-left: 10px;
-	padding: 1px 5px;
+	padding: 3px 5px;
 	text-decoration: none;
-	border: 1px solid #aaa;
+	border: rgba(0,0,0,0.1) 1px solid;
 	border-radius: 5px;
 	font-size: 11px;
-	/* background-color: #eee;	
-	color: #000; */
+	line-height: 14px;
+
+	background: linear-gradient(to top, 
+		rgba(0,0,0, 0.15),
+		rgba(0,0,0, 0.01)
+	), #fff;
+	color: #000;
 }
-A.toh-but:hover{
-	/* background-color: #555;	
-	color: #fff; */
+
+A.toh-but:hover,
+#toh-filters-presets A:hover{
+	/* background-color: #000;	 */
+	background: linear-gradient(to bottom, 
+		rgba(255,255,255, 0.4),
+		rgba(255,255,255, 0)
+	), #999;
+	color: #fff;
 }
 
 
@@ -1037,17 +1048,9 @@ TABLE.toh-details-table{
 
 /* Colors ################################################################################################ */  
 
-
-
-A.toh-but{
-	background-color: #eee;
-	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0.9),
-		rgba(255,255,255, 0)
-	), #ddd;
-	color: #000;
+#toh-table .tabulator-header-filter INPUT{
+	background-color: #eef;	
 }
-
 
 /* filtered cols */
 #toh-table .tabulator-col.toh-col-filtered{
@@ -1062,9 +1065,7 @@ A.toh-but-clearfilters{
 		rgba(255,255,255, 0)
 	), #ada;
 }
-#toh-table .tabulator-header-filter INPUT{
-	background-color: #eef;	
-}
+
 #toh-table .tabulator-col.toh-col-headerfilter,
 A.toh-but-clearheaderfilters{
 	background: linear-gradient(to bottom, 
@@ -1081,16 +1082,6 @@ A.toh-but-clearallfilters{
 	), #6db;
 }
 
-A.toh-but:hover,
-#toh-filters-presets A:hover{
-	background-color: #000;	
-	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0.6),
-		rgba(255,255,255, 0)
-	), #222;
-	border-color: #000;
-	color: #fff;
-}
 
 
 #toh-filters-presets A:hover{
