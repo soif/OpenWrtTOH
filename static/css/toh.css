@@ -394,9 +394,11 @@ body,
 }
 .toh-top-block{
 	font-size: 13px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
-
+.toh-top-block:first-child{
+    margin-bottom: 20px;
+}
 .toh-top-title{
 	padding-left: 10px;
 	border: 1px solid #ddd;
