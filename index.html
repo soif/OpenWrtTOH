@@ -63,18 +63,14 @@
 
 		<style>
 		#toh-load-overlay {
-			background-color: #eee;
 			background: rgb(0, 163, 225);
+			background: linear-gradient(to top,  rgba(0,175,239,1) 0%,rgba(0,153,209,1) 100%);
 			position: fixed;
 			top: 0;
 			left: 0;
 			width: 100%;
 			height: 100%;
-			z-index: 9999;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
+			z-index: 9998;
 			opacity: 1;
 			animation: fade 5.0s ease forwards;
 		}
@@ -82,6 +78,13 @@
 			0%     { opacity: 1; }
 		    50% 	{ opacity: 1; }
     		100%   { opacity: 0.8; }
+		}
+		#toh-load-overlay-bg{
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
 		}
 		#toh-load-span {
 			margin-top: 30px;
@@ -104,51 +107,50 @@
 		}
 		</style>
 		<div id="toh-load-overlay">
-			<div id="toh-load-logo"><img src="static/img/logo.svg" alt="Logo" /></div>
-			<span id="toh-load-span">
-				<div id="toh-load-icon"><i class="fa-solid fa-arrows-rotate fa-spin fa-2x"></i></div>
-				<div id="toh-load-text">Loading page...</div>
-			</span>
+			<div id="toh-load-overlay-bg">
+				<div id="toh-load-logo"><img src="static/img/logo.svg" alt="Logo" /></div>
+				<span id="toh-load-span">
+					<div id="toh-load-icon"><i class="fa-solid fa-arrows-rotate fa-spin fa-2x"></i></div>
+					<div id="toh-load-text">Loading page...</div>
+				</span>
+			</div>
 		</div>
-
 
 
 		<div id="toh-page">
 			
 			<div class="container-fluid">
 
-
 				<div id="toh-header" class="row">
-					<div id="toh-loading"><i class="fa-solid fa-arrows-rotate fa-spin"></i></div>
-					<span id="toh-dev-badge" class="badge toh-hidden"><span class="js-toh-app " data-prop="branch"></span> v<b class="js-toh-app" data-prop="version">-</b></span>
-					<div id="toh-header-logo"><a href="https://openwrt.org"><img src="static/img/logo.svg" alt="Logo" /></a></div>
-					<div id="toh-header-title"><h1><a href="#">Table Of Hardware</a> </h1></div>
-					<div id="toh-header-right">
+					<div id="toh-header-bg">
+						<div id="toh-loading"><i class="fa-solid fa-arrows-rotate fa-spin"></i></div>
+						<span id="toh-dev-badge" class="badge toh-hidden"><span class="js-toh-app " data-prop="branch"></span> v<b class="js-toh-app" data-prop="version">-</b></span>
+						<div id="toh-header-logo"><a href="https://openwrt.org"><img src="static/img/logo.svg" alt="Logo" /></a></div>
+						<div id="toh-header-title"><h1><a href="#">Table Of Hardware</a> </h1></div>
+						<div id="toh-header-right">
 
+							<div id="toh-header-search" class="form-inline">
+								<div class="form-group" id="toh-search-icon">
+									<i class="fa-solid fa-search"></i>
+								</div>
+								<span id="toh-search" class="toh-hidden">
 
-
-						<div id="toh-header-search" class="form-inline">
-							<div class="form-group" id="toh-search-icon">
-								<i class="fa-solid fa-search"></i>
+									<div class="form-group toh-search-group">
+										<input type="input" class="form-control toh-search-input" id="toh-search-input-model" data-field="model" placeholder="Model...">
+										<span class="form-control-feedback toh-search-clear" id="toh-search-clear-model"><i class="fa-solid fa-circle-xmark"></i></span>
+									</div>
+									<div class="form-group toh-search-group">
+										<input type="input" class="form-control toh-search-input" id="toh-search-input-brand" data-field="brand" placeholder="Brand...">
+										<span class="form-control-feedback toh-search-clear" id="toh-search-clear-brand"><i class="fa-solid fa-circle-xmark"></i></span>
+									</div>
+								</span>
 							</div>
-							<span id="toh-search" class="toh-hidden">
 
-								<div class="form-group toh-search-group">
-									<input type="input" class="form-control toh-search-input" id="toh-search-input-model" data-field="model" placeholder="Model...">
-									<span class="form-control-feedback toh-search-clear" id="toh-search-clear-model"><i class="fa-solid fa-circle-xmark"></i></span>
-								</div>
-								<div class="form-group toh-search-group">
-									<input type="input" class="form-control toh-search-input" id="toh-search-input-brand" data-field="brand" placeholder="Brand...">
-									<span class="form-control-feedback toh-search-clear" id="toh-search-clear-brand"><i class="fa-solid fa-circle-xmark"></i></span>
-								</div>
-							</span>
+							<div id="toh-header-count"><span id="toh-count"></span> devices</div>
+
 						</div>
-
-						<div id="toh-header-count"><span id="toh-count"></span> devices</div>
-
 					</div>
 				</div>
-
 
 
 				<div id="toh-main" class="toh-box">
@@ -231,12 +233,15 @@
 					<!-- Main Table ------------------- -->		
 					<div id='toh-table-container'>
 						<div id='toh-table'></div>		
-					</div>    
+					</div>
+					
 					<div id="toh-image-preview"></div>
+
 				</div>
 
 
 				<div id="toh-info" class="row">
+					
 					<div class="col-sm-12">
 						<div id="toh-tips" class="toh-box">
 							<h4><i class="fa-regular fa-lightbulb"></i> Tips</h4>
@@ -252,8 +257,8 @@
 								<li>This table uses live data from the <a href="https://openwrt.org" target="_blank">OpenWrt</a> site</li>
 							</ul>
 						</div>
-
 					</div>
+
 					<div class="col-sm-12">
 						<div id="toh-changelog" class="toh-box toh-hidden">
 							<div id="toh-changelog-desc">(This is only shown in Develop mode)</div>	
@@ -263,20 +268,19 @@
 							<h4><i class="fa-regular fa-clock"></i> Previous Releases</h4>
 							<div id="toh-changelog-previous" class="toh-changelog-list"></div>					
 						</div>
-	
 					</div>
 
 				</div>
 
 			</div>
 
-
 			<div id="toh-footer" class="row">
-				<div class="container">
-					This project (version <b class="js-toh-app" data-prop="version">-</b>) is available at <a href="https://github.com/openwrt/toh-openwrt-org/" target="_blank">Github</a>. Made with love by <a href="https://github.com/soif" target="_blank">Soif</a> and all <a href="https://github.com/openwrt/toh-openwrt-org/graphs/contributors" target="_blank">contributors</a>.
+				<div id="toh-footer-bg">
+					<div class="container">
+						This project (version <b class="js-toh-app" data-prop="version">-</b>) is available at <a href="https://github.com/openwrt/toh-openwrt-org/" target="_blank">Github</a>. Made with love by <a href="https://github.com/soif" target="_blank">Soif</a> and all <a href="https://github.com/openwrt/toh-openwrt-org/graphs/contributors" target="_blank">contributors</a>.
+					</div>
 				</div>
 			</div>
-
 
 		</div>
 	</body>

@@ -21,12 +21,15 @@ html, body {
 /* Header --------------------------------------------------  */
 
 #toh-header{
-	position: relative;
-	padding: 3px 0;
 	background: rgb(0, 163, 225);
-	border-bottom: 1px solid #999;
+	background: linear-gradient(to bottom,  rgba(0,175,239,1) 0%,rgba(0,153,209,1) 100%);
+	border-bottom: 1px solid rgba(0,0,0,0.2);
 	margin-bottom: 20px;
 	box-shadow: 0px 2px 8px 2px rgba(0,0,0,.15);
+}
+#toh-header-bg{
+	padding: 3px 0;
+	position: relative;
 }
 
 #toh-header,
@@ -157,7 +160,7 @@ html, body {
 	#toh-header-title{
 		float: none;
 	}
-	#toh-header,
+	#toh-header-bg,
 	#toh-header-right,
 	#toh-header h1{
 		min-height: 40px;
@@ -188,17 +191,19 @@ html, body {
 	}
 	#toh-loading{
 		left: 20px;
+		top: 70%;
+		right: auto;
 		/* right: auto;
-		top: 69%; */
+		 */
 		/* font-size: 18px; */
 	}
 
 }
 @media screen and (max-width: 660px) {
-	#toh-header{
+	#toh-header-bg{
 		padding-bottom: 8px;
 	}
-	#toh-header,
+	#toh-header-bg,
 	#toh-header-right,
 	#toh-header h1{
 		min-height: 30px;
@@ -245,11 +250,9 @@ html, body {
 		padding-top: 1px;
 		padding-right: 10px;
 	}
-
 	#toh-loading{
 		left: 10px;
-		/* right: auto;
-		top: 69%; */
+		top: 68%;
 		font-size: 16px;
 	}
 
@@ -257,11 +260,12 @@ html, body {
 
 
 /* Footer --------------------------------------------------  */
-
+#toh-footer-bg{
+	padding: 10px 0;
+}
 #toh-footer{
 	border-top: 1px solid #777;
     font-size: 0.85em;
-	padding: 10px 0;
 	text-align: center;
 	color: #ddf;
 }
@@ -588,8 +592,7 @@ body,
 	/* color: red; */
 }
 
-#toh-filters-presets .toh-filter-title{
-}
+
 #toh-filters-features .toh-filter-title{
 	width: 120px
 }
@@ -1081,23 +1084,11 @@ A.toh-but:hover,
 
 /* Overrides for "branch-dev" BODY class ############################################################# */
 
-BODY.branch-dev #toh-header,
-BODY.branch-dev #toh-footer,
-BODY.branch-dev #toh-load-overlay{
-	background: rgb(150, 0, 255);
-	background: repeating-linear-gradient(
-		-45deg,
-		rgb(0, 163, 225) 0px,
-		rgb(0, 163, 225) 15px,
-		rgb(2, 169, 236) 15px,
-		rgb(2, 169, 236) 30px
-	);
+BODY.branch-dev #toh-header-bg,
+BODY.branch-dev #toh-footer-bg,
+BODY.branch-dev #toh-load-overlay-bg{
+	background: repeating-linear-gradient(-45deg,  rgba(0,0,0,0.03) 0px,rgba(0,0,0,0.03) 15px,rgba(255,255,255,0.03) 15px,rgba(255,255,255,0.03) 30px);
 }
 BODY.branch-dev #toh-dev-badge{
 	display: inline-block;
 }
-
-
-
-/* Mobile Fixes ####################################################################################### */
-
