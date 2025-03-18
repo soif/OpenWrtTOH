@@ -17,7 +17,7 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.73b3",	// Version
+	version:	"1.73b4",	// Version
 	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
 };
 
@@ -971,7 +971,7 @@ async function FetchReleases() {
 	} 
 	catch (error) {
 		myLogObj(error,'Error fetching releases', 1);
-		throw error;
+		//throw error;
 	}
 }
 
@@ -1970,7 +1970,7 @@ function FormatterLink(cell, params, onRendered) {
 		id 				= brand + '_' + id.split('_').slice(1).join('-');
 		const target	= row.target + '/' + row.subtarget;
 		if(!toh_firmwares_fetched){
-			return '<a href="#" title="Failed to fetch firmwares"><i class="fa-solid fa-question dlerror"></i></a>';
+			return '<a href="#" title="Failed to fetch firmwares"><i class="fa-solid fa-warning dlerror"></i></a>';
 		}
 		url 		= GetFirmwareSelectUrl(id, target);
 	}

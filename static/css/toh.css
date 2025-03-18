@@ -654,6 +654,11 @@ A.toh-but:hover{
 
 
 /* Cells --------------------------------------- */
+#toh-table .fa-warning.dlerror{
+	color: orange;
+}
+
+
 #toh-table .tabulator-cell .tlink{
 	font-size: 14px;
 }
