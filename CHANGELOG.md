@@ -2,6 +2,8 @@
 
 ## Version 1.73 - 2025-xx-xx
 
+* Add Global search in the header
+* CSS improvements for mobiles
 * Iconizes all links + their tooltips
 * Better Details View Popup: use formatters + close button + fixes bugs + Enhanced CSS
 * New Filters: Memory Confort, WifiB, WifiG, Bluetooth, GPIOs, SATA
