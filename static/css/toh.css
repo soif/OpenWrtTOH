@@ -23,7 +23,7 @@ html, body {
 
 #toh-header{
 	position: relative;
-	height: 64px;
+	padding: 3px 0;
 	background: rgb(0, 163, 225);
 	border-bottom: 1px solid #999;
 	margin-bottom: 20px;
@@ -32,33 +32,48 @@ html, body {
 		0em 0.06em 0.625em 0em rgba(0, 0, 0, 0.12);
 }
 
+#toh-header,
+#toh-header h1,
+#toh-header-right {
+	min-height: 55px;
+}
+
 #toh-header-logo{
 	float: left;
 }
+#toh-header-logo{
+	padding: 10px 15px 0 20px;
+}
 #toh-header-logo IMG{
-	height:48px;
-	margin: 6px 30px 0 26px;
+	height:30px;
 }
 #toh-header-title{
-	height: 64px;
+	float: left;
+	padding-right: 20px;
 }
 #toh-header h1 {
+	line-height: 55px;
 	margin: 0;
-	line-height: 64px;
 	text-align: left;
-	font-size: 2.2em;
+	font-size: 2.0em;
 }
 #toh-header h1,
 #toh-header h1 A{
 	color: #fff;
 	text-decoration: none;
 }
+
+#toh-dev-badge{
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(50%) translateY(50%);
+	background-color: #F00;
+}
+
 #toh-header-count{
-	float: right;
-	line-height: 64px;
-	margin-right: 70px;
 	color: #fff;
-	font-size: 0.9em;
+	font-size: 1.1em;
 }
 #toh-count B{
 	font-weight: normal;
@@ -66,6 +81,180 @@ html, body {
 }
 #toh-count I{
 	font-style: normal;
+}
+
+#toh-header-right{
+	padding-right: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+#toh-header-search{
+	padding-left: 20px;
+}
+#toh-search-icon{
+	display: inline-block;
+	font-size: 24px;
+	color: #fff;
+	padding-right: 5px;
+}
+#toh-search-icon I{
+	opacity: 0.8;
+}
+#toh-search-icon I:hover{
+	cursor: pointer;
+	opacity: 1;
+}
+
+#toh-header-search .toh-hidden{
+	display: none;
+}
+#toh-header-search .form-group {
+	position: relative;
+}
+#toh-header-search .form-group.toh-search-group{
+	display: inline-block !important;
+	margin-bottom: 0;
+}
+#toh-header-search .toh-search-input {
+	width: 150px;
+	border-radius: 20px;
+    padding-right: 30px; /* Make room for the clear button */
+}
+/* .input-group .toh-search-clear {
+    margin: 0;
+} */
+
+.toh-search-clear {
+    position: absolute;
+    right: 1px;
+    top: 50%;
+    transform: translateY(-50%);
+	pointer-events: auto;
+    cursor: pointer;
+    color: #666;
+    z-index: 9;
+	display: none;
+	opacity: 0.5;
+}
+.toh-search-clear:hover {
+	opacity: 1;
+}
+  
+.toh-search-clear::-ms-clear {
+	display: none;
+}
+
+
+#toh-loading{
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	right: 10px;
+	font-size: 1.8em;
+	color: yellow;
+}
+
+@media screen and (max-width: 1065px) {
+	#toh-header-title{
+		float: none;
+	}
+	#toh-header,
+	#toh-header-right,
+	#toh-header h1{
+		min-height: 40px;
+	}
+	#toh-header h1 {
+		line-height: 40px;
+	}
+	#toh-dev-badge{
+		font-size: 11px;
+		padding: 2px 5px;
+	}
+	#toh-header-logo{
+		padding-top: 5px;
+	}
+	#toh-header-right{
+		padding-left: 130px;
+		padding-right: 20px;
+	}
+
+	#toh-header-search .form-control{
+		height: 25px;
+	}
+	#toh-search-icon{
+		display: none;	/* when hidding icon */
+	}
+	#toh-search{
+		display: inline-block !important; /* when hidding icon */
+	}
+	#toh-loading{
+		left: 20px;
+		/* right: auto;
+		top: 69%; */
+		/* font-size: 18px; */
+	}
+
+}
+@media screen and (max-width: 660px) {
+	#toh-header{
+		padding-bottom: 8px;
+	}
+	#toh-header,
+	#toh-header-right,
+	#toh-header h1{
+		min-height: 30px;
+	}
+	#toh-header h1 {
+		line-height: 30px;
+	}
+	#toh-header-logo{
+		width: 29px;
+		overflow: hidden;
+	}
+	#toh-header-logo {
+		padding: 5px 20px 0 7px ;
+	}
+	#toh-header-logo IMG {
+		height: 25px;
+	}
+	#toh-header h1 {
+		padding-left: 40px;
+		font-size: 1.4em;
+	}
+	#toh-dev-badge{
+		/* font-size: 9px; */
+		/* padding: 2px 5px; */
+	}
+	#toh-header-right{
+		padding-left: 0;
+		padding-right: 10px;
+	}
+
+	#toh-header-count{
+		font-size: 0.7em;
+	}
+	#toh-header-search{
+		padding-left: 7px;
+		margin-left: 33px; /* when hidding icon */
+	}
+	#toh-header-search .form-control{
+		width: 100px;
+		font-size: 12px;
+	}
+	#toh-search-icon{
+		font-size: 20px;
+		padding-top: 1px;
+		padding-right: 10px;
+	}
+
+	#toh-loading{
+		left: 10px;
+		/* right: auto;
+		top: 69%; */
+		font-size: 16px;
+	}
+
 }
 
 
@@ -192,14 +381,6 @@ body,
 
 
 /* Global --------------------------------------------------- */
-
-#toh-loading{
-	font-size: 2em;
-	top: 10px;
-	right: 30px;
-	color: yellow;
-	position: absolute;
-}
 
 .toh-hidden{
 	display: none;
@@ -907,43 +1088,11 @@ BODY.branch-dev #toh-load-overlay{
 		rgb(2, 169, 236) 30px
 	);
 }
-BODY.branch-dev #toh-header .badge{
+BODY.branch-dev #toh-dev-badge{
 	display: inline-block;
-	background-color: #F00;
 }
 
 
 
 /* Mobile Fixes ####################################################################################### */
 
-@media screen and (max-width: 760px) {
-	#toh-header{
-		height: 38px;
-		overflow: hidden;
-	}
-	#toh-header-title,
-	#toh-header h1,
-	#toh-header-count{
-		line-height: 38px;
-	}
-	#toh-header-logo{
-		width: 29px;
-		overflow: hidden;
-	}
-	#toh-header-logo IMG {
-		height: 26px;
-		margin: 5px 10px 0 7px ;
-	}
-	#toh-header h1 {
-		/* margin-top: 2px; */
-		padding-left: 40px;
-		font-size: 1em;
-	}
-	#toh-header-title .badge{
-		font-size: 9px;
-		padding: 2px 5px;
-	}
-	#toh-header-count{
-		font-size: 0.7em;
-	}
-}

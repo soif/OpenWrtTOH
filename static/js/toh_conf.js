@@ -22,7 +22,7 @@ let prefs={
 	def_features: 	'',					// default Features (list ',' separated)
 	def_view: 		'normal',			// default Columns View Preset
 	def_columns: 	'',					// default Columns (list ',' separated)
-	def_show_filters: true,				// default show filters
+	def_show_filters: false,				// default show filters
 	def_show_views: false,				// default show columns views
 
 	p_filter:		'filter',			//name of the filter preset URL parameter

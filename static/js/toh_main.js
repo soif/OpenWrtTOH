@@ -971,7 +971,6 @@ async function FetchReleases() {
 	} 
 	catch (error) {
 		myLogObj(error,'Error fetching releases', 1);
-		//throw error;
 	}
 }
 
@@ -1339,12 +1338,74 @@ $(document).ready(function () {
 
 			}).then(() =>{
 				$('#toh-load-overlay').slideUp(500);
+				ObserveHeaderFiltersAndInitSearch();
 				PreLoadImagesCache();
 			});   
 		});
 	});
 
 
+
+
+
+
+
+	// Header Search ##########################################################################################
+
+	$('#toh-search-icon I').on('click', function(e){
+		$('#toh-search').toggleClass('toh-hidden');
+	});
+
+	// Function to toggle clear button visibility
+	function toggleSearchClearButton(field) {
+		const input=$('#toh-search-input-'+field);
+		const clear=$('#toh-search-clear-'+field);
+		if (input.val().length > 0) {
+			clear.show();
+		} else {
+			clear.hide();
+		}
+	}
+
+	// Clear input when clear button is clicked
+	$('.toh-search-clear').on('click', function() {
+		const field=$(this).parent().find('.toh-search-input').attr('data-field');
+		$('#toh-search-input-'+field).val('').trigger('keyup');
+		$(this).hide();
+	});
+	
+	
+	// input search on keyup
+	$('.toh-search-input').on('keyup', function() {
+		const field=$(this).attr('data-field');
+		toggleSearchClearButton(field);
+
+		// Clear any existing timeout
+		if (this.timeoutId) {
+			clearTimeout(this.timeoutId);
+		}
+		
+		// Set new timeout
+		this.timeoutId = setTimeout(() => {
+			tabuTable.setHeaderFilterValue(field,$(this).val());
+			tabuTable.refreshFilter();
+		}, 300);
+
+	});
+
+	function ObserveHeaderFiltersAndInitSearch(){
+		$('.toh-search-input').trigger('keyup'); // needed when manually relaoding a page that already have a search query
+
+		$('.tabulator-col .tabulator-header-filter INPUT').bind('keyup', function() {
+			const field=$(this).closest('.tabulator-col').attr('tabulator-field');
+			const target=$('.toh-search-input[data-field='+field+']')
+			target.val($(this).val());
+			$('#toh-search').removeClass('toh-hidden');
+		});
+	}
+
+
+	  
 
 	// User Presets ##########################################################################################
 
@@ -1614,6 +1675,8 @@ $(document).ready(function () {
 		myLogFunc('on Click But ClearHeaderFilters');
 		e.preventDefault();
 		tabuTable.clearHeaderFilter();
+		$('.toh-search-input').val('');
+		$('.toh-search-clear').hide();
 	});
 
 	// Click: clear all filters ----------------
@@ -1734,7 +1797,7 @@ $(document).ready(function () {
 			tableLoadingShow();
 			const size = e.target.value; // Get the selected value from the <select> element
 			const h_head = 53;
-			const h_scroll = 16;
+			const h_scroll = 17;
 			const h_foot = 37;
 			const h_line = tabulatorOptions.rowHeight;
 			const height_t = h_head + h_scroll + h_foot + (h_line * size);

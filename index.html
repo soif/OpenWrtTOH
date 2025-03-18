@@ -97,7 +97,7 @@
 		}
 		#toh-load-logo,
 		#toh-load-logo IMG{
-			width: 400px;
+			width: 320px;
 		}
 		#toh-load-icon{
 			margin-bottom: 20px;
@@ -119,10 +119,34 @@
 
 
 				<div id="toh-header" class="row">
-					<div id="toh-header-logo"><a href="https://openwrt.org"><img src="static/img/logo.svg" alt="Logo" /></a></div>
-					<div id="toh-header-count"><span id="toh-count"></span> devices</div>
 					<div id="toh-loading"><i class="fa-solid fa-arrows-rotate fa-spin"></i></div>
-					<div id="toh-header-title"><h1><a href="#">Table Of Hardware</a> <span class="badge toh-hidden"><span class="js-toh-app " data-prop="branch"></span> v<b class="js-toh-app" data-prop="version">-</b></span></h1></div>
+					<span id="toh-dev-badge" class="badge toh-hidden"><span class="js-toh-app " data-prop="branch"></span> v<b class="js-toh-app" data-prop="version">-</b></span>
+					<div id="toh-header-logo"><a href="https://openwrt.org"><img src="static/img/logo.svg" alt="Logo" /></a></div>
+					<div id="toh-header-title"><h1><a href="#">Table Of Hardware</a> </h1></div>
+					<div id="toh-header-right">
+
+
+
+						<div id="toh-header-search" class="form-inline">
+							<div class="form-group" id="toh-search-icon">
+								<i class="fa-solid fa-search"></i>
+							</div>
+							<span id="toh-search" class="toh-hidden">
+
+								<div class="form-group toh-search-group">
+									<input type="input" class="form-control toh-search-input" id="toh-search-input-model" data-field="model" placeholder="Model...">
+									<span class="form-control-feedback toh-search-clear" id="toh-search-clear-model"><i class="fa-solid fa-circle-xmark"></i></span>
+								</div>
+								<div class="form-group toh-search-group">
+									<input type="input" class="form-control toh-search-input" id="toh-search-input-brand" data-field="brand" placeholder="Brand...">
+									<span class="form-control-feedback toh-search-clear" id="toh-search-clear-brand"><i class="fa-solid fa-circle-xmark"></i></span>
+								</div>
+							</span>
+						</div>
+
+						<div id="toh-header-count"><span id="toh-count"></span> devices</div>
+
+					</div>
 				</div>
 
 
