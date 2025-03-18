@@ -754,7 +754,7 @@ A.toh-but:hover{
  }
 
 #toh-table.tabulator .tabulator-tableholder {
-	background-color: #f5f5f5;
+	background-color: #fcfcf5;
 	overflow-x: scroll;
 	overflow-y: hidden;
 }
@@ -770,7 +770,7 @@ A.toh-but:hover{
 /* Table column headers ------------------------------------- */
 
 #toh-table .tabulator-header{
-	background-color: #f5f5f5;
+	background-color: #fbfbf4;
 }
 #toh-table .tabulator-header .tabulator-col{
 	background-color: #f0f0f0;
