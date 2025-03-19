@@ -17,7 +17,7 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.73b6",	// Version
+	version:	"1.73b7",	// Version
 	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
 };
 
@@ -1358,8 +1358,10 @@ $(document).ready(function () {
 
 
 	// Dev badge ##############################################################################################################
+
 	$('#toh-dev-badge').on('click',function (e) {
-		$('body').removeClass('branch-dev');	
+		$('body').removeClass('branch-dev');
+		$('#toh-changelog').hide();
 	});
 
 
