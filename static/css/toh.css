@@ -78,6 +78,9 @@ html, body {
 	background-color: #F00;
 	box-shadow: 2px 2px 12px 3px rgba(0,0,0,.3);
 }
+#toh-dev-badge:hover{
+	cursor: pointer ;
+}
 
 #toh-header-count{
 	color: #fff;
