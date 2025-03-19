@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 1.73 - 2025-xx-xx
+## Version 1.73 - 2025-03-20
 
 * Adds global Search in the header
 * Iconizes all links + their tooltips

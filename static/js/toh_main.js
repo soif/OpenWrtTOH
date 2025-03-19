@@ -17,8 +17,8 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.73b8",	// Version
-	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
+	version:	"1.73",	// Version
+	branch:		"prod", 		// Branch, either: 'prod' | 'dev'	
 };
 
 // set the log level displayed in the console :
