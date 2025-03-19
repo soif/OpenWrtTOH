@@ -756,6 +756,9 @@ A.toh-but:hover,
 
 
 
+
+
+
 /* #####################################################################################################
 ##### Tabulator TABLE ##################################################################################
 ######################################################################################################## */
@@ -919,7 +922,6 @@ background-color: #ddf;
 
 /* Cells --------------------------------------- */
 #toh-table .fa-warning.dlerror{
-	color: orange;
 }
 
 
@@ -936,9 +938,18 @@ background-color: #ddf;
 	width: 1px;
 }
 
+#toh-table .tabulator-cell A.tlink{
+	display: block;
+	height: 100%;
+}
+#toh-table .tabulator-cell A.tlink.supportedsincecommit{
+	display: inline;
+}
+
 A.tlink I{
 	margin-right: 1px;
 }
+
 
 A.tlink.firmwareopenwrtinstallurl,
 A.tlink.firmwareopenwrtsnapshotinstallurl{
@@ -957,7 +968,19 @@ A.tlink.firmwareoemstockurl{
 A.tlink.VIRT_firm{
 	color:rgb(0, 163, 225);
 }
+A.tlink.VIRT_firm I.dlerror{
+	color: orange;
+	opacity: 0.4;
+}
 
+#toh-table A.tlink:hover I{
+	color: #000;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+	opacity: 1;
+}
+#toh-table A.tlink.VIRT_firm:hover I.dlerror{
+	color: red;
+}
 
 /* Cell Popup Details --------------------------------------- */  
 
