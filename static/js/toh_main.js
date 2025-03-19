@@ -1037,7 +1037,7 @@ function showLoading(){
 		loading_is_running	=true;
 		loading_last_time	= Date.now();
 		ChangeFavicon('anim');
-		$('#toh-loading').show();
+		$('#toh-header-loading').show();
 	}
 }
 // Hide Loading --------------------------------------------------------
@@ -1050,7 +1050,7 @@ function hideLoading() {
 		}
 		else {
 			ChangeFavicon('trans');
-			$('#toh-loading').hide();
+			$('#toh-header-loading').hide();
 			loading_is_running = false;
 		}
 	}
