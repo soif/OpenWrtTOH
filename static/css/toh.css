@@ -336,6 +336,12 @@ body,
 #toh-tips{
 	margin-top: 10px;
 }
+#toh-tips H4{
+	color: #555;
+}
+#toh-tips LI{
+	color: #777;
+}
 #toh-tips UL,
 #toh-changelog-latest UL,
 #toh-changelog-previous{
