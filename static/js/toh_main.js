@@ -1029,7 +1029,7 @@ function positionPreview($link, $container) {
 
 var loading_is_running	= false;
 var loading_last_time 		= 0;
-const loading_duration	= 500;
+const loading_duration	= 400;
 // Show Loading --------------------------------------------------------
 function showLoading(){
 	myLogFunc();
@@ -1038,6 +1038,7 @@ function showLoading(){
 		loading_last_time	= Date.now();
 		ChangeFavicon('anim');
 		$('#toh-header-loading').show();
+		$('BODY').addClass('toh-loading');
 	}
 }
 // Hide Loading --------------------------------------------------------
@@ -1051,6 +1052,7 @@ function hideLoading() {
 		else {
 			ChangeFavicon('trans');
 			$('#toh-header-loading').hide();
+			$('BODY').removeClass('toh-loading');
 			loading_is_running = false;
 		}
 	}
@@ -1939,6 +1941,7 @@ $(document).ready(function () {
 			myLogStr('EVENT: Page button clicked: ' + pageNumber);
 
 			tableLoadingShow();
+			//showLoading();
 
 			// Defer setPage to allow repaint
 			setTimeout(() => {
