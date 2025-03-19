@@ -8,6 +8,11 @@
 * New Filters: Memory Confort, WifiB, WifiG, Bluetooth, GPIOs, SATA
 * Adds Firmware Selector column
 * Reorders filter groups and column views
+* Fixes Details Popup position and scrolling
+* Slightly animates background color when loading/redrawing Table data
+* Better timing for global Loading indicators
+* Prefetch external assets DNS for faster boot time
+* Smarter FavIcon
 * Global Design enhancements
 * Adds Tooltips for main links
 * CSS improvements for mobiles
