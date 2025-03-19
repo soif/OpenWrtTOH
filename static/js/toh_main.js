@@ -1025,16 +1025,67 @@ function positionPreview($link, $container) {
 	});
 }
 
+
+
+var loading_is_running	= false;
+var loading_last_time 		= 0;
+const loading_duration	= 500;
 // Show Loading --------------------------------------------------------
 function showLoading(){
 	myLogFunc();
-	$('#toh-loading').show();
+	if(!loading_is_running){
+		loading_is_running	=true;
+		loading_last_time	= Date.now();
+		ChangeFavicon('anim');
+		$('#toh-loading').show();
+	}
 }
 // Hide Loading --------------------------------------------------------
-function hideLoading(){
+function hideLoading() {
 	myLogFunc();
-	$('#toh-loading').hide();
+	if(loading_is_running){
+		const timeSinceShow = Date.now() - loading_last_time;
+		if (timeSinceShow < loading_duration) {
+			setTimeout(hideLoading, loading_duration - timeSinceShow);
+		}
+		else {
+			ChangeFavicon('trans');
+			$('#toh-loading').hide();
+			loading_is_running = false;
+		}
+	}
 }
+
+// Change the favicon  --------------------------------------------------
+function ChangeFavicon(type){
+	//myLogStr('START fav='+type,1);
+	var el=$('link[rel=icon]');
+	
+	var icon='static/img/favicon_trans.png';
+	if(type=='anim'){
+		icon='static/img/favicon_anim.gif';
+	}
+
+	if(el.attr('href') == icon ){
+		//myLogStr('fav ALREADY set',1);
+		return;
+	}
+	el.prop('href',icon);
+	return;
+
+	// el.remove(); // Remove the old favicon
+	// el = $('<link>', {
+	// 	rel: 'icon',
+	// 	href: icon
+	// });
+	// $('head').append(el);
+	// el[0].offsetHeight; 
+
+	// Force browser favicon repaint
+	// document.title = document.title + ' '; // Trigger tab repaint
+	// setTimeout(() => document.title = document.title.trim(), 50); // Reset title
+}
+
 
 // Set default Filters & View -------------------------------------------
 function SetDefaults(){
