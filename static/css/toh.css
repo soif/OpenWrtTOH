@@ -8,8 +8,16 @@ html, body {
 	margin: 0;
 	padding: 0;
 	overflow-x: hidden;
-	overflow-y: auto;
-} 
+}
+
+/* this is needed to correly handles the details-popup placement and scrollling */
+html{
+	overflow-y: hidden;
+}
+body{
+	overflow-y: scroll;
+	position: relative;
+}
 
 /* Layout --------------------------------------------------- */
 
@@ -968,8 +976,8 @@ A.tlink.VIRT_firm{
 	max-width: 90% !important; */
 	background-color: transparent;
 	box-shadow: none;
-	overflow: visible;
-
+	height: auto !important;
+	overflow: auto;
 }
 .toh-details-border{
 	border: #aaa 1px solid ;

@@ -2003,26 +2003,23 @@ function CellPopupModel(e, cell, onRendered) {
 	var row = cell.getRow();
 	var rowElement = row.getElement();
 
-	// Manage body overflow during popup display
-	var originalOverflowY = document.body.style.overflowY || getComputedStyle(document.body).overflowY;
-	document.body.style.overflowY = "hidden";
-
 	// Position popup after rendering
 	onRendered(() => {
 		setTimeout(() => {
 			//Add class to the row when popup is shown
 			rowElement.classList.add("popup-active");
-	
+			const windowTopPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
 			var leftPosition = Math.min(46, window.innerWidth - popup.offsetWidth - 10);
+			
 			popup.style.left = leftPosition + "px";
 			popup.style.right = "auto";
-			popup.style.top = e.clientY + "px";
+			//popup.style.top = e.clientY + "px";
+			popup.style.top =(windowTopPosition +20)+'px';
 			popup.style.opacity = 1;
 
 			// Close button handler
 			popup.querySelector(".toh-details-close").addEventListener("click", () => {
 				if (popup.parentNode) popup.parentNode.removeChild(popup);
-				document.body.style.overflowY = originalOverflowY;
 				rowElement.classList.remove("popup-active");			});
 		}, 0);
 	});
@@ -2030,7 +2027,6 @@ function CellPopupModel(e, cell, onRendered) {
 	// Restore overflow when popup is removed
 	var observer = new MutationObserver((mutations) => {
 		if (!document.body.contains(popup)) {
-			document.body.style.overflowY = originalOverflowY;
 			rowElement.classList.remove("popup-active");
 			observer.disconnect();
 		}
