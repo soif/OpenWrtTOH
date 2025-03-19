@@ -2061,12 +2061,18 @@ function FormatterLink(cell, params, onRendered) {
 		const devid=cell.getRow().getData().deviceid;
 		url= devid ? _maketHwDataUrl(devid) : '';
 	}
-	else if(field=='VIRT_firm'){
+	else if(field=='VIRT_firm' && !params.recursive){
 		let [brand, id]	= row.deviceid.split(":");
 		id 				= brand + '_' + id.split('_').slice(1).join('-');
 		const target	= row.target + '/' + row.subtarget;
 		if(!toh_firmwares_fetched){
-			return '<a href="#" title="Failed to fetch firmwares"><i class="fa-solid fa-warning dlerror"></i></a>';
+			//return '<a href="#" title="Failed to fetch firmwares"><i class="fa-solid fa-warning dlerror"></i></a>';
+			params.recursive=true;
+			params.ttip="Failed to fetch firmwares";
+			params.icon="fa-solid fa-warning dlerror";
+			params.url='#';
+			params.short=true;
+			return FormatterLink(cell,params,onRendered);
 		}
 		url 		= GetFirmwareSelectUrl(id, target);
 	}
