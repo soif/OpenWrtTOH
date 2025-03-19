@@ -1398,7 +1398,7 @@ $(document).ready(function () {
 				]);
 
 			}).then(() =>{
-				$('#toh-load-overlay').slideUp(500);
+				$('#toh-boot-overlay').slideUp(500);
 				ObserveHeaderFiltersAndInitSearch();
 				PreLoadImagesCache();
 			});   

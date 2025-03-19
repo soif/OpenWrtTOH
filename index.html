@@ -72,7 +72,7 @@
 	<body>
 
 		<style>
-		#toh-load-overlay {
+		#toh-boot-overlay {
 			background: rgb(0, 163, 225);
 			background: linear-gradient(to top,  rgba(0,175,239,1) 0%,rgba(0,153,209,1) 100%);
 			position: fixed;
@@ -83,20 +83,21 @@
 			z-index: 9998;
 			opacity: 1;
 			animation: fade 5.0s ease forwards;
+			/* display: none; */
 		}
 		@keyframes fade {
 			0%     { opacity: 1; }
 		    50% 	{ opacity: 1; }
     		100%   { opacity: 0.8; }
 		}
-		#toh-load-overlay-bg{
+		#toh-boot-overlay-bg{
 			height: 100%;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
 		}
-		#toh-load-span {
+		#toh-boot-span {
 			margin-top: 30px;
 			font-size: 16px;
 			color: #000;
@@ -108,19 +109,19 @@
 			border: 1px solid rgba(0,0,0, 0.3);
 			min-width: 230px;
 		}
-		#toh-load-logo,
-		#toh-load-logo IMG{
+		#toh-boot-logo,
+		#toh-boot-logo IMG{
 			width: 320px;
 		}
-		#toh-load-icon{
+		#toh-boot-icon{
 			margin-bottom: 20px;
 		}
 		</style>
-		<div id="toh-load-overlay">
-			<div id="toh-load-overlay-bg">
-				<div id="toh-load-logo"><img src="static/img/logo.svg" alt="Logo" /></div>
-				<span id="toh-load-span">
-					<div id="toh-load-icon"><i class="fa-solid fa-arrows-rotate fa-spin fa-2x"></i></div>
+		<div id="toh-boot-overlay">
+			<div id="toh-boot-overlay-bg">
+				<div id="toh-boot-logo"><img src="static/img/logo.svg" alt="Logo" /></div>
+				<span id="toh-boot-span">
+					<div id="toh-boot-icon"><i class="fa-solid fa-arrows-rotate fa-spin fa-2x"></i></div>
 					<div id="toh-load-text">Loading page...</div>
 				</span>
 			</div>

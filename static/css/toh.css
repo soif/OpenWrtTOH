@@ -1149,7 +1149,7 @@ A.toh-but-clearallfilters{
 
 BODY.branch-dev #toh-header-bg,
 BODY.branch-dev #toh-footer-bg,
-BODY.branch-dev #toh-load-overlay-bg{
+BODY.branch-dev #toh-boot-overlay-bg{
 	background: repeating-linear-gradient(-45deg,  rgba(0,0,0,0.03) 0px,rgba(0,0,0,0.03) 15px,rgba(255,255,255,0.03) 15px,rgba(255,255,255,0.03) 30px);
 }
 BODY.branch-dev #toh-dev-badge{
