@@ -62,6 +62,13 @@ html, body {
 	color: #fff;
 	text-decoration: none;
 }
+#toh-search-icon I:hover,
+#toh-header A:hover{
+	text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+#toh-header-logo IMG:hover{
+  filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.5));
+}
 
 #toh-dev-badge{
 	position: absolute;
