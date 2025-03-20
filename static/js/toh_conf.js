@@ -38,7 +38,7 @@ let prefs={
 	cook_name_columns:'myColumns',		// name of the columns cookie,
 	cook_max_chars: 	12,				// max number of character allowed in the cookie name
 
-	tooltip_upreset:"User Presets: Click to Load, Shit-click to save, Alt-click to delete",
+	tooltip_upreset:"User Presets: Click to Load, Shift-click to save, Alt-click to delete",
 	preload: 		true,				// Preload images (in background)
 
 };
