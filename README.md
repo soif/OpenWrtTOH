@@ -16,13 +16,17 @@ At its core, this bad boy parses the [`toh.json`](https://openwrt.org/toh.json) 
 
 ## Preproduction Sneak Peek
 
-Want a taste of the action before it goes live? Check out the preproduction preview at [https://openwrt.github.io/toh-openwrt-org](https://openwrt.github.io/toh-openwrt-org). Once we’ve ironed out the wrinkles (and maybe added some glitter), it gets unleashed on the official TOH URL: [https://toh.openwrt.org](https://toh.openwrt.org).
+Want a taste of the action before it goes live? 
+
+Check out the [**preproduction preview**](https://openwrt.github.io/toh-openwrt-org) (aka the develop branch). 
+
+Once we’ve ironed out the wrinkles (and maybe added some glitter), it gets unleashed on the official TOH URL: [https://toh.openwrt.org](https://toh.openwrt.org).
 
 ## Contributing - Be the Hero We Need!
 
 This project is begging for your brilliance! Got a knack for code? A flair for design? Or just a burning desire to make routers everywhere proud? Contributions are not just welcome—they’re celebrated with virtual high-fives and eternal glory. Here’s how to join the party:
 - **Pull Requests**: Fix bugs, add features, or just flex your coding muscles—we’re here for it.
 - **Issues**: Spot something wonky? Have a wild idea? Shout it out loud!
-- **JSON Jamming**: Peek at [`toh.json`](https://openwrt.org/toh.json) and tell us how to tame that beast even better.
 
-Fork this repo, tweak it, break it, make it sing—then send us a pull request. Together, we’ll turn the TOH into the stuff of legends. Don’t just sit there—grab your keyboard and let’s make OpenWrt history!
+
+Fork this repo, tweak it, break it, make it sing, then send us a pull request (to the **develop branch**). Together, we’ll turn the TOH into the stuff of legends. Don’t just sit there—grab your keyboard and let’s make OpenWrt history!
