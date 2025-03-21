@@ -1001,10 +1001,10 @@ function positionPreview($link, $container) {
 	var containerHeight = $container.outerHeight();
 	var windowWidth = $(window).width();
 	var windowHeight = $(window).height();
-	var scrollTop = $(window).scrollTop();
+	var scrollTop = $('BODY').scrollTop();
 
 	var left = linkOffset.left + linkWidth + 10; // 10px to the right of the link
-	var top = linkOffset.top;
+	var top = linkOffset.top + scrollTop;
 
 	// Check if the preview would go off the right edge of the window
 	if (left + containerWidth > windowWidth) {
