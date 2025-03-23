@@ -6,7 +6,7 @@
 * Lighter icons for generic images
 * Enhances Help Tips
 * Details view no longer shows generic images
-
+* Highlights OpenWrt own Devices
 
 ## Version 1.73 - 2025-03-20
 

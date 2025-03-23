@@ -1153,6 +1153,20 @@ A.toh-but-clearallfilters{
 
 
 
+/* Highlight OpenWrt own Devices ############################################################# */
+#toh-table .tabulator-row.brand-owrt{
+	background-color: rgba(255, 131, 201, 0.3);
+	border: 1px solid rgba(0,0,0,0.15);
+	border-width: 1px 0;
+	color: #000;
+}
+#toh-table .tabulator-row.brand-owrt:hover{
+	background-color: rgba(255, 131, 201, 0.5);
+}
+
+
+
+
 /* Overrides for "branch-dev" BODY class ############################################################# */
 
 BODY.branch-dev #toh-header-bg,

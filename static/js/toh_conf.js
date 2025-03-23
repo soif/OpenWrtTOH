@@ -57,6 +57,7 @@ let tabulatorOptions={
 	paginationSizeSelector:true,
 	paginationSizeSelector:[10, 20, 30, 40, 50, 75, 100, 200, 300], //enable page size select element with these options
 
+	rowFormatter: _rfRowFormatter,
 	dataLoader: false,				// dont show the table loading overlay
 	columns:[],
 	movableColumns:true,      		//allow column order to be changed
@@ -67,6 +68,8 @@ let tabulatorOptions={
 		tooltip:true,         //show tool tips on cells
 		headerSortTristate:true,
 	},
+
+
 
 	// initialSort:[
 	// 	{column:"brand", dir:"asc"}, 	//sort by this first
@@ -83,6 +86,9 @@ let tabulatorOptions={
 // ########################################################################################################################################
 // Because these functions are referenced in the next colums definitions, we have to declare them first ###################################
 // ########################################################################################################################################
+function _rfRowFormatter(row){
+	return tabuRowFormatter(row);
+}
 
 function _cPopupModel(e, cell, onRendered) {
 	return CellPopupModel(e, cell, onRendered)

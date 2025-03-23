@@ -1986,6 +1986,15 @@ $(document).ready(function () {
 // ############################################################################################################################
 
 
+// Format Tabulator Rows -----------------------------------------------------------
+function tabuRowFormatter(row){
+	var data = row.getData();
+	if(data.brand === "OpenWrt"){
+		row.getElement().classList.add("brand-owrt");
+	}
+}
+
+
 
 // Tabulator: Cell Popup Formatters ###########################################################################################
 function CellPopupModel(e, cell, onRendered) {
