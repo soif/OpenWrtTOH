@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 1.74 - 2025-xx-xx
+
+* fixes Image preview positionning (thanks to @DIlkhush00)
+* lighter icons for generic images
+
+
 ## Version 1.73 - 2025-03-20
 
 * Adds global Search in the header

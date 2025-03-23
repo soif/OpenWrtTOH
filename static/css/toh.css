@@ -788,8 +788,11 @@ A.toh-but:hover,
 	opacity: 0.5;
 	color: red;
 }
-#toh-table .tabulator-cell .cell-image I.generic{
-	opacity: 0.5;
+#toh-table-container .tabulator-cell .cell-image.generic{
+	color: #ccc;
+}
+#toh-table .tabulator-cell .cell-image.generic:hover{
+	color: #666;
 }
 
 /* Image Preview -------------------------------------------- */
@@ -798,11 +801,10 @@ A.toh-but:hover,
 	position: absolute;
 	display: none;
 	z-index: 10005; /* over details popup */
-	border: 1px solid #ccc;
+	border: 1px solid rgba(0,0,0,.3);
 	background-color: #fff;
 	box-shadow: 4px 4px 10px 2px rgba(0,0,0,.2);
 	border-radius: 5px;
-
 }
 #toh-image-preview img {
 	max-width: 300px;

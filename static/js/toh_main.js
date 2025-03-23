@@ -17,7 +17,7 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.73",	// Version
+	version:	"1.74b1",	// Version
 	branch:		"prod", 		// Branch, either: 'prod' | 'dev'	
 };
 
@@ -2187,7 +2187,6 @@ function FormatterImages(cell, formatterParams, onRendered) {
 	var arr = cell.getValue();
 	var url='';
 	var out='';
-	var label='';
 	if (Array.isArray(arr) && arr.length > 0) {
 		arr.forEach((value, index) => {
 			if(value.match(/^http/)){
@@ -2198,12 +2197,11 @@ function FormatterImages(cell, formatterParams, onRendered) {
 				url=owrtUrls.media + value;
 			}
 			if(value.match(/genericrouter1.png$/)){
-				label='<i class="fa-regular fa-image generic"></i>';
+				out +='<a href="' + url + '" target="_blank" class="cell-image generic"><i class="fa-regular fa-image"></i></a> ';
 			}
 			else{
-				label='<i class="fa-solid fa-image"></i>';
+				out +='<a href="' + url + '" target="_blank" class="cell-image"><i class="fa-solid fa-image"></i></a> ';
 			}
-			out +='<a href="' + url + '" target="_blank" class="cell-image">'+label+'</a> ';
 
 			// preload images --------
 			//const img = new Image();
