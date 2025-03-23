@@ -17,7 +17,7 @@
 
 // global app constants ----------
 const toh_app={
-	version:	"1.74b1",	// Version
+	version:	"1.74b2",	// Version
 	branch:		"prod", 		// Branch, either: 'prod' | 'dev'	
 };
 
@@ -2033,7 +2033,7 @@ function CellPopupModel(e, cell, onRendered) {
 			formattedValue = formattedValue instanceof Node ? formattedValue.outerHTML : String(formattedValue);
 			
 			// exclude empty fields
-			if (!formattedValue || formattedValue === 'null' || formattedValue === '-') return true;
+			if (!formattedValue || formattedValue === 'null' || formattedValue === '-' || isGenerigImage(value) ) return true;
 
 			if (!done) {
 				contents += "<table class='toh-details-table'><tr class='toh-details-group-tr'><td colspan=2>" + obj.name + "</td></tr>";
@@ -2183,6 +2183,26 @@ function FormatterEditHwData(cell, formatterParams, onRendered) {
 }
 
 // --------------------------------------------------------
+function isGenerigImage(url){
+	var tmp='';
+	if (typeof url === "string"){
+		tmp=url;
+	}
+	else if(Array.isArray(url) && url.length > 0){
+		tmp=url[0];
+	}
+	else{
+		return false;
+	}
+
+	if(tmp.match(/genericrouter1.png$/)){
+		return true;
+	}
+	return false;
+}
+
+
+// --------------------------------------------------------
 function FormatterImages(cell, formatterParams, onRendered) {
 	var arr = cell.getValue();
 	var url='';
@@ -2196,7 +2216,7 @@ function FormatterImages(cell, formatterParams, onRendered) {
 				value=value.replace(/:/g,'/');
 				url=owrtUrls.media + value;
 			}
-			if(value.match(/genericrouter1.png$/)){
+			if(isGenerigImage(value)){
 				out +='<a href="' + url + '" target="_blank" class="cell-image generic"><i class="fa-regular fa-image"></i></a> ';
 			}
 			else{

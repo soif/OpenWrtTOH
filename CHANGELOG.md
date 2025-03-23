@@ -5,6 +5,7 @@
 * Fixes Image preview positionning (thanks to @DIlkhush00)
 * Lighter icons for generic images
 * Enhances Help Tips
+* Details view no longer shows generic images
 
 
 ## Version 1.73 - 2025-03-20
