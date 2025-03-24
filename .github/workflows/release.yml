@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
 
+# Add permissions at the workflow level
+permissions:
+  contents: write  # Required to create releases
+
 jobs:
   create-release:
     runs-on: ubuntu-latest
@@ -63,7 +67,7 @@ jobs:
         if: steps.check-branch.outputs.on_master == 'true'
         uses: actions/github-script@v6
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const changelog = `${{ steps.changelog.outputs.content }}`;
             const contributors = `${{ steps.contributors.outputs.list }}`;
