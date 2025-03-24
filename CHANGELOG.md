@@ -2,6 +2,7 @@
 
 ## Version 1.75 - 2025-xx-xx
 
+* small CSS improvements
 
 
 ## Version 1.74 - 2025-03-24
