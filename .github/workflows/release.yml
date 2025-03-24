@@ -12,7 +12,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Fetch all history
+
+      - name: Fetch all branches
+        run: |
+          git fetch origin +refs/heads/*:refs/remotes/origin/*
 
       - name: Check if tag is on master
         id: check-branch
@@ -20,7 +24,7 @@ jobs:
           # Get the commit SHA the tag points to
           TAG_COMMIT=$(git rev-parse ${{ github.ref_name }})
           # Check if this commit exists on master
-          if git merge-base --is-ancestor "$TAG_COMMIT" master; then
+          if git merge-base --is-ancestor "$TAG_COMMIT" origin/master; then
             echo "Tag ${{ github.ref_name }} is on master branch"
             echo "on_master=true" >> $GITHUB_OUTPUT
           else
