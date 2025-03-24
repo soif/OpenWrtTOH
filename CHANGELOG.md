@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 1.75 - 2025-xx-xx
+
+
+
 ## Version 1.74 - 2025-03-24
 
 * Fixes Image preview positionning (thanks to @DIlkhush00)
