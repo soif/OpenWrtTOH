@@ -1,0 +1,59 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Changelog Entry
+        id: changelog
+        run: |
+          changelog=$(sed -n '/^## Version /{n; :a;p;n;/^$/q;ba}' CHANGELOG.md | sed '/^$/d')
+          changelog=$'\n'"${changelog}"$'\n'
+          changelog="${changelog//'%'/'%25'}"
+          changelog="${changelog//$'\n'/'%0A'}"
+          changelog="${changelog//$'\r'/'%0D'}"
+          echo "content=$changelog" >> $GITHUB_OUTPUT
+
+      - name: Get Contributors
+        id: contributors
+        run: |
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "none")
+          if [ "$PREVIOUS_TAG" = "none" ]; then
+            contributors=$(git log --format='%an' | sort -u | sed 's/^/* /')
+          else
+            contributors=$(git log ${PREVIOUS_TAG}..HEAD --format='%an' | sort -u | sed 's/^/* /')
+          fi
+          contributors=$'\n'"${contributors}"$'\n'
+          contributors="${contributors//'%'/'%25'}"
+          contributors="${contributors//$'\n'/'%0A'}"
+          contributors="${contributors//$'\r'/'%0D'}"
+          echo "list=$contributors" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const changelog = `${{ steps.changelog.outputs.content }}`;
+            const contributors = `${{ steps.contributors.outputs.list }}`;
+            const tagName = context.ref.replace('refs/tags/', '');
+            
+            await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tagName,
+              name: `Release ${tagName}`,
+              body: `## Changes${changelog}## Contributors${contributors}`,
+              draft: false,
+              prerelease: false
+            });
