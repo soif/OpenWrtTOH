@@ -28,7 +28,7 @@ let toh_firmwares_fetched=false;	// confirm if releases have been fetched
 
 // get my Columns definitions -----------------------------------
 function getMyColumnDefinition(field){
-	let cols=columnStyles;
+	let cols=toh_colStyles;
 	let col={};
 	if(typeof(cols[field]) != 'undefined' ){
 		col=cols[field];
@@ -107,8 +107,8 @@ function htmlFilterDiv(filt,key,is_feature=false){
 // display Filters Presets ------------------------------------------------
 function buildFiltersPresets(){
 	tmp_html='';
-	for (const key in colFilterPresets){
-		tmp_html+=htmlFilterDiv(colFilterPresets[key],key);
+	for (const key in toh_filterPresets){
+		tmp_html+=htmlFilterDiv(toh_filterPresets[key],key);
 	}
 	$('#toh-filters-presets .toh-filters-list').html(tmp_html);
 }
@@ -116,10 +116,10 @@ function buildFiltersPresets(){
 // display Filters Features ------------------------------------------------
 function buildFiltersFeatures(){
 	tmp_html='';
-	for (const group in colFilterGroups){
-		tmp_html +=htmlGroup(colFilterGroups[group].title,group,'filt');
-		colFilterGroups[group].members.forEach(filt => {
-			tmp_html +=htmlFilterDiv(colFilterFeatures[filt],filt,true);
+	for (const group in toh_filterGroups){
+		tmp_html +=htmlGroup(toh_filterGroups[group].title,group,'filt');
+		toh_filterGroups[group].members.forEach(filt => {
+			tmp_html +=htmlFilterDiv(toh_filterFeatures[filt],filt,true);
 		});
 		tmp_html +="</ul>\n</div>\n";
 	}
@@ -128,13 +128,13 @@ function buildFiltersFeatures(){
 
 // Formats one Filter description -------------------------------------
 function formatFilterDesc(filter){
-	var title=columnStyles[filter.field].title;
+	var title=toh_colStyles[filter.field].title;
 	return title + " " + filter.type + " '" +filter.value + "'"; 
 }
 
 // Makes the Feature Tooltip ------------------------------------------
 function makeFeatureDescription(key){
-	var features=colFilterFeatures[key];
+	var features=toh_filterFeatures[key];
 	var desc='';
 	var done_and=false;
 	var done_or=false;
@@ -266,7 +266,7 @@ function applyCheckedFeatures(){
 	myLogObj(features,'checked features');
 	var filters=[];
 	features.forEach(feat => {
-		var feat_filters=colFilterFeatures[feat].filters;
+		var feat_filters=toh_filterFeatures[feat].filters;
 		feat_filters.forEach(filt => {
 			if(typeof filt === 'object'){
 				filters.push(filt);
@@ -300,11 +300,11 @@ function reorderFilters(filters) {
 // get filters array (also merge features filters for Presets)--------------------
 function getFilterSet(type, key){
 	myLogFunc();
-	if(type=='preset' && key in colFilterPresets){
-		var set=JSON.parse(JSON.stringify(colFilterPresets[key])); // makes a clone
+	if(type=='preset' && key in toh_filterPresets){
+		var set=JSON.parse(JSON.stringify(toh_filterPresets[key])); // makes a clone
 	}
-	else if(type=='feature' && key in colFilterFeatures){
-		var set=JSON.parse(JSON.stringify(colFilterFeatures[key])); // makes a clone
+	else if(type=='feature' && key in toh_filterFeatures){
+		var set=JSON.parse(JSON.stringify(toh_filterFeatures[key])); // makes a clone
 	}
 	else{
 		myLogStr('getFilterSet - Type: '+ type +', Unknown key: "'+key+'"');
@@ -316,7 +316,7 @@ function getFilterSet(type, key){
 		if( typeof(set.features) =='object'){ // cant we write it shorter ?
 			$.each(set.features,function(i,fv){
 				// myLogStr(i+'->'+fv,4);
-				$.each(colFilterFeatures[fv].filters,function(j,filt){
+				$.each(toh_filterFeatures[fv].filters,function(j,filt){
 					set.filters.push(filt);
 				});
 			});
@@ -331,7 +331,7 @@ function getFilterSet(type, key){
 
 // preload DB images -----------------------------------------------
 function PreLoadImagesCache(){
-	if(!prefs.preload){
+	if(!toh_prefs.preload){
 		return;
 	}
 	toh_img_urls.forEach(url => {
@@ -385,7 +385,7 @@ function buildViewsPresets(){
 	tmp_html+=htmlFilterPresetButton('toh-view toh-view-custom','custom');
 	tmp_html+=htmlFilterPresetButton('toh-view','all');
 	tmp_html+=htmlFilterPresetButton('toh-view','none');
-	for (const key in colViewPresets){
+	for (const key in toh_colPresets){
 		tmp_html+=htmlFilterPresetButton('toh-view',key);
 	}
 	$('#toh-cols-presets').html(tmp_html);
@@ -398,7 +398,7 @@ function buildViewsColumns(){
 	let col={};
 
 	// display known (on Prefs) fields
-	$.each(colViewGroups,function(key,arr){
+	$.each(toh_colGroups,function(key,arr){
 		view +=htmlGroup(arr.name,key,'view');
 		$.each(arr.fields,function(k,field){
 			col=tabuTable.getColumn(field);
@@ -519,7 +519,7 @@ function getColumnSet(key){
 	myLogFunc();
 	set=[];
 	if(key=='all'){
-		$.each(colViewPresets,function(k,col){
+		$.each(toh_colPresets,function(k,col){
 			if(!set.includes(col)){
 				set.push(col);
 			}
@@ -528,8 +528,8 @@ function getColumnSet(key){
 	else if (key=='none'){
 		set=[];
 	}
-	else if(typeof(colViewPresets[key]) !='undefined'){
-		set=colViewPresets[key];
+	else if(typeof(toh_colPresets[key]) !='undefined'){
+		set=toh_colPresets[key];
 	}
 	return set;
 }
@@ -666,24 +666,24 @@ function buildBrowserUrl(and_update=true){
 	// make features
 	tmp_preset=$('#toh-filters-presets A.toh-selected').attr('data-key');
 	if(tmp_preset !=undefined){
-		params.push(prefs.p_filter+'='+tmp_preset);
+		params.push(toh_prefs.p_filter+'='+tmp_preset);
 	}
 	else{
 		tmp_list= getCheckedFeatures();
 		if(tmp_list.length>0){
-			params.push( prefs.p_features+'='+tmp_list.join(",") );
+			params.push( toh_prefs.p_features+'='+tmp_list.join(",") );
 		}
 	}
 
 	// make colums
 	tmp_preset=$('#toh-cols-presets A.toh-selected').attr('data-key');
 	if(tmp_preset !=undefined && tmp_preset !='custom'){
-		params.push(prefs.p_view+'='+tmp_preset);
+		params.push(toh_prefs.p_view+'='+tmp_preset);
 	}
 	else{
 		tmp_list= getCheckedColumns();
 		if(tmp_list.length>0){
-			params.push( prefs.p_columns+'='+tmp_list.join(",") );
+			params.push( toh_prefs.p_columns+'='+tmp_list.join(",") );
 		}  
 	}
 
@@ -703,7 +703,7 @@ function buildBrowserUrl(and_update=true){
 // save a cookie ---------------------------------------------------
 function saveCookie(c_name, content, do_delete=false, type='json'){
 	myLogFunc();
-	var c_path=prefs.cook_path;
+	var c_path=toh_prefs.cook_path;
 	if(c_path==''){
 		c_path=window.location.pathname;
 	}
@@ -711,11 +711,11 @@ function saveCookie(c_name, content, do_delete=false, type='json'){
 	if(type=='json'){
 		c_content=JSON.stringify(content);
 	}
-	var dur=prefs.cook_duration;
+	var dur=toh_prefs.cook_duration;
 	if(do_delete){
 		dur=0;
 	}
-	document.cookie = prefs.cook_prefix + c_name + "=" + encodeURIComponent(c_content) + "; max-age="+dur+"; path="+c_path;
+	document.cookie = toh_prefs.cook_prefix + c_name + "=" + encodeURIComponent(c_content) + "; max-age="+dur+"; path="+c_path;
 }
 
 // extract a cookie from the list---------------------------------------------------
@@ -729,7 +729,7 @@ function _extractCookie(name) {
 // load a cookie ---------------------------------------------------
 function loadCookie(c_name, type='json'){
 	myLogFunc('loadCookie name: '+c_name);
-	var cookie=_extractCookie(prefs.cook_prefix + c_name);
+	var cookie=_extractCookie(toh_prefs.cook_prefix + c_name);
 	myLogStr('result: '+cookie);
 
 	if(cookie){
@@ -751,8 +751,8 @@ function loadPresetCookies(type){ //'features' or 'columns'
 	myLogFunc('loadCookie name: '+type);
 	var c_value	='';
 
-	for (let i = 1; i <= prefs.cook_preset_count; i++) {
-		c_value=loadCookie(prefs['cook_name_'+type]+i);
+	for (let i = 1; i <= toh_prefs.cook_preset_count; i++) {
+		c_value=loadCookie(toh_prefs['cook_name_'+type]+i);
 		myLogStr('p'+i+' / '+c_value,4);
 		if(typeof(toh_cookies[type]) !='object'){
 			myLogStr('create type:'+type,4);
@@ -782,12 +782,12 @@ function storePresetCookie(type, number=0, name='user'){ // type= 'features' or 
 	};
 	if(type=='features'){
 		preset.list=getCheckedFeatures();
-		saveCookie(prefs.cook_name_features+number, preset);
+		saveCookie(toh_prefs.cook_name_features+number, preset);
 		toh_cookies[type][number]=preset;
 	}
 	else if(type=='columns'){
 		preset.list=getCheckedColumns();
-		saveCookie(prefs.cook_name_columns+number, preset);
+		saveCookie(toh_prefs.cook_name_columns+number, preset);
 		toh_cookies[type][number]=preset;
 	}
 	myLogObj(preset.list,'preset.list',4);
@@ -796,10 +796,10 @@ function storePresetCookie(type, number=0, name='user'){ // type= 'features' or 
 // Delete User Preset Cookie --------------------------
 function deletePresetCookie(type, number){
 	if(type=='features'){
-		saveCookie(prefs.cook_name_features+number, false,true);
+		saveCookie(toh_prefs.cook_name_features+number, false,true);
 	}
 	else if(type=='columns'){
-		saveCookie(prefs.cook_name_columns+number, false,true);
+		saveCookie(toh_prefs.cook_name_columns+number, false,true);
 	}
 }
 
@@ -818,7 +818,7 @@ function buildUserPresets(type){// type= 'features' or 'columns'
 	else{
 		return false;
 	}
-	for (let i = 1; i <= prefs.cook_preset_count; i++) {
+	for (let i = 1; i <= toh_prefs.cook_preset_count; i++) {
 		myLogStr('pr'+i,4);
 		var myclass='';
 		if(typeof(toh_cookies[type][i])=='object'){
@@ -880,7 +880,7 @@ function loadCookiesAndBuildUserPresets(){
 	loadPresetCookies('columns');
 	buildUserPresets('features');
 	buildUserPresets('columns');
-	$(".toh-upresets-title A").prop('title',prefs.tooltip_upreset);
+	$(".toh-upresets-title A").prop('title',toh_prefs.tooltip_upreset);
 	
 }
 
@@ -953,10 +953,10 @@ function getCallerName() {
 async function FetchReleases() {
 	try {
 		const versionData = await $.ajax({
-			url: owrtUrls.firm_versions,
+			url: toh_urls.firm_versions,
 			method: 'GET'
 		});
-		const cur_url = owrtUrls.firm_releases.replace('VERSION', versionData.stable_version);
+		const cur_url = toh_urls.firm_releases.replace('VERSION', versionData.stable_version);
 
 		const releaseData = await $.ajax({
 			url: cur_url,
@@ -974,7 +974,7 @@ async function FetchReleases() {
 function GetFirmwareSelectUrl(id, target) {
 	const found= toh_firmwares.some(item => item.id == id && item.target == target);
 	if(found){
-		return owrtUrls.firm_select + '?target='+ target + "&id=" + id;
+		return toh_urls.firm_select + '?target='+ target + "&id=" + id;
 	}
 	return false;
 }
@@ -1081,12 +1081,12 @@ function SetDefaults(){
 	myLogFunc();
 
 	//show presets
-	if(prefs.def_show_filters){
+	if(toh_prefs.def_show_filters){
 		$(".toh-filters-but-toggle").trigger('click');
 	}
 
 	//show views
-	if(prefs.def_show_views){
+	if(toh_prefs.def_show_views){
 		$(".toh-cols-but-toggle").trigger('click');
 	}
 
@@ -1094,12 +1094,12 @@ function SetDefaults(){
 	var tmp_arr;
 		
 	//columns or columns preset
-	tmp_value=getUrlParameter(prefs.p_columns);
+	tmp_value=getUrlParameter(toh_prefs.p_columns);
 	if(tmp_value == ''){
 		// set preset
-		tmp_value=getUrlParameterOrDefault(prefs.p_view, prefs.def_view);
+		tmp_value=getUrlParameterOrDefault(toh_prefs.p_view, toh_prefs.def_view);
 		if(getColumnSet(tmp_value).length == 0){
-			tmp_value=prefs.def_view;
+			tmp_value=toh_prefs.def_view;
 		}
 		applyColumnPreset(tmp_value);
 	}
@@ -1111,11 +1111,11 @@ function SetDefaults(){
 	}
 		
 	//features or filter preset
-	tmp_value=getUrlParameter(prefs.p_features);
+	tmp_value=getUrlParameter(toh_prefs.p_features);
 	if(tmp_value == ''){
 		myLogStr('Set Filter Preset',4);
 		// set preset
-		tmp_value=getUrlParameterOrDefault(prefs.p_filter, prefs.def_filter);
+		tmp_value=getUrlParameterOrDefault(toh_prefs.p_filter, toh_prefs.def_filter);
 		applyFilterPreset(tmp_value);
 		//myLogStr('DONE',4);
 	}
@@ -1168,7 +1168,7 @@ function createIndexedObject(arrayOfObjects, key) {
 */
 // get Vitual Columns ------------------------------------------------------
 function getVirtualColumns() {
-	return Object.entries(columnStyles)
+	return Object.entries(toh_colStyles)
 		.filter(([key]) => key.startsWith("VIRT_"))
 		.map(([f, value]) => ({
 			field: f,			// needed to allow col.getDefinition() to work
@@ -1314,9 +1314,9 @@ $(document).ready(function () {
 	});
 	
 
-	// make column order from the colViewGroups ------------------------------
+	// make column order from the toh_colGroups ------------------------------
 	let columnOrder=[];
-	$.each(colViewGroups,function(key,obj){
+	$.each(toh_colGroups,function(key,obj){
 		$.each(obj.fields,function(f,field){
 			columnOrder.push(field);
 		});
@@ -1339,13 +1339,13 @@ $(document).ready(function () {
 	// Fetch content and build table ----------------------------------
 	$('#toh-load-text').html('Fetching TOH devices...');
 	FetchReleases().then(() => {
-		$.getJSON( owrtUrls.toh_json, function( data ){ 
+		$.getJSON( toh_urls.toh_json, function( data ){ 
 			//Makes columns
 			var columns = data.columns.map((value, index) => ({
 				field: value,
 				title: data.captions[index],
 				visible: false,
-				...columnStyles[value]
+				...toh_colStyles[value]
 			}));
 
 			// add vitual (not linked to existing fields) columns 
@@ -1499,7 +1499,7 @@ $(document).ready(function () {
 			$input.focus(); // nedd to be AFTER popup.show
 			
 			//set max
-			var max=prefs.cook_max_chars;
+			var max=toh_prefs.cook_max_chars;
 			$('#toh-upreset-popup-max').html(max);
 			$input.attr('size',max);
 		
@@ -2000,7 +2000,7 @@ function CellPopupModel(e, cell, onRendered) {
 	columns.forEach(col => columnMap[col.getField()] = col);
 
 	// Iterate through column groups, excluding 'base'
-	const { base, ...myColGroups } = colViewGroups;
+	const { base, ...myColGroups } = toh_colGroups;
 	$.each(myColGroups, function(key, obj) {
 		var done = false;
 		$.each(obj.fields, function(f, field) {
@@ -2105,7 +2105,7 @@ function FormatterLink(cell, params, onRendered) {
 
 	//specific Links
 	if(field=='devicepage'){
-		url= url ? owrtUrls.www + url.replace(/:/g,'/') : '';
+		url= url ? toh_urls.www + url.replace(/:/g,'/') : '';
 	}
 	else if(field=='VIRT_hwdata'){
 		const devid=cell.getRow().getData().deviceid;
@@ -2159,7 +2159,7 @@ function FormatterLinkCommit(cell, params={}, onRendered) {
 		params.ttip='Github Commit';
 		if(label){params.label=params.ttip;}
 		params.ttip +=" "+commit;
-		params.url=owrtUrls.github_commit + commit;
+		params.url=toh_urls.github_commit + commit;
 		html +=FormatterLink(cell, params, onRendered);
 
 		return html;
@@ -2210,7 +2210,7 @@ function FormatterImages(cell, formatterParams, onRendered) {
 			}
 			else{
 				value=value.replace(/:/g,'/');
-				url=owrtUrls.media + value;
+				url=toh_urls.media + value;
 			}
 			if(isGenerigImage(value)){
 				out +='<a href="' + url + '" target="_blank" class="cell-image generic"><i class="fa-regular fa-image"></i></a> ';
@@ -2437,7 +2437,7 @@ function SorterRam(a, b, aRow, bRow, column, dir, sorterParams){
 // --------------------------------------------------------
 function _maketHwDataUrl(deviceid){
 	const [brand, model] = deviceid.split(":");
-	return owrtUrls.hwdata + brand + '/' + model;
+	return toh_urls.hwdata + brand + '/' + model;
 }
 
 // get the best value to use in sort/filter of the 'flashmb' column ----------------------

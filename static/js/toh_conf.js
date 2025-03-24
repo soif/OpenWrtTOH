@@ -18,7 +18,7 @@ var toh_debug_level=1;
 
 
 // Urls --------------------------------------------------------
-const owrtUrls={
+const toh_urls={
 	www: 			"https://openwrt.org/",
 	hwdata: 		"https://openwrt.org/toh/hwdata/",
 	firm_select: 	"https://firmware-selector.openwrt.org/",
@@ -32,7 +32,7 @@ const owrtUrls={
 }
 
 // Preferences --------------------------------------------------
-const prefs={
+const toh_prefs={
 	def_filter: 	'',					// default Filter Preset
 	def_features: 	'',					// default Features (list ',' separated)
 	def_view: 		'normal',			// default Columns View Preset
@@ -101,7 +101,7 @@ let tabulatorOptions={
 // ##########################################################################################################################################################
 let colFilterMin={headerFilterPlaceholder:"Minimum", headerFilterFunc:">="};
 
-let columnStyles = {
+let toh_colStyles = {
 //	|toh field,							|Col Name				|Full Name										|width		|Horinzontal Align	|sorter type		|stay left		|formatter						|formatterParams				|misc options
     brand:								{title: "Brand",		headerTooltip: 'Brand',							width: 100,	hozAlign: 'left',	sorter: undefined,	frozen: true,	formatter: undefined,			formatterParams: undefined,		clickPopup: _cPopupModel},
     model:								{title: "Model",		headerTooltip: 'Model',							width: 100,	hozAlign: 'left',	sorter: undefined,	frozen: true,	formatter: undefined,			formatterParams: undefined,		clickPopup: _cPopupModel},
@@ -136,8 +136,8 @@ let columnStyles = {
     firmwareopenwrtsnapshotinstallurl:	{title: "S.Install",	headerTooltip: 'OpenWrt Snapshot Install',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-camera', ttip:'Download Installation Snapshot'},	headerFilter: false, tooltip: false},
     firmwareopenwrtsnapshotupgradeurl:	{title: "S.Upgrade",	headerTooltip: 'OpenWrt Snapshot Upgrade',		width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-camera', ttip:'Download Upgrade Snapshot'},	headerFilter: false, tooltip: false},
     flashmb:							{title: "Flash",		headerTooltip: 'Flash Memory (Mb)',				width: 90,	hozAlign: 'right',	sorter: _sorterFlash,frozen: false,	formatter: _formatArray,		formatterParams: undefined, headerFilter:_hFilterFlash, headerFilterFunc:_hFilFuncFlash, headerFilterLiveFilter:false },	// , cellClick:cellDebug  , headerFilterEmptyCheck:HeaderFilterEmpty
-    forumsearch:						{title: "S.Forum",		headerTooltip: 'Search in Forums',				width: 40,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-regular fa-user', ttip:'Forum Search Page', prefix:owrtUrls.forum_search},	headerFilter: false, tooltip: false},	
-    gitsearch:							{title: "Git Search",	headerTooltip: 'Git Search',					width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-code', ttip:'Github Search Page', prefix:owrtUrls.git_search},	headerFilter: false, tooltip: false},	
+    forumsearch:						{title: "S.Forum",		headerTooltip: 'Search in Forums',				width: 40,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-regular fa-user', ttip:'Forum Search Page', prefix:toh_urls.forum_search},	headerFilter: false, tooltip: false},	
+    gitsearch:							{title: "Git Search",	headerTooltip: 'Git Search',					width: 35,	hozAlign: 'center',	sorter: 'string',	frozen: false,	formatter: _formatLink,		formatterParams: {icon: 'fa-solid fa-code', ttip:'Github Search Page', prefix:toh_urls.git_search},	headerFilter: false, tooltip: false},	
     gpios:								{title: "GPIOs",		headerTooltip: 'GPIOs',							width: 40,	hozAlign: 'right',	sorter: 'string',	frozen: false,	formatter: _formatCleanWords,	formatterParams: undefined,		...colFilterMin},
     installationmethods:				{title: "Inst.Method",	headerTooltip: 'Installation method(s)',		width: 90,	hozAlign: 'left',	sorter: 'string',	frozen: false,	formatter: undefined,			formatterParams: undefined},	
     jtag:								{title: "JTAG",			headerTooltip: 'has JTAG?',						width: 40,	hozAlign: 'right',	sorter: undefined,	frozen: false,	formatter: _formatYesNo,		formatterParams: undefined},	
@@ -192,7 +192,7 @@ let columnStyles = {
 // ##########################################################################################################################################################
 
 // View Groups ---------------------------------------------------------------------------------------------
-let colViewGroups={
+let toh_colGroups={
 	base:{
 		name: 'Main',
 		fields:[
@@ -347,20 +347,20 @@ let colViewGroups={
 
 
 // View Presets --------------------------------------------------------------------------------------------
-let colViewPresets={
+let toh_colPresets={
 	normal:	[
-		...colViewGroups.base.fields,
-		...colViewGroups.hardware_main.fields,
-		...colViewGroups.network.fields,
-		...colViewGroups.wifi.fields,
+		...toh_colGroups.base.fields,
+		...toh_colGroups.hardware_main.fields,
+		...toh_colGroups.network.fields,
+		...toh_colGroups.wifi.fields,
 		'VIRT_firm',
 		'firmwareopenwrtinstallurl',
 		'firmwareopenwrtupgradeurl',
-		...colViewGroups.links.fields,
+		...toh_colGroups.links.fields,
 		'picture',
 	],
 	mini:	[
-		...colViewGroups.base.fields,
+		...toh_colGroups.base.fields,
 		'cpu',
 		'cpucores',
 		'cpumhz',
@@ -380,36 +380,36 @@ let colViewPresets={
 		'picture'
 		],
 	hardware:	[
-		...colViewGroups.base.fields,
-		...colViewGroups.hardware_main.fields,
-		...colViewGroups.ports.fields,
-		...colViewGroups.features.fields,
+		...toh_colGroups.base.fields,
+		...toh_colGroups.hardware_main.fields,
+		...toh_colGroups.ports.fields,
+		...toh_colGroups.features.fields,
 	],
 	network:	[
-		...colViewGroups.base.fields,
-		...colViewGroups.ethernet.fields,
-		...colViewGroups.network.fields,
-		...colViewGroups.wifi.fields,
+		...toh_colGroups.base.fields,
+		...toh_colGroups.ethernet.fields,
+		...toh_colGroups.network.fields,
+		...toh_colGroups.wifi.fields,
 	],
 	links:	[
-		...colViewGroups.base.fields,
-		...colViewGroups.links.fields,
-		...colViewGroups.downloads.fields,
+		...toh_colGroups.base.fields,
+		...toh_colGroups.links.fields,
+		...toh_colGroups.downloads.fields,
 	],
 	software:	[
-		...colViewGroups.base.fields,
-		...colViewGroups.openwrt.fields,
-		...colViewGroups.software.fields,
+		...toh_colGroups.base.fields,
+		...toh_colGroups.openwrt.fields,
+		...toh_colGroups.software.fields,
 	],
 	misc:	[
-		...colViewGroups.base.fields,
-		...colViewGroups.misc.fields,
+		...toh_colGroups.base.fields,
+		...toh_colGroups.misc.fields,
 	],
 };
 
 
 // removes some columns in the normal (groups based) preset ----
-const normal_to_remove=[
+const normal_cols_to_remove=[
 	'switch',
 	'wlanhardware',
 	'sfp_ports',
@@ -420,7 +420,7 @@ const normal_to_remove=[
 	'forumsearch',
 	'fccid',
 ];
-colViewPresets.normal = colViewPresets.normal.filter(item => !normal_to_remove.includes(item));
+toh_colPresets.normal = toh_colPresets.normal.filter(item => !normal_cols_to_remove.includes(item));
 
 
 
@@ -430,7 +430,7 @@ colViewPresets.normal = colViewPresets.normal.filter(item => !normal_to_remove.i
 // ##########################################################################################################################################################
 
 // Filter Groups ---------------------------------------------------------------------------------------------
-let colFilterGroups={
+let toh_filterGroups={
 	network:{
 		title:"Network",
 		members:[
@@ -533,7 +533,7 @@ let colFilterGroups={
 };
 
 // Filter Features -------------------------------------------------------------------------------------------
-let colFilterFeatures={
+let toh_filterFeatures={
 
 	// normal features -------------------------------
 	antennas:{
@@ -1003,7 +1003,7 @@ let colFilterFeatures={
 
 
 // Filter Presets --------------------------------------------------------------------------------------------
-let colFilterPresets={
+let toh_filterPresets={
 	
 	minimum_1664_ac_avail: {
 		title:"Mini, AC, Avail.",
@@ -1087,9 +1087,12 @@ let colFilterPresets={
 
 
 
+
+
 // ########################################################################################################################################
 // # functions referenced in colums definitions & tabulatorOptions  #######################################################################
 // ########################################################################################################################################
+
 function _rfRowFormatter(row){
 	return tabuRowFormatter(row);
 }
@@ -1142,5 +1145,3 @@ function _formatArray(cell, formatterParams, onRendered) {
 function _formatYesNo(cell, formatterParams, onRendered) {
 	return FormatterYesNo(cell, formatterParams, onRendered);
 }
-
-
