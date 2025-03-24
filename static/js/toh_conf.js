@@ -2,8 +2,23 @@
 // Configuration ############################################################################################################################################
 // ##########################################################################################################################################################
 
+// global -------------------------------------------------------
+const toh_app={
+	version:	"1.74b3",	// Version
+	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
+};
+
+// set the log level displayed in the console :
+// 0=none
+// 1=info
+// 2=debug
+// 3=verbose
+// 4=more verbose
+var toh_debug_level=1; 
+
+
 // Urls --------------------------------------------------------
-let owrtUrls={
+const owrtUrls={
 	www: 			"https://openwrt.org/",
 	hwdata: 		"https://openwrt.org/toh/hwdata/",
 	firm_select: 	"https://firmware-selector.openwrt.org/",
@@ -17,7 +32,7 @@ let owrtUrls={
 }
 
 // Preferences --------------------------------------------------
-let prefs={
+const prefs={
 	def_filter: 	'',					// default Filter Preset
 	def_features: 	'',					// default Features (list ',' separated)
 	def_view: 		'normal',			// default Columns View Preset
@@ -69,8 +84,6 @@ let tabulatorOptions={
 		headerSortTristate:true,
 	},
 
-
-
 	// initialSort:[
 	// 	{column:"brand", dir:"asc"}, 	//sort by this first
 	// 	{column:"model", dir:"desc"}, //then sort by this second
@@ -81,63 +94,6 @@ let tabulatorOptions={
 };
 
 
-
-
-// ########################################################################################################################################
-// Because these functions are referenced in the next colums definitions, we have to declare them first ###################################
-// ########################################################################################################################################
-function _rfRowFormatter(row){
-	return tabuRowFormatter(row);
-}
-
-function _cPopupModel(e, cell, onRendered) {
-	return CellPopupModel(e, cell, onRendered)
-}
-
-
-function _hFilterFlash(cell, onRendered, success, cancel, editorParams){
-	return HeaderFilterFlash(cell, onRendered, success, cancel, editorParams);
-}
-function _hFilFuncFlash(headerValue, rowValue, rowData, filterParams){
-	return HeaderFilterFuncFlash(headerValue, rowValue, rowData, filterParams);
-}
-function _hFilFuncRamMb(headerValue, rowValue, rowData, filterParams){
-	return HeaderFilterFuncRamMb(headerValue, rowValue, rowData, filterParams);
-}
-
-
-function _sorterFlash(a, b, aRow, bRow, column, dir, sorterParams){
-	return SorterFlash(a, b, aRow, bRow, column, dir, sorterParams);
-}
-function _sorterRam(a, b, aRow, bRow, column, dir, sorterParams){
-	return SorterRam(a, b, aRow, bRow, column, dir, sorterParams);
-}
-
-
-function _formatLink(cell, params, onRendered) {
-	return FormatterLink(cell, params, onRendered);
-}
-function _formatLinkCommit(cell, params, onRendered) {
-	return FormatterLinkCommit(cell, params, onRendered);
-}
-function _formatEditHwData(cell, formatterParams, onRendered) {
-	return FormatterEditHwData(cell, formatterParams, onRendered);
-}
-function _formatImages(cell, formatterParams, onRendered) {
-	return FormatterImages(cell, formatterParams, onRendered);
-}
-function _formatCleanEmpty(cell, formatterParams, onRendered) {
-	return FormatterCleanEmpty(cell, formatterParams, onRendered);
-}
-function _formatCleanWords(cell, formatterParams, onRendered) {
-	return FormatterCleanWords(cell, formatterParams, onRendered);
-}
-function _formatArray(cell, formatterParams, onRendered) {
-	return FormatterArray(cell, formatterParams, onRendered);
-}
-function _formatYesNo(cell, formatterParams, onRendered) {
-	return FormatterYesNo(cell, formatterParams, onRendered);
-}
 
 
 // ##########################################################################################################################################################
@@ -1128,3 +1084,63 @@ let colFilterPresets={
 	},
 
 };
+
+
+
+// ########################################################################################################################################
+// # functions referenced in colums definitions & tabulatorOptions  #######################################################################
+// ########################################################################################################################################
+function _rfRowFormatter(row){
+	return tabuRowFormatter(row);
+}
+
+function _cPopupModel(e, cell, onRendered) {
+	return CellPopupModel(e, cell, onRendered)
+}
+
+
+function _hFilterFlash(cell, onRendered, success, cancel, editorParams){
+	return HeaderFilterFlash(cell, onRendered, success, cancel, editorParams);
+}
+function _hFilFuncFlash(headerValue, rowValue, rowData, filterParams){
+	return HeaderFilterFuncFlash(headerValue, rowValue, rowData, filterParams);
+}
+function _hFilFuncRamMb(headerValue, rowValue, rowData, filterParams){
+	return HeaderFilterFuncRamMb(headerValue, rowValue, rowData, filterParams);
+}
+
+
+function _sorterFlash(a, b, aRow, bRow, column, dir, sorterParams){
+	return SorterFlash(a, b, aRow, bRow, column, dir, sorterParams);
+}
+function _sorterRam(a, b, aRow, bRow, column, dir, sorterParams){
+	return SorterRam(a, b, aRow, bRow, column, dir, sorterParams);
+}
+
+
+function _formatLink(cell, params, onRendered) {
+	return FormatterLink(cell, params, onRendered);
+}
+function _formatLinkCommit(cell, params, onRendered) {
+	return FormatterLinkCommit(cell, params, onRendered);
+}
+function _formatEditHwData(cell, formatterParams, onRendered) {
+	return FormatterEditHwData(cell, formatterParams, onRendered);
+}
+function _formatImages(cell, formatterParams, onRendered) {
+	return FormatterImages(cell, formatterParams, onRendered);
+}
+function _formatCleanEmpty(cell, formatterParams, onRendered) {
+	return FormatterCleanEmpty(cell, formatterParams, onRendered);
+}
+function _formatCleanWords(cell, formatterParams, onRendered) {
+	return FormatterCleanWords(cell, formatterParams, onRendered);
+}
+function _formatArray(cell, formatterParams, onRendered) {
+	return FormatterArray(cell, formatterParams, onRendered);
+}
+function _formatYesNo(cell, formatterParams, onRendered) {
+	return FormatterYesNo(cell, formatterParams, onRendered);
+}
+
+

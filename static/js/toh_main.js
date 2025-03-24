@@ -15,19 +15,6 @@
 
 // variables ##################################################################################################################
 
-// global app constants ----------
-const toh_app={
-	version:	"1.74b2",	// Version
-	branch:		"prod", 		// Branch, either: 'prod' | 'dev'	
-};
-
-// set the log level displayed in the console :
-// 0=none
-// 1=info
-// 2=debug
-// 3=verbose
-// 4=more verbose
-var toh_debug_level=1; 
 
 const toh_img_urls=[];	// holds all images urls
 
