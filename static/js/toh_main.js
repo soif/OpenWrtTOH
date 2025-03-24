@@ -2047,7 +2047,18 @@ function CellPopupModel(e, cell, onRendered) {
 	popup.className = "toh-details-container";
 	popup.innerHTML = contents;
 	popup.style.opacity = 0;
-
+	
+	// make left
+	const windowTopPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+	let leftMargin=246;	// 46;	
+	if(window.innerWidth < 500){
+		 leftMargin=7;
+	}
+	else if (window.innerWidth < 840){
+		 leftMargin=146;
+	}
+	var leftPosition = Math.min(leftMargin, window.innerWidth - popup.offsetWidth - 10);
+	popup.style.left = leftPosition + "px";
 
 	// Get the row element to manage its class
 	var row = cell.getRow();
@@ -2058,10 +2069,8 @@ function CellPopupModel(e, cell, onRendered) {
 		setTimeout(() => {
 			//Add class to the row when popup is shown
 			rowElement.classList.add("popup-active");
-			const windowTopPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-			var leftPosition = Math.min(46, window.innerWidth - popup.offsetWidth - 10);
-			
 			popup.style.left = leftPosition + "px";
+
 			popup.style.right = "auto";
 			//popup.style.top = e.clientY + "px";
 			popup.style.top =(windowTopPosition +20)+'px';

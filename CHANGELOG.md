@@ -7,6 +7,8 @@
 * Enhances Help Tips
 * Details view no longer shows generic images
 * Highlights OpenWrt own Devices
+* Details popup left position is now responsive
+
 
 ## Version 1.73 - 2025-03-20
 
