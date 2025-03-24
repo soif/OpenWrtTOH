@@ -77,7 +77,7 @@ jobs:
               repo: context.repo.repo,
               tag_name: tagName,
               name: `Release ${tagName}`,
-              body: `## Changes${changelog}## Contributors${contributors}`,
+              body: `### Changes${changelog}### Contributors${contributors}`,
               draft: false,
               prerelease: false
             });
