@@ -14,7 +14,22 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check if tag is on master
+        id: check-branch
+        run: |
+          # Get the commit SHA the tag points to
+          TAG_COMMIT=$(git rev-parse ${{ github.ref_name }})
+          # Check if this commit exists on master
+          if git merge-base --is-ancestor "$TAG_COMMIT" master; then
+            echo "Tag ${{ github.ref_name }} is on master branch"
+            echo "on_master=true" >> $GITHUB_OUTPUT
+          else
+            echo "Tag ${{ github.ref_name }} is not on master branch, skipping"
+            echo "on_master=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Get Changelog Entry
+        if: steps.check-branch.outputs.on_master == 'true'
         id: changelog
         run: |
           changelog=$(sed -n '/^## Version /{n; :a;p;n;/^$/q;ba}' CHANGELOG.md | sed '/^$/d')
@@ -25,6 +40,7 @@ jobs:
           echo "content=$changelog" >> $GITHUB_OUTPUT
 
       - name: Get Contributors
+        if: steps.check-branch.outputs.on_master == 'true'
         id: contributors
         run: |
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "none")
@@ -40,6 +56,7 @@ jobs:
           echo "list=$contributors" >> $GITHUB_OUTPUT
 
       - name: Create Release
+        if: steps.check-branch.outputs.on_master == 'true'
         uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
