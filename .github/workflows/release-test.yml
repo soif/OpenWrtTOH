@@ -12,6 +12,7 @@ jobs:
   test-release:
     runs-on: ubuntu-latest
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -161,5 +162,3 @@ jobs:
         id: display
         run: |
           echo "${{ steps.body.outputs.content }}"
-
-
