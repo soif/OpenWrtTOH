@@ -901,7 +901,10 @@ background-color: #ddf;
 #toh-table .tabulator-footer .tabulator-page-counter{
 	color: #999;
 }
-
+#toh-table .tabulator-footer .tabulator-paginator LABEL{
+	font-weight: normal;
+	color: #777;
+}
 #toh-table .tabulator-footer .tabulator-page-size{
 	margin-right: 15px;
 }
