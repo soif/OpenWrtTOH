@@ -107,9 +107,11 @@ jobs:
           declare -A username_to_count
           declare -A username_to_name
           while IFS='|' read -r hash email username message; do
-            echo "Processing line: $hash|$email|$username|$message"  # Debug loop start
-            # Strip quotes from message for processing
-            message="${message//\"}"
+            echo "Processing line: $hash|$email|$username|$message"
+            # Strip leading and trailing quotes from message
+            message="${message#\"}"  # Remove leading quote
+            message="${message%\"}"  # Remove trailing quote
+            echo "Message after stripping quotes: $message"
             if [[ -n "$username" ]]; then
               ((username_to_count["$username"]++))
               username_to_name["$username"]="${email_to_name[$email]}"
@@ -136,8 +138,9 @@ jobs:
 
           # Commits: format with proper escaping
           commits=$(while IFS='|' read -r hash email username message; do
-            # Strip quotes from message for output
-            message="${message//\"}"
+            # Strip leading and trailing quotes from message
+            message="${message#\"}"
+            message="${message%\"}"
             if [[ -n "$username" ]]; then
               printf "* [%s](%s/commit/%s) %s ([@%s](https://github.com/%s))\n" "$hash" "$REPO_URL" "$hash" "$message" "$username" "$username"
             else
