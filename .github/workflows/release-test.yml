@@ -35,17 +35,11 @@ jobs:
         id: contributors
         run: |
           REPO_URL="https://github.com/${{ github.repository }}"
+          # Debug: Show raw git shortlog output
+          echo "Raw git shortlog output:"
+          git shortlog -s -e
           # Get contributors sorted by commit count and deduplicated
-          contributors=$(git shortlog -s -e | sort -nr | while read -r count line; do
-            full_name=$(echo "$line" | sed 's/ <.*>//')
-            email=$(echo "$line" | sed 's/.*<\(.*\)>/\1/' | tr '[:upper:]' '[:lower:]')
-            username=$(echo "$email" | cut -d'@' -f1)
-            if echo "$full_name" | grep -q " "; then
-              echo "* $full_name ([@$username](https://github.com/$username))"
-            else
-              echo "* [@$full_name](https://github.com/$full_name)"
-            fi
-          done | sort -u)
+          contributors=$(git shortlog -s -e | sort -nr | awk '{ $1=""; sub(/^[ \t]+/, ""); print "* " ($0 ~ / </ ? substr($0, 1, index($0, "<")-1) " ([@" substr($0, index($0, "<")+1, index($0, ">")-index($0, "<")-1) "](https://github.com/" substr($0, index($0, "<")+1, index($0, ">")-index($0, "<")-1) "))" : "[@" $0 "](https://github.com/" $0 ")") }' | sort -u)
           # Get all commits and escape % in messages
           git log --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))' | sed 's/%/%25/g' > commits.txt
           commits=$(cat commits.txt)
