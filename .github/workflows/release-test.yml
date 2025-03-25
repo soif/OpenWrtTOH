@@ -29,7 +29,7 @@ jobs:
           set -e
           changelog=$(sed -n '/^## Version /{n; :a;p;n;/^$/q;ba}' CHANGELOG.md | sed '/^$/d')
           changelog+=$'\n\n'"_For more details, see the full [changelog](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) in the repository_"
-          changelog=$'\n'"${changelog}"$'\n'
+          changelog="${changelog}"$'\n'
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'%0A'}"
           changelog="${changelog//$'\r'/'%0D'}"
@@ -148,13 +148,17 @@ jobs:
           {
             echo "content<<EOF_CONTENT"
             echo "### Changes"
+            echo ""
             echo "${{ steps.changelog.outputs.content }}" | sed 's/%0A/\n/g'
             echo ""
             echo "### Contributors"
+            echo ""
             echo "${{ steps.contributors.outputs.list }}"
             echo ""
             echo "### Commits"
+            echo ""
             echo "${{ steps.contributors.outputs.commits }}"
+            echo ""
             echo "EOF_CONTENT"
           } >> $GITHUB_OUTPUT
 
