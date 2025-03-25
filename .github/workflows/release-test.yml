@@ -108,7 +108,7 @@ jobs:
               ((username_to_count["$email"]++))
               username_to_name["$email"]="${email_to_name[$email]}"
             fi
-          done < commits_info.txt
+          done < <(cat commits_info.txt)  # Explicit redirect to avoid file issues
           contributors=$(for key in "${!username_to_count[@]}"; do
             count="${username_to_count[$key]}"
             name="${username_to_name[$key]}"
@@ -122,6 +122,8 @@ jobs:
               echo "$count|$name|"
             fi
           done | sort -nr | cut -d'|' -f2- | sed 's/^/* /')
+          echo "Final contributors list:"
+          echo "$contributors"
 
           # Commits: format with proper escaping
           commits=$(while IFS='|' read -r hash email username message; do
@@ -131,7 +133,7 @@ jobs:
               name="${email_to_name[$email]}"
               printf "* [%s](%s/commit/%s) %s (%s)\n" "$hash" "$REPO_URL" "$hash" "$message" "$name"
             fi
-          done < commits_info.txt | sed 's/%/%25/g')
+          done < <(cat commits_info.txt) | sed 's/%/%25/g')
 
           # Set outputs
           {
