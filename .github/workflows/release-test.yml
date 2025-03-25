@@ -66,7 +66,7 @@ jobs:
             fi
           done < author_emails.txt
 
-          # Step 2: Process commits
+          # Step 2: Process commits with escaped messages
           git log --format="%h%x09%ae%x09%s" > commits_raw.txt
           if [[ ! -s commits_raw.txt ]]; then
             echo "Error: commits_raw.txt is empty"
@@ -74,6 +74,9 @@ jobs:
           fi
           > commits_info.txt  # Initialize file
           while IFS=$'\t' read -r hash email message; do
+            # Escape '#' and '%' in the message
+            escaped_message="${message//\#/\\#}"
+            escaped_message="${escaped_message//%/\\%}"
             username="${email_to_username[$email]}"
             name="${email_to_name[$email]}"
             if [[ -z "$username" ]]; then
@@ -84,18 +87,20 @@ jobs:
               fi
             fi
             if [[ -n "$username" ]]; then
-              echo "$hash|$email|$username|$message" >> commits_info.txt
+              echo "$hash|$email|$username|$escaped_message" >> commits_info.txt
             else
-              echo "$hash|$email||$message" >> commits_info.txt
+              echo "$hash|$email||$escaped_message" >> commits_info.txt
             fi
           done < commits_raw.txt
 
-          # Step 3: Verify commits_info.txt
+          # Step 3: Verify and debug commits_info.txt
           if [[ ! -s commits_info.txt ]]; then
             echo "Error: commits_info.txt is empty after processing"
             exit 1
           fi
           echo "Commits info generated successfully."
+          echo "Contents of commits_info.txt:"
+          cat commits_info.txt
 
           # Contributors: deduplicate by username and sort by commit count
           declare -A username_to_count
@@ -108,7 +113,7 @@ jobs:
               ((username_to_count["$email"]++))
               username_to_name["$email"]="${email_to_name[$email]}"
             fi
-          done < <(cat commits_info.txt)  # Explicit redirect to avoid file issues
+          done < <(cat commits_info.txt)
           contributors=$(for key in "${!username_to_count[@]}"; do
             count="${username_to_count[$key]}"
             name="${username_to_name[$key]}"
