@@ -15,15 +15,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history
+          fetch-depth: 0 # Fetch all history for tag detection
 
-      - name: Fetch all branches
+      - name: Fetch all branches and tags
         run: |
-          git fetch origin +refs/heads/*:refs/remotes/origin/*
+          git fetch origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
 
       - name: Get Changelog Entry
         id: changelog
         run: |
+          # Extract the latest version's changelog entry from CHANGELOG.md
           set -e
           changelog=$(sed -n '/^## Version /{n; :a;p;n;/^$/q;ba}' CHANGELOG.md | sed '/^$/d')
           changelog=$'\n'"${changelog}"$'\n'
@@ -40,16 +41,13 @@ jobs:
           set -e  # Exit on any error
           trap 'echo "Error on line $LINENO"; exit 1' ERR
 
+          # Define repository URL for commit links
           REPO_URL="https://github.com/${{ github.repository }}"
+
+          # Step 1: Build email-to-username mapping
           declare -A email_to_username
           declare -A email_to_name
-
-          # Step 1: Build email-to-username map
           git log --format='%ae%x09%an' | sort -u > author_emails.txt
-          if [[ ! -s author_emails.txt ]]; then
-            echo "Error: author_emails.txt is empty"
-            exit 1
-          fi
           while IFS=$'\t' read -r email name; do
             email_to_name["$email"]="$name"
             if [[ "$email" =~ [0-9]+\+([^@]+)@users\.noreply\.github\.com ]]; then
@@ -66,13 +64,10 @@ jobs:
             fi
           done < author_emails.txt
 
-          # Step 2: Process commits with quoted messages
-          git log --format="%h%x09%ae%x09%s" > commits_raw.txt
-          if [[ ! -s commits_raw.txt ]]; then
-            echo "Error: commits_raw.txt is empty"
-            exit 1
-          fi
-          > commits_info.txt  # Initialize file
+          # Step 2: Get commits since the latest release tag
+          latest_tag=$(git describe --tags --abbrev=0)  # Get the most recent tag
+          git log "$latest_tag"..HEAD --format="%h%x09%ae%x09%s" > commits_raw.txt
+          > commits_info.txt  # Initialize file for processed commits
           while IFS=$'\t' read -r hash email message; do
             escaped_message="${message//\#/\\#}"
             escaped_message="${escaped_message//%/\\%}"
@@ -93,20 +88,12 @@ jobs:
             fi
           done < commits_raw.txt
 
-          # Step 3: Verify commits_info.txt
-          if [[ ! -s commits_info.txt ]]; then
-            echo "Error: commits_info.txt is empty after processing"
-            exit 1
-          fi
-          echo "Commits info generated successfully."
-
-          # Contributors: deduplicate by username and sort by commit count
+          # Step 3: Build contributors list from commits
           declare -A username_to_count
           declare -A username_to_name
           while IFS='|' read -r hash email username message; do
-            # Strip leading and trailing quotes from message
-            message="${message#\"}"
-            message="${message%\"}"
+            message="${message#\"}"  # Strip leading quote
+            message="${message%\"}"  # Strip trailing quote
             if [[ -n "$username" ]]; then
               username_to_count["$username"]=$(( ${username_to_count["$username"]:-0} + 1 ))
               username_to_name["$username"]="${email_to_name[$email]}"
@@ -131,7 +118,7 @@ jobs:
           echo "Final contributors list:"
           echo "$contributors"
 
-          # Commits: format with proper escaping
+          # Step 4: Format commits list
           commits=$(while IFS='|' read -r hash email username message; do
             message="${message#\"}"
             message="${message%\"}"
@@ -143,7 +130,7 @@ jobs:
             fi
           done < <(cat commits_info.txt) | sed 's/%/%25/g')
 
-          # Set outputs
+          # Step 5: Set outputs for downstream use
           {
             echo "list<<EOF_CONTRIBUTORS"
             echo "$contributors"
