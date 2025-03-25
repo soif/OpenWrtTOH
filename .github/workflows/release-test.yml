@@ -64,14 +64,11 @@ jobs:
             fi
           done < author_emails.txt
 
-          # Step 2: Get commits since the latest release tag
-          latest_tag=$(git describe --tags --abbrev=0)  # Get the most recent tag
+          # Step 2: Get commits since the latest tag (any branch)
+          latest_tag=$(git describe --tags --abbrev=0)
           git log "$latest_tag"..HEAD --format="%h%x09%ae%x09%s" > commits_raw.txt
           > commits_info.txt  # Initialize file for processed commits
           while IFS=$'\t' read -r hash email message; do
-            escaped_message="${message//\#/\\#}"
-            escaped_message="${escaped_message//%/\\%}"
-            escaped_message="${escaped_message//\"/\\\"}"  # Escape double quotes
             username="${email_to_username[$email]}"
             name="${email_to_name[$email]}"
             if [[ -z "$username" ]]; then
@@ -82,9 +79,9 @@ jobs:
               fi
             fi
             if [[ -n "$username" ]]; then
-              echo "$hash|$email|$username|\"$escaped_message\"" >> commits_info.txt
+              echo "$hash|$email|$username|\"$message\"" >> commits_info.txt
             else
-              echo "$hash|$email||\"$escaped_message\"" >> commits_info.txt
+              echo "$hash|$email||\"$message\"" >> commits_info.txt
             fi
           done < commits_raw.txt
 
