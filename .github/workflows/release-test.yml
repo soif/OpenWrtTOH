@@ -35,8 +35,8 @@ jobs:
         id: contributors
         run: |
           REPO_URL="https://github.com/${{ github.repository }}"
-          # Get contributors sorted by commit count
-          contributors=$(git log --format='%an <%ae>' | sort | uniq -c | sort -nr | while read -r count line; do
+          # Get contributors sorted by commit count and deduplicated
+          contributors=$(git shortlog -s -e | sort -nr | while read -r count line; do
             full_name=$(echo "$line" | sed 's/ <.*>//')
             email=$(echo "$line" | sed 's/.*<\(.*\)>/\1/' | tr '[:upper:]' '[:lower:]')
             username=$(echo "$email" | cut -d'@' -f1)
@@ -45,7 +45,7 @@ jobs:
             else
               echo "* [@$full_name](https://github.com/$full_name)"
             fi
-          done)
+          done | sort -u)
           # Get all commits and escape % in messages
           git log --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))' | sed 's/%/%25/g' > commits.txt
           commits=$(cat commits.txt)
