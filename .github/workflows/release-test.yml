@@ -139,14 +139,26 @@ jobs:
             echo "EOF_COMMITS"
           } >> $GITHUB_OUTPUT
 
-      - name: Display Release Content
+      - name: Build Body Content
+        id: body
         run: |
-          echo "### Changes"
-          echo "${{ steps.changelog.outputs.content }}" | sed 's/%0A/\n/g'
-          echo "_For more details, see the full [changelog](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) in the repository_"
-          echo ""
-          echo "### Contributors"
-          echo "${{ steps.contributors.outputs.list }}"
-          echo ""
-          echo "### Commits"
-          echo "${{ steps.contributors.outputs.commits }}"
+          {
+            echo "content<<EOF_CONTENT"
+            echo "### Changes"
+            echo "${{ steps.changelog.outputs.content }}" | sed 's/%0A/\n/g'
+            echo "_For more details, see the full [changelog](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) in the repository_"
+            echo ""
+            echo "### Contributors"
+            echo "${{ steps.contributors.outputs.list }}"
+            echo ""
+            echo "### Commits"
+            echo "${{ steps.contributors.outputs.commits }}"
+            echo "EOF_CONTENT"
+          } >> $GITHUB_OUTPUT
+
+      - name: Display Body Content
+        id: display
+        run: |
+          echo "${{ steps.body.outputs.content }}"
+
+
