@@ -82,33 +82,50 @@ jobs:
           done < commits_raw.txt
 
           # Contributors: deduplicate by username and sort by commit count
-          awk -F'|' '{if ($3) print $3 "|" $2; else print $2 "|" $2}' commits_info.txt | \
-            sort | uniq -c | sort -nr | while read -r count key name; do
-              username=$(echo "$key" | cut -d'|' -f1)
-              if [[ "$username" != "$name" ]]; then  # Username exists
-                if [[ "$name" =~ " " ]]; then
-                  echo "* $name ([@$username](https://github.com/$username))"
-                else
-                  echo "* [@$username](https://github.com/$username))"
-                fi
-              else
-                echo "* $name"
-              fi
-            done > contributors.txt
-          contributors=$(cat contributors.txt)
-
-          # Commits: format using a safe method
-          cut -d'|' -f1 commits_info.txt > commit_hashes.txt
-          git log --no-walk --format='%s' $(cat commit_hashes.txt) > commit_messages.txt
-          paste -d'|' commits_info.txt commit_messages.txt | while IFS='|' read -r hash email username message _ real_message; do
+          declare -A username_to_count
+          declare -A username_to_name
+          while IFS='|' read -r hash email username message; do
             if [[ -n "$username" ]]; then
-              echo "* [$hash]($REPO_URL/commit/$hash) $real_message ([@$username](https://github.com/$username))"
+              ((username_to_count["$username"]++))
+              # Use the most recent name for this username
+              username_to_name["$username"]="${email_to_name[$email]}"
+            else
+              # Fallback to email if no username
+              ((username_to_count["$email"]++))
+              username_to_name["$email"]="${email_to_name[$email]}"
+            fi
+          done < commits_info.txt
+          contributors=$(for key in "${!username_to_count[@]}"; do
+            count="${username_to_count[$key]}"
+            name="${username_to_name[$key]}"
+            if [[ "$key" =~ ^@ ]]; then  # Already formatted username
+              echo "$count|$name|$key"
+            elif [[ "$key" =~ ^[^@] ]]; then  # Username without @
+              echo "$count|$name|$key"
+            else  # Email (no username)
+              echo "$count|$name|"
+            fi
+          done | sort -nr | while IFS='|' read -r count name username; do
+            if [[ -n "$username" ]]; then
+              if [[ "$name" =~ " " ]]; then
+                echo "* $name ([@$username](https://github.com/$username))"
+              else
+                echo "* [@$username](https://github.com/$username)"
+              fi
+            else
+              echo "* $name"
+            fi
+          done)
+
+          # Commits: format directly from commits_info.txt
+          commits=$(while IFS='|' read -r hash email username message; do
+            if [[ -n "$username" ]]; then
+              echo "* [$hash]($REPO_URL/commit/$hash) $message ([@$username](https://github.com/$username))"
             else
               name="${email_to_name[$email]}"
-              echo "* [$hash]($REPO_URL/commit/$hash) $real_message ($name)"
+              echo "* [$hash]($REPO_URL/commit/$hash) $message ($name)"
             fi
-          done | sed 's/%/%25/g' > commits.txt
-          commits=$(cat commits.txt)
+          done < commits_info.txt | sed 's/%/%25/g')
 
           # Use GitHub Actions multi-line output syntax with a delimiter
           delimiter=$(openssl rand -hex 8)
@@ -133,4 +150,4 @@ jobs:
           echo "${{ steps.contributors.outputs.list }}"
           echo ""
           echo "### Commits"
-          cat commits.txt
+          echo "${{ steps.contributors.outputs.commits }}"
