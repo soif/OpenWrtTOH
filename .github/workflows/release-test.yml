@@ -36,13 +36,18 @@ jobs:
         run: |
           REPO_URL="https://github.com/${{ github.repository }}"
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "none")
-          if [ "$PREVIOUS_TAG" = "none" ]; then
-            contributors=$(git log --format='%an' | sort -u | sed "s|^\(.*\)$|* [\1](https://github.com/\1)|")
-            commits=$(git log --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))')
-          else
-            contributors=$(git log ${PREVIOUS_TAG}..HEAD --format='%an' | sort -u | sed "s|^\(.*\)$|* [\1](https://github.com/\1)|")
-            commits=$(git log ${PREVIOUS_TAG}..HEAD --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))')
-          fi
+          # Always get all contributors and commits, ignoring PREVIOUS_TAG range
+          contributors=$(git log --format='%an <%ae>' | sort -u | while read -r line; do
+            full_name=$(echo "$line" | sed 's/ <.*>//')
+            email=$(echo "$line" | sed 's/.*<\(.*\)>/\1/')
+            username=$(echo "$email" | cut -d'@' -f1)
+            if echo "$full_name" | grep -q " "; then
+              echo "* $full_name ([@$username](https://github.com/$username))"
+            else
+              echo "* [@$full_name](https://github.com/$full_name)"
+            fi
+          done)
+          commits=$(git log --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))')
           contributors=$'\n'"${contributors}"$'\n'
           contributors="${contributors//'%'/'%25'}"
           contributors="${contributors//$'\n'/'%0A'}"
