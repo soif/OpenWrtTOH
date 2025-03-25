@@ -74,7 +74,6 @@ jobs:
           fi
           > commits_info.txt  # Initialize file
           while IFS=$'\t' read -r hash email message; do
-            # Escape '#' and '%' and quote the message
             escaped_message="${message//\#/\\#}"
             escaped_message="${escaped_message//%/\\%}"
             escaped_message="${escaped_message//\"/\\\"}"  # Escape double quotes
@@ -94,29 +93,25 @@ jobs:
             fi
           done < commits_raw.txt
 
-          # Step 3: Verify and debug commits_info.txt
+          # Step 3: Verify commits_info.txt
           if [[ ! -s commits_info.txt ]]; then
             echo "Error: commits_info.txt is empty after processing"
             exit 1
           fi
           echo "Commits info generated successfully."
-          echo "Contents of commits_info.txt:"
-          cat commits_info.txt
 
           # Contributors: deduplicate by username and sort by commit count
           declare -A username_to_count
           declare -A username_to_name
           while IFS='|' read -r hash email username message; do
-            echo "Processing line: $hash|$email|$username|$message"
             # Strip leading and trailing quotes from message
-            message="${message#\"}"  # Remove leading quote
-            message="${message%\"}"  # Remove trailing quote
-            echo "Message after stripping quotes: $message"
+            message="${message#\"}"
+            message="${message%\"}"
             if [[ -n "$username" ]]; then
-              ((username_to_count["$username"]++))
+              username_to_count["$username"]=$(( ${username_to_count["$username"]:-0} + 1 ))
               username_to_name["$username"]="${email_to_name[$email]}"
             else
-              ((username_to_count["$email"]++))
+              username_to_count["$email"]=$(( ${username_to_count["$email"]:-0} + 1 ))
               username_to_name["$email"]="${email_to_name[$email]}"
             fi
           done < <(cat commits_info.txt)
@@ -138,7 +133,6 @@ jobs:
 
           # Commits: format with proper escaping
           commits=$(while IFS='|' read -r hash email username message; do
-            # Strip leading and trailing quotes from message
             message="${message#\"}"
             message="${message%\"}"
             if [[ -n "$username" ]]; then
