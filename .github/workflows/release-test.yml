@@ -39,34 +39,34 @@ jobs:
           # Normalize and get unique contributors by email to avoid duplicates
           contributors=$(git log --format='%an <%ae>' | sort -u | while read -r line; do
             full_name=$(echo "$line" | sed 's/ <.*>//')
-            email=$(echo "$line" | sed 's/.*<\(.*\)>/\1/' | tr '[:upper:]' '[:lower:]') # Normalize email case
+            email=$(echo "$line" | sed 's/.*<\(.*\)>/\1/' | tr '[:upper:]' '[:lower:]')
             username=$(echo "$email" | cut -d'@' -f1)
             if echo "$full_name" | grep -q " "; then
               echo "* $full_name ([@$username](https://github.com/$username))"
             else
               echo "* [@$full_name](https://github.com/$full_name)"
             fi
-          done | sort -u) # Extra sort -u to ensure no duplicates
+          done | sort -u)
+          # Get commits and replace newlines with %0A only after formatting
           commits=$(git log --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))')
+          # Unescape %0A to actual newlines before output
           contributors=$'\n'"${contributors}"$'\n'
           contributors="${contributors//'%'/'%25'}"
-          contributors="${contributors//$'\n'/'%0A'}"
           contributors="${contributors//$'\r'/'%0D'}"
           echo "list=$contributors" >> $GITHUB_OUTPUT
           commits=$'\n'"${commits}"$'\n'
           commits="${commits//'%'/'%25'}"
-          commits="${commits//$'\n'/'%0A'}"
           commits="${commits//$'\r'/'%0D'}"
           echo "commits=$commits" >> $GITHUB_OUTPUT
 
       - name: Display Release Content
         run: |
           echo "### Changes"
-          printf '%s\n' "${{ steps.changelog.outputs.content }}" | sed 's/%0A/\n/g'
+          echo "${{ steps.changelog.outputs.content }}" | sed 's/%0A/\n/g'
           echo "_For more details, see the full [changelog](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) in the repository_"
           echo ""
           echo "### Contributors"
-          printf '%s\n' "${{ steps.contributors.outputs.list }}" | sed 's/%0A/\n/g'
+          echo "${{ steps.contributors.outputs.list }}" | sed 's/%0A/\n/g'
           echo ""
           echo "### Commits"
-          printf '%s\n' "${{ steps.contributors.outputs.commits }}" | sed 's/%0A/\n/g'
+          echo "${{ steps.contributors.outputs.commits }}"
