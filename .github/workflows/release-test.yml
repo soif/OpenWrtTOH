@@ -47,8 +47,9 @@ jobs:
               echo "* [@$full_name](https://github.com/$full_name)"
             fi
           done | sort -u)
-          # Escape % in commit messages directly in git log format
-          commits=$(git log --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))' | sed 's/%/%25/g')
+          # Escape % in commit messages and write to file
+          git log --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))' | sed 's/%/%25/g' > commits.txt
+          commits=$(cat commits.txt)
           # Use GitHub Actions multi-line output syntax with a delimiter
           delimiter=$(openssl rand -hex 8)
           {
@@ -65,11 +66,15 @@ jobs:
       - name: Debug Outputs
         run: |
           echo "Raw changelog output:"
-          echo "${{ steps.changelog.outputs.content }}"
+          echo "${{ steps.changelog.outputs.content }}" > changelog.txt
+          cat changelog.txt
+          echo ""
           echo "Raw contributors output:"
-          echo "${{ steps.contributors.outputs.list }}"
+          echo "${{ steps.contributors.outputs.list }}" > contributors.txt
+          cat contributors.txt
+          echo ""
           echo "Raw commits output:"
-          echo "${{ steps.contributors.outputs.commits }}"
+          cat commits.txt
 
       - name: Display Release Content
         run: |
@@ -81,6 +86,4 @@ jobs:
           echo "${{ steps.contributors.outputs.list }}"
           echo ""
           echo "### Commits"
-          # Write to a file and cat it to avoid shell parsing issues
-          echo "${{ steps.contributors.outputs.commits }}" > commits.txt
           cat commits.txt
