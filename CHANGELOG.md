@@ -2,7 +2,8 @@
 
 ## Version 1.76 - 2025-xx-xx
 
-* Implements Github "release-test" Action
+* Enhances Github "release" Action (fixes contributors and adds commits)
+* Enhances Github "release-test" Action (fixes contributors and adds commits)
 
 ## Version 1.75 - 2025-03-25
 
