@@ -5,6 +5,9 @@ on:
     branches:
       - release-test
 
+permissions:
+  contents: write  # Included for consistency, though not strictly needed for logging
+
 jobs:
   test-release:
     runs-on: ubuntu-latest
@@ -12,7 +15,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Fetch all history
+
+      - name: Fetch all branches
+        run: |
+          git fetch origin +refs/heads/*:refs/remotes/origin/*
 
       - name: Get Changelog Entry
         id: changelog
@@ -24,24 +31,34 @@ jobs:
           changelog="${changelog//$'\r'/'%0D'}"
           echo "content=$changelog" >> $GITHUB_OUTPUT
 
-      - name: Get Contributors
+      - name: Get Contributors and Commits
         id: contributors
         run: |
+          REPO_URL="https://github.com/${{ github.repository }}"
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "none")
           if [ "$PREVIOUS_TAG" = "none" ]; then
-            contributors=$(git log --format='%an' | sort -u | sed 's/^/* /')
+            contributors=$(git log --format='%an' | sort -u | sed "s|^\(.*\)$|* [\1](https://github.com/\1)|")
+            commits=$(git log --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))')
           else
-            contributors=$(git log ${PREVIOUS_TAG}..HEAD --format='%an' | sort -u | sed 's/^/* /')
+            contributors=$(git log ${PREVIOUS_TAG}..HEAD --format='%an' | sort -u | sed "s|^\(.*\)$|* [\1](https://github.com/\1)|")
+            commits=$(git log ${PREVIOUS_TAG}..HEAD --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))')
           fi
           contributors=$'\n'"${contributors}"$'\n'
           contributors="${contributors//'%'/'%25'}"
           contributors="${contributors//$'\n'/'%0A'}"
           contributors="${contributors//$'\r'/'%0D'}"
           echo "list=$contributors" >> $GITHUB_OUTPUT
+          commits=$'\n'"${commits}"$'\n'
+          commits="${commits//'%'/'%25'}"
+          commits="${commits//$'\n'/'%0A'}"
+          commits="${commits//$'\r'/'%0D'}"
+          echo "commits=$commits" >> $GITHUB_OUTPUT
 
       - name: Display Release Content
         run: |
-          echo "## Changes"
+          echo "### Changes"
           echo "${{ steps.changelog.outputs.content }}" | sed 's/%0A/\n/g'
-          echo "## Contributors"
+          echo "### Contributors"
           echo "${{ steps.contributors.outputs.list }}" | sed 's/%0A/\n/g'
+          echo "### Commits"
+          echo "${{ steps.contributors.outputs.commits }}" | sed 's/%0A/\n/g'
