@@ -84,28 +84,38 @@ jobs:
           done < commits_raw.txt
 
           # Contributors: deduplicate by username and sort by commit count
-          awk -F'|' '{if ($3) print $3 "|" $2; else print $2 "|" $2}' commits_info.txt | \
-            sort | uniq -c | sort -nr | while read -r count key name; do
-              username=$(echo "$key" | cut -d'|' -f1)
-              if [[ "$username" != "$name" ]]; then  # Username exists
-                if [[ "$name" =~ " " ]]; then
-                  echo "* $name ([@$username](https://github.com/$username))"
-                else
-                  echo "* [@$username](https://github.com/$username))"
-                fi
+          declare -A username_to_count
+          declare -A username_to_name
+          while IFS='|' read -r hash email username message; do
+            if [[ -n "$username" ]]; then
+              ((username_to_count["$username"]++))
+              username_to_name["$username"]="${email_to_name[$email]}"
+            else
+              ((username_to_count["$email"]++))
+              username_to_name["$email"]="${email_to_name[$email]}"
+            fi
+          done < commits_info.txt
+          contributors=$(for key in "${!username_to_count[@]}"; do
+            count="${username_to_count[$key]}"
+            name="${username_to_name[$key]}"
+            if [[ "$key" =~ ^[^@] ]]; then  # Username (not email)
+              if [[ "$name" =~ " " ]]; then
+                echo "$count|$name|[@$key](https://github.com/$key)"
               else
-                echo "* $name"
+                echo "$count|[@$key](https://github.com/$key)|[@$key](https://github.com/$key)"
               fi
-            done > contributors.txt
-          contributors=$(cat contributors.txt)
+            else  # Email (no username)
+              echo "$count|$name|"
+            fi
+          done | sort -nr | cut -d'|' -f2- | sed 's/^/* /')
 
-          # Commits: use the original messages from commits_info.txt
+          # Commits: format with proper escaping
           commits=$(while IFS='|' read -r hash email username message; do
             if [[ -n "$username" ]]; then
-              echo "* [$hash]($REPO_URL/commit/$hash) $message ([@$username](https://github.com/$username))"
+              printf "* [%s](%s/commit/%s) %s ([@%s](https://github.com/%s))\n" "$hash" "$REPO_URL" "$hash" "$message" "$username" "$username"
             else
               name="${email_to_name[$email]}"
-              echo "* [$hash]($REPO_URL/commit/$hash) $message ($name)"
+              printf "* [%s](%s/commit/%s) %s (%s)\n" "$hash" "$REPO_URL" "$hash" "$message" "$name"
             fi
           done < commits_info.txt | sed 's/%/%25/g')
 
