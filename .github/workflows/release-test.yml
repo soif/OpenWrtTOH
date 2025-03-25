@@ -28,7 +28,7 @@ jobs:
           # Extract the latest version's changelog entry from CHANGELOG.md
           set -e
           changelog=$(sed -n '/^## Version /{n; :a;p;n;/^$/q;ba}' CHANGELOG.md | sed '/^$/d')
-          changelog+= "\n_For more details, see the full [changelog](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) in the repository_\n"
+          changelog+=$'\n'"_For more details, see the full [changelog](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) in the repository_"$'\n'
           changelog=$'\n'"${changelog}"$'\n'
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'%0A'}"
