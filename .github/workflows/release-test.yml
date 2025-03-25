@@ -24,6 +24,7 @@ jobs:
       - name: Get Changelog Entry
         id: changelog
         run: |
+          set -e
           changelog=$(sed -n '/^## Version /{n; :a;p;n;/^$/q;ba}' CHANGELOG.md | sed '/^$/d')
           changelog=$'\n'"${changelog}"$'\n'
           changelog="${changelog//'%'/'%25'}"
@@ -162,18 +163,22 @@ jobs:
             fi
           done < commits_info.txt | sed 's/%/%25/g')
 
-          # Use GitHub Actions multi-line output syntax with a delimiter
-          delimiter=$(openssl rand -hex 8)
+          # Use static delimiters and add debugging
+          echo "Setting contributors output..."
           {
-            echo "list<<$delimiter"
+            echo "list<<EOF_CONTRIBUTORS"
             echo "$contributors"
-            echo "$delimiter"
+            echo "EOF_CONTRIBUTORS"
           } >> $GITHUB_OUTPUT
+          echo "Contributors output set."
+
+          echo "Setting commits output..."
           {
-            echo "commits<<$delimiter"
+            echo "commits<<EOF_COMMITS"
             echo "$commits"
-            echo "$delimiter"
+            echo "EOF_COMMITS"
           } >> $GITHUB_OUTPUT
+          echo "Commits output set."
 
       - name: Display Release Content
         run: |
