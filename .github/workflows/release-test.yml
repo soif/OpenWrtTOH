@@ -40,79 +40,41 @@ jobs:
           set -e  # Exit on any error
           trap 'echo "Error on line $LINENO"; exit 1' ERR
 
-          echo "Starting script..."
-
           REPO_URL="https://github.com/${{ github.repository }}"
           # Cache for email -> username and full name
           declare -A email_to_username
           declare -A email_to_name
 
           # Step 1: Build initial map from emails
-          echo "Running git log for authors..."
           git log --format='%ae%x09%an' | sort -u > author_emails.txt
-          if [[ ! -s author_emails.txt ]]; then
-            echo "Error: author_emails.txt is empty or not created"
-            exit 1
-          fi
-          echo "Author emails collected:"
-          cat author_emails.txt
-
-          echo "Processing author emails..."
           while IFS=$'\t' read -r email name; do
-            echo "Processing email: $email, name: $name"
             email_to_name["$email"]="$name"
             if [[ "$email" =~ [0-9]+\+([^@]+)@users\.noreply\.github\.com ]]; then
               username="${BASH_REMATCH[1]}"
               email_to_username["$email"]="$username"
-              echo "Matched no-reply email, username: $username"
             else
               response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/search/users?q=$email+in:email")
               username=$(echo "$response" | jq -r '.items[0].login // ""')
               if [[ -n "$username" && "$username" != "null" ]]; then
                 email_to_username["$email"]="$username"
-                echo "API found username: $username"
               else
                 email_to_username["$email"]=""
-                echo "No username found for $email"
               fi
             fi
           done < author_emails.txt
 
           # Step 2: Process commits and fallback to SHA for missing usernames
-          echo "Running git log for commits..."
-          git log --format="%h%x09%ae%x09%s" | sed '/^$/d' > commits_raw.txt
-          if [[ ! -s commits_raw.txt ]]; then
-            echo "Error: commits_raw.txt is empty or not created"
-            exit 1
-          fi
-          echo "Commits collected:"
-          cat commits_raw.txt
-
-          echo "Processing commits..."
+          git log --format="%h%x09%ae%x09%s" > commits_raw.txt
           > commits_info.txt  # Initialize file
           while IFS=$'\t' read -r hash email message; do
-            echo "Processing commit: $hash, email: $email, message: $message"
             username="${email_to_username[$email]}"
             name="${email_to_name[$email]}"
             if [[ -z "$username" ]]; then
-              echo "No cached username for $email, performing SHA lookup..."
-              response=$(curl -s --fail -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/commits/$hash" || echo "ERROR")
-              if [[ "$response" != "ERROR" ]]; then
-                username=$(echo "$response" | jq -r '.author.login // .committer.login // ""' || echo "JQ_ERROR")
-                if [[ "$username" == "JQ_ERROR" ]]; then
-                  echo "jq failed to parse response for $hash: $response"
-                  username=""
-                elif [[ -n "$username" && "$username" != "null" ]]; then
-                  email_to_username["$email"]="$username"
-                  echo "SHA lookup found username: $username for $hash"
-                else
-                  echo "SHA lookup returned no username for $hash, response: $response"
-                fi
-              else
-                echo "API request failed for commit $hash, falling back to name"
+              response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/commits/$hash")
+              username=$(echo "$response" | jq -r '.author.login // .committer.login // ""')
+              if [[ -n "$username" && "$username" != "null" ]]; then
+                email_to_username["$email"]="$username"
               fi
-            else
-              echo "Using cached username: $username for $email"
             fi
             if [[ -n "$username" ]]; then
               echo "$hash|$email|$username|$message" >> commits_info.txt
@@ -122,38 +84,22 @@ jobs:
           done < commits_raw.txt
 
           # Contributors: deduplicate by username and sort by commit count
-          declare -A username_to_count
-          declare -A username_to_name
-          while IFS='|' read -r hash email username message; do
-            if [[ -n "$username" ]]; then
-              ((username_to_count["$username"]++))
-              username_to_name["$username"]="${email_to_name[$email]}"
-            else
-              ((username_to_count["$email"]++))
-              username_to_name["$email"]="${email_to_name[$email]}"
-            fi
-          done < commits_info.txt
-          contributors=$(for key in "${!username_to_count[@]}"; do
-            count="${username_to_count[$key]}"
-            name="${username_to_name[$key]}"
-            if [[ "$key" =~ ^[^@] ]]; then  # Username without @
-              echo "$count|$name|$key"
-            else  # Email (no username)
-              echo "$count|$name|"
-            fi
-          done | sort -nr | while IFS='|' read -r count name username; do
-            if [[ -n "$username" ]]; then
-              if [[ "$name" =~ " " ]]; then
-                echo "* $name ([@$username](https://github.com/$username))"
+          awk -F'|' '{if ($3) print $3 "|" $2; else print $2 "|" $2}' commits_info.txt | \
+            sort | uniq -c | sort -nr | while read -r count key name; do
+              username=$(echo "$key" | cut -d'|' -f1)
+              if [[ "$username" != "$name" ]]; then  # Username exists
+                if [[ "$name" =~ " " ]]; then
+                  echo "* $name ([@$username](https://github.com/$username))"
+                else
+                  echo "* [@$username](https://github.com/$username))"
+                fi
               else
-                echo "* [@$username](https://github.com/$username)"
+                echo "* $name"
               fi
-            else
-              echo "* $name"
-            fi
-          done)
+            done > contributors.txt
+          contributors=$(cat contributors.txt)
 
-          # Commits: format directly from commits_info.txt
+          # Commits: use the original messages from commits_info.txt
           commits=$(while IFS='|' read -r hash email username message; do
             if [[ -n "$username" ]]; then
               echo "* [$hash]($REPO_URL/commit/$hash) $message ([@$username](https://github.com/$username))"
@@ -163,22 +109,17 @@ jobs:
             fi
           done < commits_info.txt | sed 's/%/%25/g')
 
-          # Use static delimiters and add debugging
-          echo "Setting contributors output..."
+          # Use static delimiters for GitHub Actions output
           {
             echo "list<<EOF_CONTRIBUTORS"
             echo "$contributors"
             echo "EOF_CONTRIBUTORS"
           } >> $GITHUB_OUTPUT
-          echo "Contributors output set."
-
-          echo "Setting commits output..."
           {
             echo "commits<<EOF_COMMITS"
             echo "$commits"
             echo "EOF_COMMITS"
           } >> $GITHUB_OUTPUT
-          echo "Commits output set."
 
       - name: Display Release Content
         run: |
