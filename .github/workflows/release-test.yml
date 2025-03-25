@@ -66,7 +66,7 @@ jobs:
             fi
           done < author_emails.txt
 
-          # Step 2: Process commits with escaped messages
+          # Step 2: Process commits with quoted messages
           git log --format="%h%x09%ae%x09%s" > commits_raw.txt
           if [[ ! -s commits_raw.txt ]]; then
             echo "Error: commits_raw.txt is empty"
@@ -74,9 +74,10 @@ jobs:
           fi
           > commits_info.txt  # Initialize file
           while IFS=$'\t' read -r hash email message; do
-            # Escape '#' and '%' in the message
+            # Escape '#' and '%' and quote the message
             escaped_message="${message//\#/\\#}"
             escaped_message="${escaped_message//%/\\%}"
+            escaped_message="${escaped_message//\"/\\\"}"  # Escape double quotes
             username="${email_to_username[$email]}"
             name="${email_to_name[$email]}"
             if [[ -z "$username" ]]; then
@@ -87,9 +88,9 @@ jobs:
               fi
             fi
             if [[ -n "$username" ]]; then
-              echo "$hash|$email|$username|$escaped_message" >> commits_info.txt
+              echo "$hash|$email|$username|\"$escaped_message\"" >> commits_info.txt
             else
-              echo "$hash|$email||$escaped_message" >> commits_info.txt
+              echo "$hash|$email||\"$escaped_message\"" >> commits_info.txt
             fi
           done < commits_raw.txt
 
@@ -106,6 +107,9 @@ jobs:
           declare -A username_to_count
           declare -A username_to_name
           while IFS='|' read -r hash email username message; do
+            echo "Processing line: $hash|$email|$username|$message"  # Debug loop start
+            # Strip quotes from message for processing
+            message="${message//\"}"
             if [[ -n "$username" ]]; then
               ((username_to_count["$username"]++))
               username_to_name["$username"]="${email_to_name[$email]}"
@@ -132,6 +136,8 @@ jobs:
 
           # Commits: format with proper escaping
           commits=$(while IFS='|' read -r hash email username message; do
+            # Strip quotes from message for output
+            message="${message//\"}"
             if [[ -n "$username" ]]; then
               printf "* [%s](%s/commit/%s) %s ([@%s](https://github.com/%s))\n" "$hash" "$REPO_URL" "$hash" "$message" "$username" "$username"
             else
