@@ -36,6 +36,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -e  # Exit on any error
+          trap 'echo "Error on line $LINENO"; exit 1' ERR
+
           REPO_URL="https://github.com/${{ github.repository }}"
           # Cache for email -> username and full name
           declare -A email_to_username
@@ -65,14 +68,12 @@ jobs:
             username="${email_to_username[$email]}"
             name="${email_to_name[$email]}"
             if [[ -z "$username" ]]; then
-              # Fallback to SHA lookup if no username found
               response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/commits/$hash")
               username=$(echo "$response" | jq -r '.author.login // .committer.login // ""')
               if [[ -n "$username" && "$username" != "null" ]]; then
                 email_to_username["$email"]="$username"
               fi
             fi
-            # Store commit info
             if [[ -n "$username" ]]; then
               echo "$hash|$email|$username|$message" >> commits_info.txt
             else
@@ -81,38 +82,22 @@ jobs:
           done < commits_raw.txt
 
           # Contributors: deduplicate by username and sort by commit count
-          declare -A username_to_count
-          declare -A username_to_name
-          while IFS='|' read -r hash email username message; do
-            if [[ -n "$username" ]]; then
-              ((username_to_count["$username"]++))
-              username_to_name["$username"]="${email_to_name[$email]}"
-            else
-              ((username_to_count["$email"]++)) # Use email as key if no username
-              username_to_name["$email"]="${email_to_name[$email]}"
-            fi
-          done < commits_info.txt
-          contributors=$(for key in "${!username_to_count[@]}"; do
-            count="${username_to_count[$key]}"
-            name="${username_to_name[$key]}"
-            if [[ "$key" =~ ^[^@] ]]; then # If key is not a username (i.e., an email)
-              echo "$count|$name|"
-            else
-              echo "$count|$name|$key"
-            fi
-          done | sort -nr | while IFS='|' read -r count name username; do
-            if [[ -n "$username" ]]; then
-              if [[ "$name" =~ " " ]]; then
-                echo "* $name ([@$username](https://github.com/$username))"
+          awk -F'|' '{if ($3) print $3 "|" $2; else print $2 "|" $2}' commits_info.txt | \
+            sort | uniq -c | sort -nr | while read -r count key name; do
+              username=$(echo "$key" | cut -d'|' -f1)
+              if [[ "$username" != "$name" ]]; then  # Username exists
+                if [[ "$name" =~ " " ]]; then
+                  echo "* $name ([@$username](https://github.com/$username))"
+                else
+                  echo "* [@$username](https://github.com/$username))"
+                fi
               else
-                echo "* [@$username](https://github.com/$username)"
+                echo "* $name"
               fi
-            else
-              echo "* $name"
-            fi
-          done)
+            done > contributors.txt
+          contributors=$(cat contributors.txt)
 
-          # Commits: format using paste to handle special characters
+          # Commits: format using a safe method
           cut -d'|' -f1 commits_info.txt > commit_hashes.txt
           git log --no-walk --format='%s' $(cat commit_hashes.txt) > commit_messages.txt
           paste -d'|' commits_info.txt commit_messages.txt | while IFS='|' read -r hash email username message _ real_message; do
