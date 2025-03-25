@@ -47,17 +47,19 @@ jobs:
               echo "* [@$full_name](https://github.com/$full_name)"
             fi
           done | sort -u)
-          # Get commits and replace newlines with %0A only after formatting
           commits=$(git log --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))')
-          # Unescape %0A to actual newlines before output
-          contributors=$'\n'"${contributors}"$'\n'
-          contributors="${contributors//'%'/'%25'}"
-          contributors="${contributors//$'\r'/'%0D'}"
-          echo "list=$contributors" >> $GITHUB_OUTPUT
-          commits=$'\n'"${commits}"$'\n'
-          commits="${commits//'%'/'%25'}"
-          commits="${commits//$'\r'/'%0D'}"
-          echo "commits=$commits" >> $GITHUB_OUTPUT
+          # Use GitHub Actions multi-line output syntax with a delimiter
+          delimiter=$(openssl rand -hex 8)
+          {
+            echo "list<<$delimiter"
+            echo "$contributors"
+            echo "$delimiter"
+          } >> $GITHUB_OUTPUT
+          {
+            echo "commits<<$delimiter"
+            echo "$commits"
+            echo "$delimiter"
+          } >> $GITHUB_OUTPUT
 
       - name: Display Release Content
         run: |
@@ -66,7 +68,7 @@ jobs:
           echo "_For more details, see the full [changelog](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) in the repository_"
           echo ""
           echo "### Contributors"
-          echo "${{ steps.contributors.outputs.list }}" | sed 's/%0A/\n/g'
+          echo "${{ steps.contributors.outputs.list }}"
           echo ""
           echo "### Commits"
           echo "${{ steps.contributors.outputs.commits }}"
