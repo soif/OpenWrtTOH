@@ -79,15 +79,17 @@ jobs:
 
           # Step 2: Process commits and fallback to SHA for missing usernames
           echo "Running git log for commits..."
-          git log --format="%h%x09%ae%x09%s" > commits_raw.txt
+          git log --format="%h%x09%ae%x09%s" | sed '/^$/d' > commits_raw.txt
           if [[ ! -s commits_raw.txt ]]; then
             echo "Error: commits_raw.txt is empty or not created"
             exit 1
           fi
           echo "Commits collected:"
-          head -n 5 commits_raw.txt
+          cat commits_raw.txt
 
-          while IFS=$'\t' read -r hash email message; do
+          echo "Processing commits..."
+          cat commits_raw.txt | while IFS=$'\t' read -r hash email message; do
+            echo "Processing commit: $hash, email: $email, message: $message"
             username="${email_to_username[$email]}"
             name="${email_to_name[$email]}"
             if [[ -z "$username" ]]; then
@@ -95,6 +97,7 @@ jobs:
               username=$(echo "$response" | jq -r '.author.login // .committer.login // ""')
               if [[ -n "$username" && "$username" != "null" ]]; then
                 email_to_username["$email"]="$username"
+                echo "SHA lookup found username: $username for $hash"
               fi
             fi
             if [[ -n "$username" ]]; then
@@ -102,7 +105,7 @@ jobs:
             else
               echo "$hash|$email||$message" >> commits_info.txt
             fi
-          done < commits_raw.txt
+          done
 
           # Contributors: deduplicate by username and sort by commit count
           declare -A username_to_count
