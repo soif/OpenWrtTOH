@@ -88,33 +88,37 @@ jobs:
           cat commits_raw.txt
 
           echo "Processing commits..."
-          # Initialize commits_info.txt
-          > commits_info.txt
-          cat commits_raw.txt | while IFS=$'\t' read -r hash email message; do
+          > commits_info.txt  # Initialize file
+          while IFS=$'\t' read -r hash email message; do
             echo "Processing commit: $hash, email: $email, message: $message"
             username="${email_to_username[$email]}"
             name="${email_to_name[$email]}"
             if [[ -z "$username" ]]; then
-              # Use curl with --fail to catch HTTP errors, and check response
+              echo "No cached username for $email, performing SHA lookup..."
               response=$(curl -s --fail -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/commits/$hash" || echo "ERROR")
               if [[ "$response" != "ERROR" ]]; then
-                username=$(echo "$response" | jq -r '.author.login // .committer.login // ""')
-                if [[ -n "$username" && "$username" != "null" ]]; then
+                username=$(echo "$response" | jq -r '.author.login // .committer.login // ""' || echo "JQ_ERROR")
+                if [[ "$username" == "JQ_ERROR" ]]; then
+                  echo "jq failed to parse response for $hash: $response"
+                  username=""
+                elif [[ -n "$username" && "$username" != "null" ]]; then
                   email_to_username["$email"]="$username"
                   echo "SHA lookup found username: $username for $hash"
                 else
-                  echo "SHA lookup failed to find username for $hash, response: $response"
+                  echo "SHA lookup returned no username for $hash, response: $response"
                 fi
               else
                 echo "API request failed for commit $hash, falling back to name"
               fi
+            else
+              echo "Using cached username: $username for $email"
             fi
             if [[ -n "$username" ]]; then
               echo "$hash|$email|$username|$message" >> commits_info.txt
             else
               echo "$hash|$email||$message" >> commits_info.txt
             fi
-          done
+          done < commits_raw.txt
 
           # Contributors: deduplicate by username and sort by commit count
           declare -A username_to_count
@@ -175,7 +179,7 @@ jobs:
         run: |
           echo "### Changes"
           echo "${{ steps.changelog.outputs.content }}" | sed 's/%0A/\n/g'
-          echo "_ Wor more details, see the full [changelog](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) in the repository_"
+          echo "_For more details, see the full [changelog](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) in the repository_"
           echo ""
           echo "### Contributors"
           echo "${{ steps.contributors.outputs.list }}"
