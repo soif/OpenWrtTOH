@@ -17,10 +17,9 @@ jobs:
         with:
           fetch-depth: 0 # Fetch all history
 
-      - name: Fetch all branches and set branch
+      - name: Fetch all branches
         run: |
           git fetch origin +refs/heads/*:refs/remotes/origin/*
-          #git checkout release-test
 
       - name: Get Changelog Entry
         id: changelog
@@ -36,8 +35,16 @@ jobs:
         id: contributors
         run: |
           REPO_URL="https://github.com/${{ github.repository }}"
-          # Get contributors sorted by commit count and deduplicated using git log
-          contributors=$(git log --format='%an <%ae>' | sort | uniq -c | sort -nr | awk '{ $1=""; sub(/^[ \t]+/, ""); name=substr($0, 1, index($0, "<")-1); email=substr($0, index($0, "<")+1, index($0, ">")-index($0, "<")-1); username=tolower(substr(email, 1, index(email, "@")-1)); print "* " (name ~ / / ? name " ([@" username "](https://github.com/" username "))" : "[@" name "](https://github.com/" name ")") }' | sort -u)
+          # Get contributors sorted by commit count and deduplicated by author name
+          contributors=$(git log --format='%an%x09%ae' | sort | uniq -c | sort -nr | awk -F'\t' '{
+            count=$1; sub(/^[ \t]+[0-9]+[ \t]+/, ""); name=$1; email=$2;
+            if (email ~ /\+.*@users\.noreply\.github\.com/) {
+              username=tolower(substr(email, index(email, "+")+1, index(email, "@")-index(email, "+")-1));
+            } else {
+              username=tolower(substr(email, 1, index(email, "@")-1));
+            }
+            print "* " (name ~ / / ? name " ([@" username "](https://github.com/" username "))" : "[@" name "](https://github.com/" name ")")
+          }' | sort -u)
           # Get all commits and escape % in messages
           git log --format='* [%h]('$REPO_URL'/commit/%H) %s ([%an](https://github.com/%an))' | sed 's/%/%25/g' > commits.txt
           commits=$(cat commits.txt)
