@@ -2,6 +2,7 @@
 
 ## Version 1.76 - 2025-xx-xx
 
+* Implements Github "release-test" Action
 
 ## Version 1.75 - 2025-03-25
 
