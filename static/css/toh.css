@@ -421,9 +421,8 @@ body,
 /* Top sections ------------------------------------------------*/
 
 #toh-top{
-
-	/* margin-bottom: 10px; */
 }
+
 .toh-top-block{
 	/* height: 27px; */
 	margin-bottom: 10px;
@@ -431,6 +430,7 @@ body,
 .toh-top-block:first-child{
 	margin-bottom: 25px;
 }
+
 #toh-top-filters .toh-title,
 #toh-top-filters .toh-top-title-presets A{
 	border-bottom: 0;
@@ -444,25 +444,16 @@ body,
 
 #toh-top-filters .toh-top-title{
 	border-top: 0;
-	/* line-height: 26px; */
 }
 #toh-top-cols .toh-top-title{
 	margin-bottom: -1px;
-	/* height: 26px; */
-	/* line-height: 26px; */
 }
 .toh-top-title{
 	border-top: 1px solid rgba(0, 0, 0, 0.06);
-	/* border: 1px solid #ccc;
-	border-width: 1px 0 1px 0; */
-	/* border-style: solid;	 */
 	background-color: #f5f5f5;
 	background: linear-gradient(to top,  rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.01) 100%);	
-	/* overflow: visible; */
 	line-height: 25px;
 	font-size: 13px;
-	display: relative;
-
 }
 
 .toh-title{
@@ -470,7 +461,6 @@ body,
 }
 .toh-title,
 .toh-title A{
-	/* font-size: 13px; */
 	text-decoration: none;
 	color: #000;
 }
@@ -493,7 +483,6 @@ body,
 
 /* Top Menus ------------------------------------------------ */
 
-
 /* Views Presets ++++++++++++++  */
 
 .toh-top-title-presets A{
@@ -514,15 +503,12 @@ body,
 	color: #000;
 }
 
-
 #toh-cols-title .toh-title{
 	border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 
-
 /* user presets ++++++++++++++  */
-
 
 .toh-upresets-content A.toh-saving{
 	background-color: #fae9cb;
@@ -566,7 +552,7 @@ body,
 }
 
 
-/* selected presets  -----------------------------------------*/
+/* selected presets  ++++++++++++++ -*/
 
 .toh-top-title-presets A.toh-selected{
 
@@ -739,10 +725,6 @@ body,
 .toh-filtgroup[data-group=admin] UL A{
 	color: red;
 }
-#toh-filters-features .toh-filter-admin A{
-	/* color: red; */
-}
-
 
 #toh-filters-features .toh-filter-title{
 	width: 120px
@@ -754,12 +736,6 @@ body,
 
 
 /* Top Views ------------------------------------------------ */
-
-/* #toh-views{
-	margin-bottom: 10px;
-} */
-
-
 
 #toh-cols-container{
 	padding-bottom: 10px;
@@ -815,6 +791,7 @@ column-gap: 2em;
 	color: #888;
 	text-decoration: none;
 }
+
 
 
 /* Top Buttons ---------------------------------------------- */
@@ -906,6 +883,8 @@ A.toh-but:hover{
 	color: #666;
 }
 
+
+
 /* Image Preview -------------------------------------------- */
 
 #toh-image-preview {
@@ -923,6 +902,7 @@ A.toh-but:hover{
 	display: block;
 	border-radius: 5px;
 }
+
 
 
 /* Table ---------------------------------------------------- */
@@ -955,6 +935,8 @@ A.toh-but:hover{
 	background: red;
 } */
 
+
+
 /* Table column headers ------------------------------------- */
 
 #toh-table .tabulator-header{
@@ -968,6 +950,7 @@ A.toh-but:hover{
 		rgba(255,255,255, 0)
 	), #e0e0e0;
 }
+
 
 
 /* Header filter -------------------------------------------- */
@@ -998,6 +981,7 @@ left: 0;
 z-index: 9999;
 background-color: #ddf;
 }
+
 
 
 /* Footer --------------------------------------------------- */
@@ -1042,11 +1026,13 @@ background-color: #ddf;
 }
 
 
+
 /* VIRT_edit column  ---------------------------------------- */
 
 .tabulator-col[tabulator-field="VIRT_edit"] .tabulator-col-title{
 	display: none;
 }
+
 
 
 /* Cells --------------------------------------- */
@@ -1111,6 +1097,8 @@ A.tlink.VIRT_firm I.dlerror{
 #toh-table A.tlink.VIRT_firm:hover I.dlerror{
 	color: red;
 }
+
+
 
 /* Cell Popup Details --------------------------------------- */  
 
@@ -1217,6 +1205,11 @@ TABLE.toh-details-table{
 	height: 3px;
 	display: block;
 }
+
+
+
+
+
 
 
 /* Colors ################################################################################################ */  
