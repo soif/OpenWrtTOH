@@ -315,7 +315,6 @@ body,
 	background: #fff;
 	border: 1px solid rgba(0,0,0,.16);
 	box-shadow: 3px 3px 6px 0px rgba(0,0,0,0.05);
-
 }
 
 #toh-main{
@@ -471,16 +470,46 @@ body,
 
 /* Top Menus ------------------------------------------------ */
 
+
+/* Views Presets ++++++++++++++  */
+
+.toh-top-title-presets A{
+	display: inline-block;
+	padding: 1px 9px;
+	text-decoration: none;
+	background-color: #fff;	
+	border-right: 1px solid #ddd;
+	border-top: 1px solid rgba(0, 0, 0, 0.05);
+	color: #777;
+}
+.toh-top-title-presets A:hover{
+	background: linear-gradient(to top, 
+		rgba(255,255,255, 0.95),
+		rgba(255,255,255, 0.85)
+	), rgb(0, 152, 207);
+	color: #000;
+}
+
+
+
 /* user presets ++++++++++++++  */
 
 .toh-top-title-presets.toh-upresets-content A{
 	color: #ddd;
+	border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+.toh-top-title-presets.toh-upresets-content A:hover{
+	color: #bbb;
 }
 .toh-upresets-content A.toh-used{
 	/* background-color: #fff; */
 	/* background: linear-gradient(to top,  rgba(0,0,0,0.01) 0%,rgba(0,0,0,0) 100%, #fff);	 */
 	color: #777;
 }
+.toh-upresets-content A.toh-used:hover{
+	color: #000;
+}
+
 .toh-upresets-content A.toh-saving{
 	background-color: #fae9cb;
 	opacity: 1.0;
@@ -502,35 +531,6 @@ body,
 .toh-upresets-title A:hover{
 	color: #0B0;
 	cursor: help;
-}
-
-
-/* presets ++++++++++++++  */
-
-.toh-top-title-presets A{
-	display: inline-block;
-	padding: 1px 9px;
-	text-decoration: none;
-	background-color: #fff;	
-	border-right: 1px solid #ddd;
-	color: #777;
-}
-.toh-top-title-presets A:last-child{
-	/* border-right: 0; */
-}
-.toh-top-title-presets A:hover{
-	background: linear-gradient(to top, 
-		rgba(255,255,255, 0.95),
-		rgba(255,255,255, 0.85)
-	), rgb(0, 152, 207);
-	color: #000;
-}
-.toh-top-title-presets A.toh-selected{
-	background: linear-gradient(to bottom,  rgba(255,255,255,0.48) 0%, rgba(255,255,255,0.1) 100%), rgb(0, 152, 207);
-	color: #fff;
-}
-.toh-top-title-presets A.toh-view-custom.toh-selected{
-	/* background-color: #448; */
 }
 
 
@@ -557,7 +557,39 @@ body,
 }
 
 
+
+/* selected presets  -----------------------------------------*/
+
+
+.toh-top-title-presets A.toh-selected{
+	background: linear-gradient(to bottom, 
+		rgba(255,255,255,0.7) 0%,
+		rgba(255,255,255,0.1) 100%),
+		rgb(0, 152, 207);
+	color: rgb(253, 253, 162);
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	border-left: 1px solid rgba(0, 0, 0, 0.3);
+	border-right: 1px solid rgba(0, 0, 0, 0.1);
+
+}
+.toh-top-title-presets A.toh-selected:hover{
+	color: #fff;
+}
+
+
 /* Top Filters ---------------------------------------------- */
+
+#toh-filters-presets A{
+	display: block;
+	padding: 2px 5px;
+	border: 1px solid #aaa;
+	border-radius: 5px;
+	background-color: #ddd;	
+	text-decoration: none;
+	color: #464;
+	font-weight: bold;
+	box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.1);
+}
 
 #toh-filters-options{
 	float: right;
@@ -634,17 +666,6 @@ column-gap: 2em;
 .toh-filter-description{
 	color: #999;
 	font-size: 12px;
-}
-
-#toh-filters-presets A{
-	display: block;
-	padding: 1px 5px;
-	border: 1px solid #aaa;
-	border-radius: 5px;
-	background-color: #ddd;	
-	text-decoration: none;
-	color: #000;
-	font-weight: bold;
 }
 
 .toh-filtgroup[data-group=admin] UL A{
@@ -744,29 +765,44 @@ column-gap: 2em;
 A.toh-but{
 	display: inline-block;
 	margin-left: 10px;
-	padding: 3px 5px;
+	padding: 3px 7px;
 	text-decoration: none;
-	border: rgba(0,0,0,0.1) 1px solid;
-	border-radius: 5px;
+	border: 1px solid rgba(0,0,0,0.23) ;
+	/* border-color: #ccc; */
+	border-radius: 10px;
 	font-size: 11px;
-	line-height: 14px;
+	line-height: 13px;
 
 	background: linear-gradient(to top, 
 		rgba(0,0,0, 0.15),
 		rgba(0,0,0, 0.01)
 	), #fff;
+	color: #333;
+	/* box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.1); */
+}
+
+A.toh-but-clearallfilters{
 	color: #000;
+	border-color: rgba(0,0,0, 0.35);
+	font-weight: 500;
+	letter-spacing: 0.3px;
 }
 
 A.toh-but:hover,
 #toh-filters-presets A:hover{
 	/* background-color: #000;	 */
-	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0.4),
-		rgba(255,255,255, 0)
-	), #999;
+	background: linear-gradient(to top, 
+		rgba(255,255,255, 0.1),
+		rgba(255,255,255, 0.6)
+	), rgb(125, 125, 170);
 	color: #fff;
 }
+A.toh-but:hover{
+	border-color: #8888b0 #cacadc #cacadc #8888b0;
+	box-shadow: -2px -2px 6px 0px rgba(0, 0, 0, 0.15);
+	border-radius: 10px;
+}
+
 
 
 
@@ -1119,42 +1155,35 @@ TABLE.toh-details-table{
 #toh-table .tabulator-col.toh-col-filtered{
 }
 
-#toh-table .tabulator-col.toh-col-filter,
 #toh-filters-presets A,
+#toh-table .tabulator-col.toh-col-filter,
 A.toh-but-clearfilters{
 	background-color: #cfc;
 	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0.8),
-		rgba(255,255,255, 0)
+		rgba(255,255,255, 0.72),
+		rgba(255,255,255, 0.3)
 	), #ada;
 }
 
 #toh-table .tabulator-col.toh-col-headerfilter,
 A.toh-but-clearheaderfilters{
 	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0.8),
-		rgba(255,255,255, 0)
-	), #cce;
+		rgba(255,255,255, 0.77),
+		rgba(255,255,255, 0.25)
+	), rgb(179, 178, 238);
 }
 #toh-table .tabulator-col.toh-col-allfilter,
 A.toh-but-clearallfilters{
 	background-color: #8fd;	
 	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0.8),
-		rgba(255,255,255, 0)
-	), #6db;
+		rgba(255,255,255, 0.75),
+		rgba(255,255,255, 0.25)
+	), rgb(90, 196, 196);
+	/* font-weight: bold; */
+
 }
 
 
-
-#toh-filters-presets A:hover{
-	/* background-color: #555;	
-	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0),
-		rgba(255,255,255, 0.3)
-	), #555;
-	color: #fff; */
-}
 
 
 
