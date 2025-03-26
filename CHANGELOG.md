@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## Version 1.77 - 2025-xx-xx
+
+
 ## Version 1.76 - 2025-03-26
 
 * Prettier Buttons
