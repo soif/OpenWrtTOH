@@ -425,10 +425,10 @@ body,
 
 .toh-top-block{
 	/* height: 27px; */
-	margin-bottom: 10px;
+	margin-top: 25px;
 }
 .toh-top-block:first-child{
-	margin-bottom: 25px;
+	margin-top: 0;
 }
 
 .toh-top-title-left,
@@ -436,34 +436,44 @@ body,
 #toh-top-cols .toh-upresets-title{
 	line-height: 25px;
 }
+#toh-top-filters .toh-top-title-left,
+#toh-top-filters .toh-top-title-presets A,
+#toh-top-filters .toh-upresets-title{
+	line-height: 27px;
+}
 
-#toh-top-cols .toh-top-title-left,
-#toh-top-cols .toh-top-title-presets A{
+.toh-top-title-left,
+.toh-top-title-presets A{
 	border-bottom: 1px solid #ddd;
 }
-#toh-top-cols .toh-top-title-left,
-#toh-top-cols .toh-top-title-presets A{
+.toh-top-title-left,
+.toh-top-title-presets A{
 	margin-bottom: -1px;
 	position: relative;
 	z-index: 1;
 	vertical-align: bottom;
 }
+#toh-top-cols .toh-top-title-presets A{
+	margin-top: 1px;
+}
+#toh-top-cols .toh-top-title-presets A.toh-selected{
+	line-height: 26px;
+	margin-top: 0;
+}
+
 
 .toh-top-title{
+	position: relative;
 	border-top: 1px solid rgba(0, 0, 0, 0.06);
 	border-bottom: 1px solid #ddd;
 	background-color: #f5f5f5;
 	background: linear-gradient(to top,  rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.01) 100%);	
-	
 	font-size: 13px;
-
 	z-index: 0;
 }
 #toh-top-filters .toh-top-title{
 	border-top: 0;
-	line-height: 26px;
 }
-
 
 
 .toh-top-title-left{
@@ -567,7 +577,6 @@ body,
 /* selected presets  ++++++++++++++ -*/
 
 .toh-top-title-presets A.toh-selected{
-
 	border-right: 1px solid rgba(0, 0, 0, 0.12);
 
 	background: linear-gradient(to bottom, 
@@ -819,6 +828,7 @@ column-gap: 2em;
 /* Top Buttons ---------------------------------------------- */
 
 #toh-top-buttons{
+	margin-top: 12px;
 	min-height: 34px;
 	overflow: hidden;
 	/* clear: both; */
