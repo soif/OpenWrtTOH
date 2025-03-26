@@ -1000,7 +1000,8 @@ background-color: #ddf;
 }
 
 
-#toh-table .tabulator-cell .tlink{
+#toh-table .tabulator-cell .tlink,
+#toh-table .tabulator-cell .cell-image{
 	font-size: 14px;
 }
 

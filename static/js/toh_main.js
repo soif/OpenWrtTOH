@@ -2222,10 +2222,10 @@ function FormatterImages(cell, formatterParams, onRendered) {
 				url=toh_urls.media + value;
 			}
 			if(isGenerigImage(value)){
-				out +='<a href="' + url + '" target="_blank" class="cell-image generic"><i class="fa-regular fa-image"></i></a> ';
+				out +='<a href="' + url + '" target="_blank" class="cell-image generic"><i class="fa-fw fa-regular fa-image"></i></a> ';
 			}
 			else{
-				out +='<a href="' + url + '" target="_blank" class="cell-image"><i class="fa-solid fa-image"></i></a> ';
+				out +='<a href="' + url + '" target="_blank" class="cell-image"><i class="fa-fw fa-solid fa-image"></i></a> ';
 			}
 
 			// preload images --------
