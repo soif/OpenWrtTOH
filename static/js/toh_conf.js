@@ -4,7 +4,7 @@
 
 // global -------------------------------------------------------
 const toh_app={
-	version:	"1.76b",	// Version
+	version:	"1.77b2",	// Version
 	branch:		"dev", 		// Branch, either: 'prod' | 'dev'	
 };
 
@@ -54,6 +54,7 @@ const toh_prefs={
 	cook_max_chars: 	12,				// max number of character allowed in the cookie name
 
 	tooltip_upreset:"User Presets: Click to Load, Shift-click to save, Alt-click to delete",
+	boot_hide:		true,				// Hides the boot overlay, once inited
 	preload: 		true,				// Preload images (in background)
 
 };

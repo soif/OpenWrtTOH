@@ -1,14 +1,29 @@
 # CHANGELOG
 
-## Version 1.76 - 2025-xx-xx
+## Version 1.77 - 2025-xx-xx
+
+* Makes View presets more responsive.
+* Enhances Top Title sections
+* Better multi-columns lists responsiveness
+* Adds Boot logo animation
+
+## Version 1.76 - 2025-03-26
+
+* Prettier Buttons
+* Polishes UserPreset Popup
+* Better Linked Colums View Box
+* Fixes details-view columns responsiveness
+* Smaller text in Filters & Views content
+* Enhances Github "release" Actions (fixes contributors and adds commits)
+* Small CSS improvements
 
 * Enhances Github "release" Action (fixes contributors and adds commits)
 * Enhances Github "release-test" Action (fixes contributors and adds commits)
 
 ## Version 1.75 - 2025-03-25
 
-* small CSS improvements
-* automatically create GH releases
+* Small CSS improvements
+* Automatically create GH releases
 
 
 ## Version 1.74 - 2025-03-24

@@ -31,8 +31,8 @@ BODY.toh-loading #toh-page{
 	0%, 100% { 	background-color: rgb(242, 245, 199); 		}
 	50% { 		background-color:rgb(240, 222, 222) 		} 
 	/* :rgb(247, 239, 177)  */
- }
- 
+}
+
 /* Header --------------------------------------------------  */
 
 #toh-header{
@@ -82,7 +82,7 @@ BODY.toh-loading #toh-page{
 	text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 #toh-header-logo IMG:hover{
-  filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.5));
+	filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.5));
 }
 
 #toh-dev-badge{
@@ -131,7 +131,6 @@ BODY.toh-loading #toh-page{
 #toh-search-icon I:hover{
 	cursor: pointer;
 	opacity: 1;
-	/* transform: scaleX(-1); */
 }
 
 #toh-header-search .toh-hidden{
@@ -252,10 +251,6 @@ BODY.toh-loading #toh-page{
 		padding-left: 40px;
 		font-size: 1.4em;
 	}
-	#toh-dev-badge{
-		/* font-size: 9px; */
-		/* padding: 2px 5px; */
-	}
 	#toh-header-right{
 		padding-left: 0;
 		padding-right: 10px;
@@ -315,7 +310,6 @@ body,
 	background: #fff;
 	border: 1px solid rgba(0,0,0,.16);
 	box-shadow: 3px 3px 6px 0px rgba(0,0,0,0.05);
-
 }
 
 #toh-main{
@@ -410,6 +404,8 @@ body,
 
 
 
+
+
 /* #####################################################################################################
 ##### MAIN CONTENT #####################################################################################
 ######################################################################################################## */
@@ -425,62 +421,117 @@ body,
 /* Top sections ------------------------------------------------*/
 
 #toh-top{
-	/* margin-bottom: 10px; */
-}
-.toh-top-block{
-	font-size: 13px;
-	margin-bottom: 10px;
-}
-.toh-top-block:first-child{
-	margin-bottom: 25px;
-}
-.toh-top-title{
-	padding-left: 5px;
-	border: 1px solid #ccc;
-	border-width: 1px 0 1px 0;
-	border-style: solid;	
-	background-color: #f5f5f5;
-	background: linear-gradient(to top,  rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.01) 100%);	
-	overflow: hidden;
 }
 
+.toh-top-block{
+	/* height: 27px; */
+	margin-top: 25px;
+}
+.toh-top-block:first-child{
+	margin-top: 0;
+}
+
+.toh-top-title-left,
+.toh-top-title-presets A,
+#toh-top-cols .toh-upresets-title{
+	line-height: 20px;
+}
+#toh-top-filters .toh-top-title-left,
+#toh-top-filters .toh-top-title-presets A,
+#toh-top-filters .toh-upresets-title{
+	line-height: 22px;
+}
+
+.toh-top-title-left,
+.toh-top-title-presets A{
+	border-bottom: 1px solid #ddd;
+}
+.toh-top-title-left,
+.toh-top-title-presets A{
+	margin-bottom: -1px;
+	position: relative;
+	z-index: 1;
+	vertical-align: bottom;
+}
+#toh-top-cols .toh-top-title-presets A{
+	margin-top: 1px;
+}
+#toh-top-cols .toh-top-title-presets A.toh-selected{
+	line-height: 21px;
+	margin-top: 0;
+}
+
+
+.toh-top-title{
+	position: relative;
+	border-top: 1px solid rgba(0, 0, 0, 0.06);
+	border-bottom: 1px solid #ddd;
+	background-color: #f5f5f5;
+	background: linear-gradient(to top,  rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.01) 100%);	
+	font-size: 13px;
+	z-index: 0;
+}
 #toh-top-filters .toh-top-title{
 	border-top: 0;
 }
-.toh-top-container{
-	padding: 8px 10px 5px 25px;
-	font-size: 13px;
+
+
+.toh-top-title-left{
+	display: inline-block;
+}
+.toh-top-title-left,
+.toh-top-title-left A{
+	color: #777;
+}
+.toh-top-title-left A{
+	display: inline-block;
+	padding-left: 5px;
+	padding-right: 10px;
+	text-decoration: none;
 }
 
-.toh-title{
-	padding-right: 10px;
+.toh-top-title-left A:hover{
+	/* color: rgb(1, 123, 168); */
+	color: #222;
 }
-.toh-title,
-.toh-title A{
-	font-size: 13px;
-	text-decoration: none;
-	color: #000;
-}
-.toh-title A:hover{
-	color: rgb(0, 141, 192);
-}
-.toh-title A I{
+.toh-top-title-left A I{
 	/* margin-right: 5px; */
 }
 
+.toh-top-container{
+	padding: 8px 10px 5px 25px;
+	font-size: 12px;
+}
 
 /* Top Menus ------------------------------------------------ */
 
+/* Views Presets ++++++++++++++  */
+
+.toh-top-title-presets A{
+	overflow: visible;
+	display: inline-block;
+	padding: 0 9px;
+	border-right: 1px solid rgba(0, 0, 0, 0.15);
+	background: linear-gradient(to bottom,  rgba(0,0,0,0.03) 0%,rgba(0,0,0,0.0) 100%), #fff;
+	/* background-color: #fff; */
+	color: #777;
+	text-decoration: none;
+}
+.toh-top-title-presets A:hover{
+	background: linear-gradient(to top, 
+		rgba(255,255,255, 0.95),
+		rgba(255,255,255, 0.85)
+	), rgb(0, 152, 207);
+	color: #000;
+}
+
+#toh-cols-title .toh-top-title-left{
+	border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+
 /* user presets ++++++++++++++  */
 
-.toh-top-title-presets.toh-upresets-content A{
-	color: #ddd;
-}
-.toh-upresets-content A.toh-used{
-	/* background-color: #fff; */
-	/* background: linear-gradient(to top,  rgba(0,0,0,0.01) 0%,rgba(0,0,0,0) 100%, #fff);	 */
-	color: #777;
-}
 .toh-upresets-content A.toh-saving{
 	background-color: #fae9cb;
 	opacity: 1.0;
@@ -493,9 +544,10 @@ body,
 .toh-upresets-title{
 	display: inline-block;
 	padding-right: 5px;
-	border-right: 1px solid #ccc;
+	border-right: 1px solid rgba(0, 0, 0, 0.15);
 	font-size: 12px;
 }
+
 .toh-upresets-title A{
 	color: #aaa;
 }
@@ -504,33 +556,37 @@ body,
 	cursor: help;
 }
 
-
-/* presets ++++++++++++++  */
-
-.toh-top-title-presets A{
-	display: inline-block;
-	padding: 1px 9px;
-	text-decoration: none;
-	background-color: #fff;	
-	border-right: 1px solid #ddd;
+.toh-top-title-presets.toh-upresets-content A{
+	color: #ddd;
+}
+.toh-top-title-presets.toh-upresets-content A:hover{
+	color: #bbb;
+}
+.toh-upresets-content A:last-child{
+	border-right: none;
+}
+.toh-upresets-content A.toh-used{
+	/* background-color: #fff; */
 	color: #777;
 }
-.toh-top-title-presets A:last-child{
-	/* border-right: 0; */
-}
-.toh-top-title-presets A:hover{
-	background: linear-gradient(to top, 
-		rgba(255,255,255, 0.95),
-		rgba(255,255,255, 0.85)
-	), rgb(0, 152, 207);
+.toh-upresets-content A.toh-used:hover{
 	color: #000;
 }
+
+
+/* selected presets  ++++++++++++++ -*/
+
 .toh-top-title-presets A.toh-selected{
-	background: linear-gradient(to bottom,  rgba(255,255,255,0.48) 0%, rgba(255,255,255,0.1) 100%), rgb(0, 152, 207);
-	color: #fff;
+	border-right: 1px solid rgba(0, 0, 0, 0.12);
+
+	background: linear-gradient(to bottom, 
+		rgba(255,255,255,0.7) 0%,
+		rgba(255,255,255,0.1) 100%),
+		rgb(0, 152, 207);
+	color: rgb(253, 253, 162);
 }
-.toh-top-title-presets A.toh-view-custom.toh-selected{
-	/* background-color: #448; */
+.toh-top-title-presets A.toh-selected:hover{
+	color: #fff;
 }
 
 
@@ -540,21 +596,45 @@ body,
 #toh-upreset-popup-save{
 	position: absolute;
 	background-color: #f9f9ff;
-	border: 1px solid #ccc;
-	padding: 10px;
+	border: 1px solid rgb(199, 198, 198);
+	padding: 15px 10px;
+	border-radius: 5px;
 	font-size: 12px;
 	z-index: 1000;
+	box-shadow: 3px 3px 10px 2px rgba(0,0,0,.15);
+}
+#toh-upreset-popup-save INPUT{
+	background-color: rgb(230, 230, 252);
 }
 #toh-upreset-popup-save .toh-desc-mini{
 	font-size: 11px;
 	color: #aaa;
-	margin-top: 2px;
-	margin-bottom: 5px;
+	margin-top: 3px;
+	margin-bottom: 7px;
 }
 
 #toh-upreset-popup-save BUTTON{
-	background-color: #fff;
+	padding: 4px 7px;
+	text-decoration: none;
+	border: 1px solid rgba(0,0,0,0.23) ;
+	border-radius: 6px;
+	font-size: 11px;
+	line-height: 13px;
+
+	background: linear-gradient(to top, 
+		rgba(0,0,0, 0.15),
+		rgba(0,0,0, 0.01)
+	), #fff;
+	color: #555;
 }
+#toh-upreset-popup-save BUTTON:hover{
+	background: linear-gradient(to top, 
+		rgba(0,0,0, 0.2),
+		rgba(0,0,0, 0.06)
+	), #fff;
+	color: #222;
+}
+
 
 
 /* Top Filters ---------------------------------------------- */
@@ -566,19 +646,46 @@ body,
 	font-size: 11px;
 	border: 1px solid #ddd;
 	border-radius: 5px;
-	background: #fafafa;
-	padding: 3px 5px;
+	background: #eafafa;
+	padding: 0;
 	color: #777;
+}
+.toh-options-title{
+	background: #fff;
+	background: linear-gradient(to top,  rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.01) 100%);	
+	padding: 3px 3px 2px 3px;
+	border-bottom: 1px solid #ccc;
 }
 .toh-options-title A{
 	color: #777;
 	text-decoration: none;
 }
+.toh-options-title A:hover{
+	color: #444;
+	cursor: help;
+}
+
 .toh-options-radios{
+	padding: 4px 2px 5px 10px;
 	line-height: 110%;
 }
 .toh-options-radios LABEL{
 	font-weight: normal;
+}
+
+
+
+
+#toh-filters-presets A{
+	display: block;
+	padding: 2px 5px;
+	border: 1px solid #aaa;
+	border-radius: 5px;
+	background-color: #ddd;	
+	text-decoration: none;
+	color: #464;
+	font-weight: bold;
+	box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.1);
 }
 
 #toh-filters-presets{
@@ -597,20 +704,25 @@ body,
 	padding-left: 15px;
 }
 .toh-filters-list-multi {
-column-count: 4;
-column-gap: 2em;
+	column-count: 5;
+	column-gap: 2em;
 }
-@media screen and (max-width: 1450px) {
+@media screen and (max-width: 1870px) {
+	.toh-filters-list-multi {
+		column-count: 4;
+	}
+}
+@media screen and (max-width: 1503px) {
 	.toh-filters-list-multi {
 		column-count: 3;
 	}
 }
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 1150px) {
 	.toh-filters-list-multi {
 		column-count: 2;
 	}
 }
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 780px) {
 	.toh-filters-list-multi {
 		column-count: 1;
 	}
@@ -618,10 +730,10 @@ column-gap: 2em;
 
 .toh-filter{
 	line-height: 100%;
-	padding-bottom: 4px;
+	padding-bottom: 2px;
 }
 .toh-filter-preset{
-	margin-bottom: 3px;
+	margin-bottom: 5px;
 }
 .toh-filter-feature INPUT{
 	margin-right: 5px;
@@ -636,24 +748,9 @@ column-gap: 2em;
 	font-size: 12px;
 }
 
-#toh-filters-presets A{
-	display: block;
-	padding: 1px 5px;
-	border: 1px solid #aaa;
-	border-radius: 5px;
-	background-color: #ddd;	
-	text-decoration: none;
-	color: #000;
-	font-weight: bold;
-}
-
 .toh-filtgroup[data-group=admin] UL A{
 	color: red;
 }
-#toh-filters-features .toh-filter-admin A{
-	/* color: red; */
-}
-
 
 #toh-filters-features .toh-filter-title{
 	width: 120px
@@ -666,25 +763,28 @@ column-gap: 2em;
 
 /* Top Views ------------------------------------------------ */
 
-/* #toh-views{
-	margin-bottom: 10px;
-} */
-
-#toh-cols-title .toh-title{
-	border-right: 1px solid #ddd;
-}
-
 #toh-cols-container{
 	padding-bottom: 10px;
-	border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid #ddd;
 }
 
 .toh-cols-list UL{
 	padding-left: 15px;
 }
+.toh-col{
+	line-height: 100%;
+	padding-bottom: 1px;
+}
+
+
 .toh-cols-list-multi {
-column-count: 6;
+column-count: 7;
 column-gap: 2em;
+}
+@media screen and (max-width: 1200px) {
+	.toh-cols-list-multi {
+		column-count: 6;
+	}
 }
 @media screen and (max-width: 1000px) {
 	.toh-cols-list-multi {
@@ -724,11 +824,14 @@ column-gap: 2em;
 }
 
 
+
 /* Top Buttons ---------------------------------------------- */
 
 #toh-top-buttons{
+	margin-top: 12px;
 	min-height: 34px;
 	overflow: hidden;
+	/* clear: both; */
 }
 .toh-buttons-left{
 	float: left;
@@ -744,29 +847,44 @@ column-gap: 2em;
 A.toh-but{
 	display: inline-block;
 	margin-left: 10px;
-	padding: 3px 5px;
+	padding: 3px 7px;
 	text-decoration: none;
-	border: rgba(0,0,0,0.1) 1px solid;
-	border-radius: 5px;
+	border: 1px solid rgba(0,0,0,0.23) ;
+	/* border-color: #ccc; */
+	border-radius: 10px;
 	font-size: 11px;
-	line-height: 14px;
+	line-height: 13px;
 
 	background: linear-gradient(to top, 
 		rgba(0,0,0, 0.15),
 		rgba(0,0,0, 0.01)
 	), #fff;
+	color: #333;
+	/* box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.1); */
+}
+
+A.toh-but-clearallfilters{
 	color: #000;
+	border-color: rgba(0,0,0, 0.35);
+	font-weight: 500;
+	letter-spacing: 0.3px;
 }
 
 A.toh-but:hover,
 #toh-filters-presets A:hover{
 	/* background-color: #000;	 */
-	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0.4),
-		rgba(255,255,255, 0)
-	), #999;
+	background: linear-gradient(to top, 
+		rgba(255,255,255, 0.1),
+		rgba(255,255,255, 0.6)
+	), rgb(125, 125, 170);
 	color: #fff;
 }
+A.toh-but:hover{
+	border-color: #8888b0 #cacadc #cacadc #8888b0;
+	box-shadow: -2px -2px 6px 0px rgba(0, 0, 0, 0.15);
+	border-radius: 10px;
+}
+
 
 
 
@@ -797,6 +915,8 @@ A.toh-but:hover,
 	color: #666;
 }
 
+
+
 /* Image Preview -------------------------------------------- */
 
 #toh-image-preview {
@@ -814,6 +934,7 @@ A.toh-but:hover,
 	display: block;
 	border-radius: 5px;
 }
+
 
 
 /* Table ---------------------------------------------------- */
@@ -846,6 +967,8 @@ A.toh-but:hover,
 	background: red;
 } */
 
+
+
 /* Table column headers ------------------------------------- */
 
 #toh-table .tabulator-header{
@@ -859,6 +982,7 @@ A.toh-but:hover,
 		rgba(255,255,255, 0)
 	), #e0e0e0;
 }
+
 
 
 /* Header filter -------------------------------------------- */
@@ -891,6 +1015,7 @@ background-color: #ddf;
 }
 
 
+
 /* Footer --------------------------------------------------- */
 #toh-table.tabulator .tabulator-footer{
 	border-top: rgba(0,0,0,0.15) 1px solid;
@@ -901,7 +1026,10 @@ background-color: #ddf;
 #toh-table .tabulator-footer .tabulator-page-counter{
 	color: #999;
 }
-
+#toh-table .tabulator-footer .tabulator-paginator LABEL{
+	font-weight: normal;
+	color: #777;
+}
 #toh-table .tabulator-footer .tabulator-page-size{
 	margin-right: 15px;
 }
@@ -930,6 +1058,7 @@ background-color: #ddf;
 }
 
 
+
 /* VIRT_edit column  ---------------------------------------- */
 
 .tabulator-col[tabulator-field="VIRT_edit"] .tabulator-col-title{
@@ -937,12 +1066,14 @@ background-color: #ddf;
 }
 
 
+
 /* Cells --------------------------------------- */
 #toh-table .fa-warning.dlerror{
 }
 
 
-#toh-table .tabulator-cell .tlink{
+#toh-table .tabulator-cell .tlink,
+#toh-table .tabulator-cell .cell-image{
 	font-size: 14px;
 }
 
@@ -999,6 +1130,8 @@ A.tlink.VIRT_firm I.dlerror{
 	color: red;
 }
 
+
+
 /* Cell Popup Details --------------------------------------- */  
 
 .tabulator-row.popup-active{
@@ -1053,17 +1186,17 @@ A.tlink.VIRT_firm I.dlerror{
 	padding: 0px 8px 8px 8px;
 	background-color: #fff;
 }
-@media screen and (max-width: 1390px) {
+@media screen and (max-width: 1600px) {
 	.toh-details-content {
 		column-count: 3;
 	}
 }
-@media screen and (max-width: 1120px) {
+@media screen and (max-width: 1290px) {
 	.toh-details-content {
 		column-count: 2;
 	}
 }
-@media screen and (max-width: 610px) {
+@media screen and (max-width: 960px) {
 	.toh-details-content {
 		column-count: 1;
 	}
@@ -1106,6 +1239,11 @@ TABLE.toh-details-table{
 }
 
 
+
+
+
+
+
 /* Colors ################################################################################################ */  
 
 #toh-table .tabulator-header-filter INPUT{
@@ -1116,42 +1254,35 @@ TABLE.toh-details-table{
 #toh-table .tabulator-col.toh-col-filtered{
 }
 
-#toh-table .tabulator-col.toh-col-filter,
 #toh-filters-presets A,
+#toh-table .tabulator-col.toh-col-filter,
 A.toh-but-clearfilters{
 	background-color: #cfc;
 	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0.8),
-		rgba(255,255,255, 0)
+		rgba(255,255,255, 0.72),
+		rgba(255,255,255, 0.3)
 	), #ada;
 }
 
 #toh-table .tabulator-col.toh-col-headerfilter,
 A.toh-but-clearheaderfilters{
 	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0.8),
-		rgba(255,255,255, 0)
-	), #cce;
+		rgba(255,255,255, 0.77),
+		rgba(255,255,255, 0.25)
+	), rgb(179, 178, 238);
 }
 #toh-table .tabulator-col.toh-col-allfilter,
 A.toh-but-clearallfilters{
 	background-color: #8fd;	
 	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0.8),
-		rgba(255,255,255, 0)
-	), #6db;
+		rgba(255,255,255, 0.75),
+		rgba(255,255,255, 0.25)
+	), rgb(90, 196, 196);
+	/* font-weight: bold; */
+
 }
 
 
-
-#toh-filters-presets A:hover{
-	/* background-color: #555;	
-	background: linear-gradient(to bottom, 
-		rgba(255,255,255, 0),
-		rgba(255,255,255, 0.3)
-	), #555;
-	color: #fff; */
-}
 
 
 

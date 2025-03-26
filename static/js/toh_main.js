@@ -1385,7 +1385,10 @@ $(document).ready(function () {
 				]);
 
 			}).then(() =>{
-				$('#toh-boot-overlay').slideUp(500);
+				if(toh_prefs.boot_hide){
+					$('#toh-boot-overlay').slideUp(500);
+				}
+				
 				ObserveHeaderFiltersAndInitSearch();
 				PreLoadImagesCache();
 			});   
@@ -1522,7 +1525,7 @@ $(document).ready(function () {
 					exit();
 				}
 				if(val.length > max){
-					$input.val(val.substring(0, max)).shake(50,5,1);
+					$input.val(val.substring(0, max)).shake(50,2,1);
 				}
 				myLogObj(e,'keyup event');
 			});
@@ -1533,7 +1536,7 @@ $(document).ready(function () {
 				//e.stopPropagation();
 				name=$input.val();
 				if(name==''){
-					$input.shake();
+					$input.shake(50,4,2);
 				}
 				else{
 					$preset.fadeOut(50).fadeIn(250);	// .shake(50,5,2);
@@ -2222,10 +2225,10 @@ function FormatterImages(cell, formatterParams, onRendered) {
 				url=toh_urls.media + value;
 			}
 			if(isGenerigImage(value)){
-				out +='<a href="' + url + '" target="_blank" class="cell-image generic"><i class="fa-regular fa-image"></i></a> ';
+				out +='<a href="' + url + '" target="_blank" class="cell-image generic"><i class="fa-fw fa-regular fa-image"></i></a> ';
 			}
 			else{
-				out +='<a href="' + url + '" target="_blank" class="cell-image"><i class="fa-solid fa-image"></i></a> ';
+				out +='<a href="' + url + '" target="_blank" class="cell-image"><i class="fa-fw fa-solid fa-image"></i></a> ';
 			}
 
 			// preload images --------
