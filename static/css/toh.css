@@ -421,42 +421,64 @@ body,
 /* Top sections ------------------------------------------------*/
 
 #toh-top{
+
 	/* margin-bottom: 10px; */
 }
 .toh-top-block{
-	font-size: 13px;
+	/* height: 27px; */
 	margin-bottom: 10px;
 }
 .toh-top-block:first-child{
 	margin-bottom: 25px;
 }
-.toh-top-title{
-	padding-left: 5px;
-	border: 1px solid #ccc;
-	border-width: 1px 0 1px 0;
-	border-style: solid;	
-	background-color: #f5f5f5;
-	background: linear-gradient(to top,  rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.01) 100%);	
-	overflow: hidden;
+#toh-top-filters .toh-title,
+#toh-top-filters .toh-top-title-presets A{
+	border-bottom: 0;
+}
+
+.toh-top-block,
+#toh-top-cols .toh-title,
+#toh-top-cols .toh-top-title-presets A{
+	border-bottom: 1px solid #ddd;
 }
 
 #toh-top-filters .toh-top-title{
 	border-top: 0;
+	/* line-height: 26px; */
 }
-.toh-top-container{
-	padding: 8px 10px 5px 25px;
-	font-size: 12px;
+#toh-top-cols .toh-top-title{
+	margin-bottom: -1px;
+	/* height: 26px; */
+	/* line-height: 26px; */
+}
+.toh-top-title{
+	border-top: 1px solid rgba(0, 0, 0, 0.06);
+	/* border: 1px solid #ccc;
+	border-width: 1px 0 1px 0; */
+	/* border-style: solid;	 */
+	background-color: #f5f5f5;
+	background: linear-gradient(to top,  rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.01) 100%);	
+	/* overflow: visible; */
+	line-height: 25px;
+	font-size: 13px;
+	display: relative;
+
 }
 
 .toh-title{
-	padding-right: 10px;
+	display: inline-block;
 }
 .toh-title,
 .toh-title A{
-	font-size: 13px;
+	/* font-size: 13px; */
 	text-decoration: none;
 	color: #000;
 }
+.toh-title A{
+	display: inline-block;
+	padding-right: 10px;
+}
+
 .toh-title A:hover{
 	color: rgb(0, 141, 192);
 }
@@ -464,6 +486,10 @@ body,
 	/* margin-right: 5px; */
 }
 
+.toh-top-container{
+	padding: 8px 10px 5px 25px;
+	font-size: 12px;
+}
 
 /* Top Menus ------------------------------------------------ */
 
@@ -471,13 +497,14 @@ body,
 /* Views Presets ++++++++++++++  */
 
 .toh-top-title-presets A{
+	overflow: visible;
 	display: inline-block;
-	padding: 1px 9px;
-	text-decoration: none;
-	background-color: #fff;	
-	border-right: 1px solid #ddd;
-	border-top: 1px solid rgba(0, 0, 0, 0.05);
+	padding: 0 9px;
+	border-right: 1px solid rgba(0, 0, 0, 0.15);
+	background: linear-gradient(to bottom,  rgba(0,0,0,0.03) 0%,rgba(0,0,0,0.0) 100%), #fff;
+	/* background-color: #fff; */
 	color: #777;
+	text-decoration: none;
 }
 .toh-top-title-presets A:hover{
 	background: linear-gradient(to top, 
@@ -488,24 +515,14 @@ body,
 }
 
 
+#toh-cols-title .toh-title{
+	border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+
 
 /* user presets ++++++++++++++  */
 
-.toh-top-title-presets.toh-upresets-content A{
-	color: #ddd;
-	border-top: 1px solid rgba(0, 0, 0, 0.05);
-}
-.toh-top-title-presets.toh-upresets-content A:hover{
-	color: #bbb;
-}
-.toh-upresets-content A.toh-used{
-	/* background-color: #fff; */
-	/* background: linear-gradient(to top,  rgba(0,0,0,0.01) 0%,rgba(0,0,0,0) 100%, #fff);	 */
-	color: #777;
-}
-.toh-upresets-content A.toh-used:hover{
-	color: #000;
-}
 
 .toh-upresets-content A.toh-saving{
 	background-color: #fae9cb;
@@ -519,15 +536,50 @@ body,
 .toh-upresets-title{
 	display: inline-block;
 	padding-right: 5px;
-	border-right: 1px solid #ccc;
+	border-right: 1px solid rgba(0, 0, 0, 0.15);
 	font-size: 12px;
 }
+
 .toh-upresets-title A{
 	color: #aaa;
 }
 .toh-upresets-title A:hover{
 	color: #0B0;
 	cursor: help;
+}
+
+.toh-top-title-presets.toh-upresets-content A{
+	color: #ddd;
+}
+.toh-top-title-presets.toh-upresets-content A:hover{
+	color: #bbb;
+}
+.toh-upresets-content A:last-child{
+	border-right: none;
+}
+.toh-upresets-content A.toh-used{
+	/* background-color: #fff; */
+	color: #777;
+}
+.toh-upresets-content A.toh-used:hover{
+	color: #000;
+}
+
+
+/* selected presets  -----------------------------------------*/
+
+.toh-top-title-presets A.toh-selected{
+
+	border-right: 1px solid rgba(0, 0, 0, 0.12);
+
+	background: linear-gradient(to bottom, 
+		rgba(255,255,255,0.7) 0%,
+		rgba(255,255,255,0.1) 100%),
+		rgb(0, 152, 207);
+	color: rgb(253, 253, 162);
+}
+.toh-top-title-presets A.toh-selected:hover{
+	color: #fff;
 }
 
 
@@ -576,24 +628,6 @@ body,
 	color: #222;
 }
 
-
-/* selected presets  -----------------------------------------*/
-
-
-.toh-top-title-presets A.toh-selected{
-	background: linear-gradient(to bottom, 
-		rgba(255,255,255,0.7) 0%,
-		rgba(255,255,255,0.1) 100%),
-		rgb(0, 152, 207);
-	color: rgb(253, 253, 162);
-	border-top: 1px solid rgba(0, 0, 0, 0.1);
-	border-left: 1px solid rgba(0, 0, 0, 0.3);
-	border-right: 1px solid rgba(0, 0, 0, 0.1);
-
-}
-.toh-top-title-presets A.toh-selected:hover{
-	color: #fff;
-}
 
 
 /* Top Filters ---------------------------------------------- */
@@ -725,9 +759,7 @@ body,
 	margin-bottom: 10px;
 } */
 
-#toh-cols-title .toh-title{
-	border-right: 1px solid #ddd;
-}
+
 
 #toh-cols-container{
 	padding-bottom: 10px;
@@ -790,6 +822,7 @@ column-gap: 2em;
 #toh-top-buttons{
 	min-height: 34px;
 	overflow: hidden;
+	/* clear: both; */
 }
 .toh-buttons-left{
 	float: left;
