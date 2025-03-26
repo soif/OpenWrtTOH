@@ -6,6 +6,7 @@
 * Polishes UserPreset Popup
 * Better Linked Colums View Box
 * Fixes details-view columns responsiveness
+* Smaller text in Filters & Views content
 * Enhances Github "release" Actions (fixes contributors and adds commits)
 * Small CSS improvements
 

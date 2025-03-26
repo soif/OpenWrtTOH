@@ -445,7 +445,7 @@ body,
 }
 .toh-top-container{
 	padding: 8px 10px 5px 25px;
-	font-size: 13px;
+	font-size: 12px;
 }
 
 .toh-title{
@@ -663,8 +663,8 @@ body,
 	padding-left: 15px;
 }
 .toh-filters-list-multi {
-column-count: 4;
-column-gap: 2em;
+	column-count: 4;
+	column-gap: 2em;
 }
 @media screen and (max-width: 1450px) {
 	.toh-filters-list-multi {
@@ -684,10 +684,10 @@ column-gap: 2em;
 
 .toh-filter{
 	line-height: 100%;
-	padding-bottom: 4px;
+	padding-bottom: 2px;
 }
 .toh-filter-preset{
-	margin-bottom: 3px;
+	margin-bottom: 5px;
 }
 .toh-filter-feature INPUT{
 	margin-right: 5px;
@@ -737,6 +737,12 @@ column-gap: 2em;
 .toh-cols-list UL{
 	padding-left: 15px;
 }
+.toh-col{
+	line-height: 100%;
+	padding-bottom: 1px;
+}
+
+
 .toh-cols-list-multi {
 column-count: 6;
 column-gap: 2em;
