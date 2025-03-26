@@ -537,22 +537,44 @@ body,
 #toh-upreset-popup-save{
 	position: absolute;
 	background-color: #f9f9ff;
-	border: 1px solid #ccc;
-	padding: 10px;
+	border: 1px solid rgb(199, 198, 198);
+	padding: 15px 10px;
+	border-radius: 5px;
 	font-size: 12px;
 	z-index: 1000;
+	box-shadow: 3px 3px 10px 2px rgba(0,0,0,.15);
+}
+#toh-upreset-popup-save INPUT{
+	background-color: rgb(230, 230, 252);
 }
 #toh-upreset-popup-save .toh-desc-mini{
 	font-size: 11px;
 	color: #aaa;
-	margin-top: 2px;
-	margin-bottom: 5px;
+	margin-top: 3px;
+	margin-bottom: 7px;
 }
 
 #toh-upreset-popup-save BUTTON{
-	background-color: #fff;
-}
+	padding: 4px 7px;
+	text-decoration: none;
+	border: 1px solid rgba(0,0,0,0.23) ;
+	border-radius: 6px;
+	font-size: 11px;
+	line-height: 13px;
 
+	background: linear-gradient(to top, 
+		rgba(0,0,0, 0.15),
+		rgba(0,0,0, 0.01)
+	), #fff;
+	color: #555;
+}
+#toh-upreset-popup-save BUTTON:hover{
+	background: linear-gradient(to top, 
+		rgba(0,0,0, 0.2),
+		rgba(0,0,0, 0.06)
+	), #fff;
+	color: #222;
+}
 
 
 /* selected presets  -----------------------------------------*/

@@ -8,6 +8,7 @@
 ## Version 1.75 - 2025-03-25
 
 * Prettier Buttons
+* Polished UserPreset Popup
 * Small CSS improvements
 * Automatically create GH releases
 
