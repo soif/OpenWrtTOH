@@ -1112,17 +1112,17 @@ A.tlink.VIRT_firm I.dlerror{
 	padding: 0px 8px 8px 8px;
 	background-color: #fff;
 }
-@media screen and (max-width: 1390px) {
+@media screen and (max-width: 1600px) {
 	.toh-details-content {
 		column-count: 3;
 	}
 }
-@media screen and (max-width: 1120px) {
+@media screen and (max-width: 1290px) {
 	.toh-details-content {
 		column-count: 2;
 	}
 }
-@media screen and (max-width: 610px) {
+@media screen and (max-width: 960px) {
 	.toh-details-content {
 		column-count: 1;
 	}
