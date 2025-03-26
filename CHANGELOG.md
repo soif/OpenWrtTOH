@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 1.76 - 2025-xx-xx
+## Version 1.76 - 2025-03-26
 
 * Prettier Buttons
 * Polishes UserPreset Popup
@@ -9,6 +9,7 @@
 * Smaller text in Filters & Views content
 * Enhances Github "release" Actions (fixes contributors and adds commits)
 * Small CSS improvements
+
 
 ## Version 1.75 - 2025-03-25
 
