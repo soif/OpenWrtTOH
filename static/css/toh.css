@@ -434,12 +434,12 @@ body,
 .toh-top-title-left,
 .toh-top-title-presets A,
 #toh-top-cols .toh-upresets-title{
-	line-height: 25px;
+	line-height: 20px;
 }
 #toh-top-filters .toh-top-title-left,
 #toh-top-filters .toh-top-title-presets A,
 #toh-top-filters .toh-upresets-title{
-	line-height: 27px;
+	line-height: 22px;
 }
 
 .toh-top-title-left,
@@ -457,7 +457,7 @@ body,
 	margin-top: 1px;
 }
 #toh-top-cols .toh-top-title-presets A.toh-selected{
-	line-height: 26px;
+	line-height: 21px;
 	margin-top: 0;
 }
 
