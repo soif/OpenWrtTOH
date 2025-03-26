@@ -452,8 +452,12 @@ body,
 	border-top: 1px solid rgba(0, 0, 0, 0.06);
 	background-color: #f5f5f5;
 	background: linear-gradient(to top,  rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.01) 100%);	
+	
 	line-height: 25px;
 	font-size: 13px;
+}
+#toh-top-filters .toh-top-title{
+	line-height: 26px;
 }
 
 .toh-title{
@@ -461,16 +465,18 @@ body,
 }
 .toh-title,
 .toh-title A{
-	text-decoration: none;
-	color: #000;
+	color: #777;
 }
 .toh-title A{
 	display: inline-block;
+	padding-left: 5px;
 	padding-right: 10px;
+	text-decoration: none;
 }
 
 .toh-title A:hover{
-	color: rgb(0, 141, 192);
+	/* color: rgb(1, 123, 168); */
+	color: #222;
 }
 .toh-title A I{
 	/* margin-right: 5px; */
