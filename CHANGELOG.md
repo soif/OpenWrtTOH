@@ -2,13 +2,13 @@
 
 ## Version 1.76 - 2025-xx-xx
 
+* Prettier Buttons
+* Polished UserPreset Popup
 * Enhances Github "release" Actions (fixes contributors and adds commits)
 * small CSS improvements
 
 ## Version 1.75 - 2025-03-25
 
-* Prettier Buttons
-* Polished UserPreset Popup
 * Small CSS improvements
 * Automatically create GH releases
 
