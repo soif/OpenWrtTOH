@@ -31,8 +31,8 @@ BODY.toh-loading #toh-page{
 	0%, 100% { 	background-color: rgb(242, 245, 199); 		}
 	50% { 		background-color:rgb(240, 222, 222) 		} 
 	/* :rgb(247, 239, 177)  */
- }
- 
+}
+
 /* Header --------------------------------------------------  */
 
 #toh-header{
@@ -82,7 +82,7 @@ BODY.toh-loading #toh-page{
 	text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 #toh-header-logo IMG:hover{
-  filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.5));
+	filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.5));
 }
 
 #toh-dev-badge{
@@ -131,7 +131,6 @@ BODY.toh-loading #toh-page{
 #toh-search-icon I:hover{
 	cursor: pointer;
 	opacity: 1;
-	/* transform: scaleX(-1); */
 }
 
 #toh-header-search .toh-hidden{
@@ -251,10 +250,6 @@ BODY.toh-loading #toh-page{
 	#toh-header h1 {
 		padding-left: 40px;
 		font-size: 1.4em;
-	}
-	#toh-dev-badge{
-		/* font-size: 9px; */
-		/* padding: 2px 5px; */
 	}
 	#toh-header-right{
 		padding-left: 0;
@@ -406,6 +401,8 @@ body,
 	font-size: 11px;
 	color: #f00;
 }
+
+
 
 
 
