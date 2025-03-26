@@ -118,7 +118,36 @@
 		}
 		#toh-boot-icon{
 			margin-bottom: 20px;
+        }
+
+		#toh-boot-logo{
+            animation: 0.7s bounce 2s infinite;
 		}
+        @keyframes bounce {
+            0% {
+                transform: translateY(0);
+                animation-timing-function: ease-in;
+            }
+            15% {
+                transform: translateY(-50px);
+                animation-timing-function: ease-out;
+            }
+            50% {
+                transform: translateY(-70px);
+                animation-timing-function: ease-in;
+				opacity: 0.8;
+            }
+            85% {
+                transform: translateY(-50px);
+                animation-timing-function: ease-out;
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+
+
 		</style>
 		<div id="toh-boot-overlay">
 			<div id="toh-boot-overlay-bg">

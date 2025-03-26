@@ -4,6 +4,7 @@
 
 * Makes View presets more responsive.
 * Enhances Top Title sections
+* Adds Boot logo animation
 
 ## Version 1.76 - 2025-03-26
 
