@@ -1385,7 +1385,10 @@ $(document).ready(function () {
 				]);
 
 			}).then(() =>{
-				$('#toh-boot-overlay').slideUp(500);
+				if(toh_prefs.boot_hide){
+					$('#toh-boot-overlay').slideUp(500);
+				}
+				
 				ObserveHeaderFiltersAndInitSearch();
 				PreLoadImagesCache();
 			});   
