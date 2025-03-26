@@ -1522,7 +1522,7 @@ $(document).ready(function () {
 					exit();
 				}
 				if(val.length > max){
-					$input.val(val.substring(0, max)).shake(50,5,1);
+					$input.val(val.substring(0, max)).shake(50,2,1);
 				}
 				myLogObj(e,'keyup event');
 			});
@@ -1533,7 +1533,7 @@ $(document).ready(function () {
 				//e.stopPropagation();
 				name=$input.val();
 				if(name==''){
-					$input.shake();
+					$input.shake(50,4,2);
 				}
 				else{
 					$preset.fadeOut(50).fadeIn(250);	// .shake(50,5,2);
