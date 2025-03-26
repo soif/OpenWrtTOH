@@ -4,6 +4,7 @@
 
 * Prettier Buttons
 * Polished UserPreset Popup
+* Fixes details-view columns responsiveness
 * Enhances Github "release" Actions (fixes contributors and adds commits)
 * small CSS improvements
 
