@@ -598,6 +598,43 @@ body,
 
 /* Top Filters ---------------------------------------------- */
 
+#toh-filters-options{
+	float: right;
+	margin-top: 2px;
+	margin-left: 10px;
+	font-size: 11px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	background: #eafafa;
+	padding: 0;
+	color: #777;
+}
+.toh-options-title{
+	background: #fff;
+	background: linear-gradient(to top,  rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.01) 100%);	
+	padding: 3px 3px 2px 3px;
+	border-bottom: 1px solid #ccc;
+}
+.toh-options-title A{
+	color: #777;
+	text-decoration: none;
+}
+.toh-options-title A:hover{
+	color: #444;
+	cursor: help;
+}
+
+.toh-options-radios{
+	padding: 4px 2px 5px 10px;
+	line-height: 110%;
+}
+.toh-options-radios LABEL{
+	font-weight: normal;
+}
+
+
+
+
 #toh-filters-presets A{
 	display: block;
 	padding: 2px 5px;
@@ -608,28 +645,6 @@ body,
 	color: #464;
 	font-weight: bold;
 	box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.1);
-}
-
-#toh-filters-options{
-	float: right;
-	margin-top: 2px;
-	margin-left: 10px;
-	font-size: 11px;
-	border: 1px solid #ddd;
-	border-radius: 5px;
-	background: #fafafa;
-	padding: 3px 5px;
-	color: #777;
-}
-.toh-options-title A{
-	color: #777;
-	text-decoration: none;
-}
-.toh-options-radios{
-	line-height: 110%;
-}
-.toh-options-radios LABEL{
-	font-weight: normal;
 }
 
 #toh-filters-presets{
