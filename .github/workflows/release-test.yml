@@ -162,9 +162,7 @@ jobs:
             echo ""
             echo "### Commits"
             echo ""
-            cat <<- 'COMMITS'
-            ${{ steps.contributors.outputs.commits }}
-            COMMITS
+            echo "${{ steps.contributors.outputs.commits }}" | cat
             echo ""
             echo "EOF_CONTENT"
           } >> $GITHUB_OUTPUT
