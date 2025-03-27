@@ -162,7 +162,7 @@ jobs:
             echo ""
             echo "### Commits"
             echo ""
-            echo "${{ steps.contributors.outputs.commits }}" > temp_commits.txt
+            printf '%s\n' "${{ steps.contributors.outputs.commits }}" > temp_commits.txt
             cat temp_commits.txt
             rm temp_commits.txt
             echo ""
