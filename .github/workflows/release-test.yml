@@ -107,18 +107,18 @@ jobs:
           done < <(cat commits_info.txt)
 
           contributors=$(for key in "${!username_to_count[@]}"; do
+            count="${username_to_count[$key]}"
             name="${username_to_name[$key]}"
             if [[ "$key" =~ ^[^@] ]]; then  # Username (not email)
               if [[ "$name" =~ " " ]]; then
-                echo "* [$name](https://github.com/$key)"
+                echo "$count|* [$name](https://github.com/$key)"
               else
-                echo "* [@$key](https://github.com/$key)"
+                echo "$count|* [@$key](https://github.com/$key)"
               fi
             else  # Email (no username)
-              echo "* $name"
+              echo "$count|* $name"
             fi
-          done | sort -nr | cut -d'|' -f2- | sed 's/^/* /')
-          #done | sort -u)
+          done | sort -nr | cut -d'|' -f2-)
 
           echo "Final contributors list:"
           echo "$contributors"
@@ -162,7 +162,7 @@ jobs:
             echo ""
             echo "### Commits"
             echo ""
-            echo "${{ steps.contributors.outputs.commits }}"
+            printf '%s\n' "${{ steps.contributors.outputs.commits }}"
             echo ""
             echo "EOF_CONTENT"
           } >> $GITHUB_OUTPUT
