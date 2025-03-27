@@ -41,6 +41,7 @@ jobs:
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'%0A'}"
           changelog="${changelog//$'\r'/'%0D'}"
+
           echo "content=$changelog" >> $GITHUB_OUTPUT
 
       - name: Get Contributors and Commits
@@ -76,7 +77,10 @@ jobs:
 
           # Step 2: Get commits since the latest vXXX tag on master
           latest_tag=$(git tag --list 'v[0-9]*' --sort=-v:refname | head -n 2 | tail -n 1)  # Second-to-last tag (previous release)
+          
           git log "$latest_tag"..HEAD --format="%h%x09%ae%x09%s" > commits_raw.txt
+          #git log --format="%h%x09%ae%x09%s" > commits_raw.txt 
+
           > commits_info.txt  # Initialize file for processed commits
           while IFS=$'\t' read -r hash email message; do
             username="${email_to_username[$email]}"
@@ -109,46 +113,44 @@ jobs:
               username_to_name["$email"]="${email_to_name[$email]}"
             fi
           done < <(cat commits_info.txt)
+
           contributors=$(for key in "${!username_to_count[@]}"; do
             count="${username_to_count[$key]}"
             name="${username_to_name[$key]}"
             if [[ "$key" =~ ^[^@] ]]; then  # Username (not email)
               if [[ "$name" =~ " " ]]; then
-                echo "$count|$name|[@$key](https://github.com/$key)"
+                echo "$count|* [$name](https://github.com/$key)"
               else
-                echo "$count|[@$key](https://github.com/$key)|[@$key](https://github.com/$key)"
+                echo "$count|* [@$key](https://github.com/$key)"
               fi
             else  # Email (no username)
-              echo "$count|$name|"
+              echo "$count|* $name"
             fi
-          done | sort -nr | cut -d'|' -f2- | sed 's/^/* /')
+          done | sort -nr | cut -d'|' -f2-)
+
           echo "Final contributors list:"
           echo "$contributors"
 
-          # Step 4: Format commits list
-          commits=$(while IFS='|' read -r hash email username message; do
+          # Step 4: Format commits list and write to file
+          > commits_formatted.txt  # Initialize file for formatted commits
+          while IFS='|' read -r hash email username message; do
             message="${message#\"}"
             message="${message%\"}"
             if [[ -n "$username" ]]; then
-              printf "* [%s](%s/commit/%s) %s ([@%s](https://github.com/%s))\n" "$hash" "$REPO_URL" "$hash" "$message" "$username" "$username"
+              printf "* [%s](%s/commit/%s) %s ([@%s](https://github.com/%s))\n" "$hash" "$REPO_URL" "$hash" "$message" "$username" "$username" >> commits_formatted.txt
             else
               name="${email_to_name[$email]}"
-              printf "* [%s](%s/commit/%s) %s (%s)\n" "$hash" "$REPO_URL" "$hash" "$message" "$name"
+              printf "* [%s](%s/commit/%s) %s (%s)\n" "$hash" "$REPO_URL" "$hash" "$message" "$name" >> commits_formatted.txt
             fi
-          done < <(cat commits_info.txt) | sed 's/%/%25/g')
+          done < <(cat commits_info.txt)
 
           # Step 5: Set outputs for downstream use
           {
             echo "list<<EOF_CONTRIBUTORS"
             echo "$contributors"
             echo "EOF_CONTRIBUTORS"
+            echo "commits_file=commits_formatted.txt"
           } >> $GITHUB_OUTPUT
-          {
-            echo "commits<<EOF_COMMITS"
-            echo "$commits"
-            echo "EOF_COMMITS"
-          } >> $GITHUB_OUTPUT
-
 
       - name: Build Body Content
         id: body
@@ -165,7 +167,7 @@ jobs:
             echo ""
             echo "### Commits"
             echo ""
-            echo "${{ steps.contributors.outputs.commits }}"
+            cat "${{ steps.contributors.outputs.commits_file }}"
             echo ""
             echo "EOF_CONTENT"
           } >> $GITHUB_OUTPUT
@@ -173,7 +175,10 @@ jobs:
       - name: Display Body Content
         id: display
         run: |
-          echo "${{ steps.body.outputs.content }}"
+          cat > body_content.txt << 'EOF'
+          ${{ steps.body.outputs.content }}
+          EOF
+          cat body_content.txt
 
       - name: Create Release
         uses: actions/github-script@v6
@@ -182,13 +187,13 @@ jobs:
           script: |
             const body = `${{ steps.body.outputs.content }}`.replace(/%0A/g, '\n');
             const tagName = context.ref.replace('refs/tags/', '');
-            
+
             await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag_name: tagName,
               name: `Release ${tagName}`,
-              body: `${body}`,
+              body: body,
               draft: false,
               prerelease: false
             });
