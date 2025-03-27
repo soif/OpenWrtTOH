@@ -102,19 +102,21 @@ jobs:
               username_to_name["$email"]="${email_to_name[$email]}"
             fi
           done < <(cat commits_info.txt)
+
           contributors=$(for key in "${!username_to_count[@]}"; do
             count="${username_to_count[$key]}"
             name="${username_to_name[$key]}"
             if [[ "$key" =~ ^[^@] ]]; then  # Username (not email)
               if [[ "$name" =~ " " ]]; then
-                echo "$count|$name|[@$key](https://github.com/$key)"
+                echo "$count|$name|[$name](https://github.com/$key)"
               else
-                echo "$count|[@$key](https://github.com/$key)|[@$key](https://github.com/$key)"
+                echo "$count|$key|[@$key](https://github.com/$key)"
               fi
             else  # Email (no username)
               echo "$count|$name|"
             fi
           done | sort -nr | cut -d'|' -f2- | sed 's/^/* /')
+
           echo "Final contributors list:"
           echo "$contributors"
 
