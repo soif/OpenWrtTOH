@@ -167,7 +167,6 @@ jobs:
       - name: Display Body Content
         id: display
         run: |
-          set -x
           cat > body_content.txt << 'EOF'
           ${{ steps.body.outputs.content }}
           EOF
