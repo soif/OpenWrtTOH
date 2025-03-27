@@ -167,11 +167,8 @@ jobs:
       - name: Display Body Content
         id: display
         run: |
-          # Enable debugging to trace execution
           set -x
-          # Use a heredoc to safely output the content
-          cat << 'EOF' > body_content.txt
-${{ steps.body.outputs.content }}
-EOF
-          # Display the content
+          cat > body_content.txt << 'EOF'
+          ${{ steps.body.outputs.content }}
+          EOF
           cat body_content.txt
