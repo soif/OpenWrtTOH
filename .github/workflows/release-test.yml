@@ -167,4 +167,6 @@ jobs:
       - name: Display Body Content
         id: display
         run: |
-          echo "${{ steps.body.outputs.content }}"
+          # Write the content to a file and cat it to avoid Bash parsing issues
+          echo "${{ steps.body.outputs.content }}" > body_content.txt
+          cat body_content.txt
