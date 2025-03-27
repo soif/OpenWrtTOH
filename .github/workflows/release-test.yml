@@ -117,8 +117,8 @@ jobs:
             else  # Email (no username)
               echo "* $name"
             fi
-          done | sort -u)
-          #done | sort -nr | cut -d'|' -f2- | sed 's/^/* /')
+          done | sort -nr | cut -d'|' -f2- | sed 's/^/* /')
+          #done | sort -u)
 
           echo "Final contributors list:"
           echo "$contributors"
