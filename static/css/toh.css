@@ -1145,8 +1145,8 @@ A.tlink.VIRT_firm I.dlerror{
 		/* background-color:rgb(213, 245, 176); */
 	}
 }
-/* Cell Popup Details --------------------------------------- */  
 
+/* Cell Details Popup ----------------------------------------- */  
 .tabulator-row.popup-active{
 	background-color: rgba(0, 0, 255, 0.05);
 	border-top: rgba(0,0,0,0.3) 1px solid;
@@ -1166,7 +1166,7 @@ A.tlink.VIRT_firm I.dlerror{
 	overflow: auto;
 }
 .toh-details-border{
-	border: #aaa 1px solid ;
+	border: #bbb 1px solid ;
 	box-shadow: 4px 4px 10px 2px rgba(0,0,0,.2);
 	margin: 8px 16px 16px 8px;
 	border-radius: 5px;
@@ -1177,14 +1177,18 @@ A.tlink.VIRT_firm I.dlerror{
 	align-items: center;
 	border-bottom: #ccc 1px solid;
 	color: #fff;
-	background-color: #777;
-	padding: 1px 10px;
+	background: linear-gradient(to top, #3c3c3c 0%,#999898 100%);
+	font-size: 14px;
+	line-height: 16px;
+	padding: 4px 10px;
 }
 .toh-details-close{
 	line-height: 100%;
+	opacity: 0.6;
 }
 .toh-details-close:hover{
 	cursor: pointer;
+	opacity: 1;
 }
 .toh-details-title{
 	line-height: 100%;
@@ -1197,7 +1201,9 @@ A.tlink.VIRT_firm I.dlerror{
 	column-count: 4;
 	column-gap: 5px;
 	padding: 0px 8px 8px 8px;
-	background-color: #fff;
+	background-color: #f9f9f6;
+	border-radius: 0  0 5px 5px;
+
 }
 @media screen and (max-width: 1600px) {
 	.toh-details-content {
@@ -1216,7 +1222,7 @@ A.tlink.VIRT_firm I.dlerror{
 }
 TABLE.toh-details-table{
 	width: 100%;
-	border-spacing : 3px;
+	border-spacing : 4px;
 	border-collapse : separate;
 }
 .toh-details-table TD{
@@ -1224,7 +1230,7 @@ TABLE.toh-details-table{
 	font-size: 12px;
 }
 .toh-details-group-tr TD{
-	color: #999;
+	color: #888;
 	font-size: 11px;
 	height: 22px;
 	vertical-align: bottom;
@@ -1232,14 +1238,24 @@ TABLE.toh-details-table{
 .toh-details-key{
 	vertical-align: top;
 	font-weight: bold;
-	background-color: #f0f0f0;
+	background-color: #fff;
 	border: 1px solid #ccc;
-	border-width: 0 1px 1px 0;
+	border-color: #eee #ccc #ccc #eee;
 	text-align: right;
-	/* text-wrap: nowrap; */
 	width: 110px;
+	border-radius: 10px 0 0 10px;
+	/* box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.04); */
+}
+.toh-details-key A{
+	color: #666;
+	text-decoration: none;
+}
+.toh-details-key A:hover{
+	color: #444;
+	cursor: help;
 }
 .toh-details-value{
+	color: #222;
 	word-break: break-all;
 }
 .toh-details-value I{
