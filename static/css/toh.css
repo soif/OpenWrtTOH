@@ -578,9 +578,10 @@ body,
 
 .toh-top-title-presets A.toh-selected{
 	border-right: 1px solid rgba(0, 0, 0, 0.12);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 
 	background: linear-gradient(to bottom, 
-		rgba(255,255,255,0.7) 0%,
+		rgba(255,255,255,0.6) 0%,
 		rgba(255,255,255,0.1) 100%),
 		rgb(0, 152, 207);
 	color: rgb(253, 253, 162);
@@ -1130,8 +1131,20 @@ A.tlink.VIRT_firm I.dlerror{
 	color: red;
 }
 
+#toh-table .tabulator-cell[tabulator-field=VIRT_edit] A{
+	opacity: 0.6;
+}
+#toh-table .tabulator-cell[tabulator-field=VIRT_edit] A:hover{
+	opacity: 1;
+}
 
-
+/* row hover*/
+@media (hover: hover) and (pointer: fine) {
+	#toh-table .tabulator-row.tabulator-selectable:hover {
+		background-color:rgb(150, 234, 210);
+		/* background-color:rgb(213, 245, 176); */
+	}
+}
 /* Cell Popup Details --------------------------------------- */  
 
 .tabulator-row.popup-active{
