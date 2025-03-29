@@ -6,6 +6,7 @@
 * Enhances Top Title sections
 * Better multi-columns lists responsiveness
 * Adds Boot logo animation
+* Github Release: fix contributors list
 
 ## Version 1.76 - 2025-03-26
 
