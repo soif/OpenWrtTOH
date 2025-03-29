@@ -739,16 +739,24 @@ body,
 .toh-filter-feature INPUT{
 	margin-right: 5px;
 }
+.toh-filter-feature INPUT:hover{
+	cursor: pointer;
+}
 .toh-filter-title{
 	width: 180px;
 	display: inline-block;
 	margin-right: 6px;
 }
+.toh-filter-title A:hover{
+	cursor: help;
+}
 .toh-filter-description{
 	color: #999;
 	font-size: 12px;
 }
-
+.toh-filtgroup-title A:hover{
+	cursor: default;
+}
 .toh-filtgroup[data-group=admin] UL A{
 	color: red;
 }
@@ -776,7 +784,12 @@ body,
 	line-height: 100%;
 	padding-bottom: 1px;
 }
-
+.toh-col INPUT:hover{
+	cursor: pointer;
+}
+.toh-col A:hover{
+	cursor: help;
+}
 
 .toh-cols-list-multi {
 column-count: 7;
@@ -810,6 +823,8 @@ column-gap: 2em;
 .toh-group{
 	break-inside: avoid-column;
 }
+
+
 
 .toh-cols-list A,
 .toh-filters-list A{
