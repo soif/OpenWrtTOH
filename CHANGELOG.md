@@ -5,9 +5,12 @@
 * Makes View presets more responsive.
 * Enhances Top Title sections
 * Better multi-columns lists responsiveness
+* Enhanced Details Popup (Tooltips on fields + colors)
 * Adds Boot logo animation
+* Better cursors on hover
 * Github Release: fix contributors list
 * Small CSS improvements
+
 
 ## Version 1.76 - 2025-03-26
 
